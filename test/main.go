@@ -7,6 +7,38 @@ import (
 )
 
 func main() {
+
+	sql, args, err := orm.Query().Select("*").
+		From("tl_privilege_admin").
+		Where("admin_name", "=", "Q88888888").
+		ToSql()
+	fmt.Println(sql, args, err) // SELECT * FROM tl_privilege_admin WHERE admin_name = ? [Q88888888] <nil>
+
+	sql, args, err = orm.Query().Select("*").
+		From("tl_privilege_admin").
+		Where("admin_name", "=", "Q88888888").
+		WhereNull("delete_time").
+		ToSql()
+	fmt.Println(sql, args, err) // SELECT * FROM tl_privilege_admin WHERE admin_name = ? AND delete_time IS NULL [Q88888888] <nil>
+
+	privilegeActionSns := make([]string, 0)
+	privilegeActionSns = append(privilegeActionSns, "pas28289907155466605743739230141")
+	privilegeActionSns = append(privilegeActionSns, "pas35231745699179860431602784285")
+	sql, args, err = orm.Query().Select("*").
+		From("tl_privilege_action").
+		WhereIn("privilege_action_sn", privilegeActionSns).
+		WhereNull("delete_time").
+		ToSql()
+	fmt.Println(sql, args, err) // SELECT * FROM tl_privilege_action WHERE privilege_action_sn IN (?,?) AND delete_time IS NULL [pas28289907155466605743739230141 pas35231745699179860431602784285] <nil>
+
+	sql, args, err = orm.Query().Select("*").
+		From("tl_privilege_action").
+		WhereIn("privilege_action_sn", privilegeActionSns).
+		OrWhere("privilege_project_id", "=", 1).
+		WhereNull("delete_time").
+		ToSql()
+	fmt.Println(sql, args, err)
+
 	orm.DbConfig().
 		SetHost("192.168.8.99").
 		SetPort("3306").
@@ -21,7 +53,7 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	_, err := orm.Init()
+	/*_, err := orm.Init()
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +67,7 @@ func main() {
 			db.Raw("SELECT * FROM `tl_privilege_flag`  WHERE (`privilege_project_id` = 1) AND (isnull(`delete_time`)) ORDER BY `interior_sort` asc").Scan(privilegeFlag)
 			fmt.Println(privilegeFlag)
 		}()
-	}
+	}*/
 	for true {
 
 	}

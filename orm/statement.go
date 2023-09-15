@@ -8,7 +8,7 @@ type SelectBuilder struct {
 	columns     []string
 	from        string
 	joins       []join
-	wheres      []squirrel.Sqlizer
+	wheres      []where
 	hasOffset   bool
 	offset      uint64
 	hasLimit    bool
@@ -25,7 +25,7 @@ func Query() SelectBuilder {
 	return SelectBuilder{
 		columns: make([]string, 0),
 		joins:   make([]join, 0),
-		wheres:  make([]squirrel.Sqlizer, 0),
+		wheres:  make([]where, 0),
 		orderBy: make([]string, 0),
 	}
 }
@@ -114,9 +114,13 @@ func joins(selectBuilder squirrel.SelectBuilder, joins []join) squirrel.SelectBu
 	return selectBuilder
 }
 
-func wheres(selectBuilder squirrel.SelectBuilder, wheres []squirrel.Sqlizer) squirrel.SelectBuilder {
-	for _, sqlizer := range wheres {
-		selectBuilder = selectBuilder.Where(sqlizer)
+func wheres(selectBuilder squirrel.SelectBuilder, wheres []where) squirrel.SelectBuilder {
+	for _, w := range wheres {
+		if w.logic == "AND" {
+			selectBuilder = selectBuilder.Where(w.sqlizer)
+		} else {
+			selectBuilder = selectBuilder.Where(w.sqlizer)
+		}
 	}
 	return selectBuilder
 }
