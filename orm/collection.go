@@ -1,8 +1,15 @@
 package orm
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"strings"
+)
 
-type count struct {
+const (
+	_count_ = "count_"
+)
+
+type counter struct {
 	Count_ int64
 }
 
@@ -47,7 +54,7 @@ func (this SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gor
 		db.Error = err
 		return db, Paginate{}
 	}
-	count_ := count{}
+	count_ := counter{}
 	db.Raw(countSql, args...).Scan(&count_)
 	if db.Error != nil {
 		return db, Paginate{}
@@ -63,4 +70,47 @@ func (this SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gor
 		return db, Paginate{}
 	}
 	return db, Paginate{Total: uint64(count_.Count_), PerPage: perPage, CurrentPage: page, Items: dest}
+}
+
+func (this SelectBuilder) Count() (*gorm.DB, int64) {
+	db, err := Gorm()
+	if err != nil {
+		db.Error = err
+		return db, 0
+	}
+	var count_ int64
+	db = db.Table(this.from)
+	if len(this.columns) > 0 {
+		db = db.Select(strings.Join(this.columns, ","))
+	}
+	if this.wheres.len() > 0 {
+		pred, args, err := this.wheres.pred()
+		if err != nil {
+			db.Error = err
+			return db, count_
+		}
+		db = db.Where(pred, args...)
+	}
+	db = db.Count(&count_)
+	return db, count_
+}
+
+func (this SelectBuilder) Sum(column string) (*gorm.DB, uint64) {
+	db, err := Gorm()
+	if err != nil {
+		db.Error = err
+		return db, 0
+	}
+	countStatement := this.sum(column)
+	countSql, args, err := countStatement.ToSql()
+	if err != nil {
+		db.Error = err
+		return db, 0
+	}
+	count_ := counter{}
+	db.Raw(countSql, args...).Scan(&count_)
+	if db.Error != nil {
+		return db, 0
+	}
+	return db, uint64(count_.Count_)
 }

@@ -2,27 +2,14 @@ package orm
 
 import (
 	"github.com/Masterminds/squirrel"
-	"strings"
 )
 
 func whereHandle(selectBuilder squirrel.SelectBuilder, wheres *wheres) (squirrel.SelectBuilder, error) {
-	pred := make([]string, 0)
-	args := make([]interface{}, 0)
-	err := wheres.forEach(func(w where) (bool, error) {
-		sql, arg, err := w.sqlizer.ToSql()
-		if err != nil {
-			return false, err
-		}
-		pred, args, err = logic(w, sql, arg, pred, args)
-		if err != nil {
-			return false, err
-		}
-		return true, nil
-	})
+	pred, args, err := wheres.pred()
 	if err != nil {
 		return squirrel.SelectBuilder{}, err
 	}
-	selectBuilder = selectBuilder.Where(strings.Join(pred, " "), args...)
+	selectBuilder = selectBuilder.Where(pred, args...)
 	return selectBuilder, nil
 }
 

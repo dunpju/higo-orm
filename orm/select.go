@@ -1,11 +1,15 @@
 package orm
 
 import (
+	"fmt"
 	"github.com/Masterminds/squirrel"
 )
 
 type SelectBuilder struct {
 	isCount     bool
+	countColumn string
+	isSum       bool
+	sumColumn   string
 	isWhereRaw  bool
 	columns     []string
 	from        string
@@ -84,6 +88,13 @@ func (this SelectBuilder) Having(pred interface{}, rest ...interface{}) SelectBu
 
 func (this SelectBuilder) count() SelectBuilder {
 	this.isCount = true
+	this.countColumn = fmt.Sprintf("COUNT(*) %s", _count_)
+	return this
+}
+
+func (this SelectBuilder) sum(column string) SelectBuilder {
+	this.isSum = true
+	this.sumColumn = fmt.Sprintf("SUM(%s) %s", column, _count_)
 	return this
 }
 
@@ -93,12 +104,14 @@ func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 	}
 	if this.isCount {
 		this.columns = make([]string, 0)
-		this.columns = append(this.columns, "COUNT(*) count_")
+		this.columns = append(this.columns, this.countColumn)
+	}
+	if this.isSum {
+		this.columns = make([]string, 0)
+		this.columns = append(this.columns, this.sumColumn)
 	}
 	selectBuilder := squirrel.Select(this.columns...)
-	if this.from != "" {
-		selectBuilder = selectBuilder.From(this.from)
-	}
+	selectBuilder = selectBuilder.From(this.from)
 	selectBuilder = joins(selectBuilder, this.joins)
 	selectBuilder, err := whereHandle(selectBuilder, this.wheres)
 	if err != nil {

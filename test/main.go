@@ -54,7 +54,7 @@ func main() {
 		SetDriver("mysql").
 		SetPrefix("tl_").
 		SetMaxIdle(5).
-		SetMaxOpen(20).
+		SetMaxOpen(10).
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
@@ -176,6 +176,25 @@ func main() {
 	// SELECT user_id, user_name FROM users WHERE (user_name = 'kkk') LIMIT 2 OFFSET 2    {4 2 1 0 0xc0002aabe8}
 	fmt.Println(users9, paginate)
 	fmt.Println(db9.Error) // <nil>
+
+	db10, count := orm.Query().
+		Select("count(distinct(user_name))").
+		From("users").
+		// Where("user_name", "=", "kkk").
+		Count()
+	// SELECT count(*) FROM `users` WHERE (user_name = 'kkk')
+	// SELECT count(distinct(user_name)) FROM `users`
+	fmt.Println("db10: ", count)
+	fmt.Println(db10.Error) // <nil>
+
+	db11, sum := orm.Query().
+		From("users").
+		Where("user_name", "=", "jjj").
+		Sum("is_delete")
+	// SELECT SUM(is_delete) count_ FROM users LIMIT 1
+	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
+	fmt.Println("db11: ", sum)
+	fmt.Println(db11.Error) // <nil>
 
 	/*
 		for i := 0; i < 100; i++ {

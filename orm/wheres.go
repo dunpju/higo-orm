@@ -1,5 +1,7 @@
 package orm
 
+import "strings"
+
 type wheres struct {
 	logic   Logic
 	collect []where
@@ -7,6 +9,27 @@ type wheres struct {
 
 func newWheres() *wheres {
 	return &wheres{logic: AND, collect: make([]where, 0)}
+}
+
+func (w *wheres) pred() (string, []interface{}, error) {
+	pred := make([]string, 0)
+	args := make([]interface{}, 0)
+	err := w.forEach(func(w where) (bool, error) {
+		sql, arg, err := w.sqlizer.ToSql()
+		if err != nil {
+			return false, err
+		}
+		pred, args, err = logic(w, sql, arg, pred, args)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	})
+	return strings.Join(pred, " "), args, err
+}
+
+func (w *wheres) len() int {
+	return len(w.collect)
 }
 
 func (w *wheres) forEach(fn func(w where) (bool, error)) error {
