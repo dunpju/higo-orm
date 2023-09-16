@@ -11,7 +11,7 @@ type SelectBuilder struct {
 	columns     []string
 	from        string
 	joins       []join
-	wheres      []where
+	wheres      *wheres
 	hasOffset   bool
 	offset      uint64
 	hasLimit    bool
@@ -32,7 +32,7 @@ func query() SelectBuilder {
 	return SelectBuilder{
 		columns:  make([]string, 0),
 		joins:    make([]join, 0),
-		wheres:   make([]where, 0),
+		wheres:   newWheres(),
 		orderBy:  make([]string, 0),
 		groupBys: make([]string, 0),
 	}
@@ -85,14 +85,14 @@ func (this SelectBuilder) Having(pred interface{}, rest ...interface{}) SelectBu
 
 func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 	if this.isWhereRaw {
-		return whereRaw(this.wheres)
+		return whereRaw(this.wheres.collect)
 	}
 	selectBuilder := squirrel.Select(this.columns...)
 	if this.from != "" {
 		selectBuilder = selectBuilder.From(this.from)
 	}
 	selectBuilder = joins(selectBuilder, this.joins)
-	selectBuilder, err := wheres(selectBuilder, this.wheres)
+	selectBuilder, err := whereHandle(selectBuilder, this.wheres)
 	if err != nil {
 		return "", nil, err
 	}
@@ -114,18 +114,22 @@ func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 	return selectBuilder.ToSql()
 }
 
-func wheres(selectBuilder squirrel.SelectBuilder, wheres []where) (squirrel.SelectBuilder, error) {
+func whereHandle(selectBuilder squirrel.SelectBuilder, wheres *wheres) (squirrel.SelectBuilder, error) {
 	pred := make([]string, 0)
 	args := make([]interface{}, 0)
-	for _, w := range wheres {
+	err := wheres.forEach(func(w where) (bool, error) {
 		sql, arg, err := w.sqlizer.ToSql()
 		if err != nil {
-			return selectBuilder, err
+			return false, err
 		}
 		pred, args, err = logic(w, sql, arg, pred, args)
 		if err != nil {
-			return selectBuilder, err
+			return false, err
 		}
+		return true, nil
+	})
+	if err != nil {
+		return squirrel.SelectBuilder{}, err
 	}
 	selectBuilder = selectBuilder.Where(strings.Join(pred, " "), args...)
 	return selectBuilder, nil

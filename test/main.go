@@ -94,7 +94,7 @@ func main() {
 	users3 := make([]map[string]interface{}, 0)
 	sql, args, err = orm.Query().Select("*").
 		From("users").
-		WhereRaw(func(builder orm.SelectBuilder) squirrel.Sqlizer {
+		WhereRaw(func(builder orm.WhereRawBuilder) squirrel.Sqlizer {
 			return builder.Where("user_id", "=", 3).OrWhere("user_id", "=", 5)
 		}).
 		ToSql()
@@ -108,15 +108,26 @@ func main() {
 	sql, args, err = orm.Query().Select("*").
 		From("users").
 		Where("user_id", "=", 4).
-		OrWhereRaw(func(builder orm.SelectBuilder) squirrel.Sqlizer {
+		OrWhereRaw(func(builder orm.WhereRawBuilder) squirrel.Sqlizer {
 			return builder.Where("user_id", "=", 3).Where("user_id", "=", 5)
 		}).
 		ToSql()
 	// SELECT * FROM users WHERE (user_id = ?) OR ((user_id = ?) AND (user_id = ?)) [4 3 5] <nil>
-	fmt.Println(sql, args, err)
+	fmt.Println("users4:", sql, args, err)
 	// SELECT * FROM users WHERE (user_id = 4) OR ((user_id = 3) AND (user_id = 5))
 	db.Raw(sql, args...).Scan(&users4)
 	fmt.Println(users4)
+
+	users5 := make([]map[string]interface{}, 0)
+	sql, args, err = orm.Query().Select("user_id", "user_name", "day").
+		From("users").
+		Where("user_id", "=", 4).
+		ToSql()
+	// SELECT * FROM users WHERE (user_id = ?) [4] <nil>
+	fmt.Println(sql, args, err)
+	// SELECT * FROM users WHERE (user_id = 4)
+	db.Raw(sql, args...).Scan(&users5)
+	fmt.Println(users5)
 
 	/*
 		for i := 0; i < 100; i++ {
