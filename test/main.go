@@ -104,6 +104,20 @@ func main() {
 	db.Raw(sql, args...).Scan(&users3)
 	fmt.Println(users3)
 
+	users4 := make([]map[string]interface{}, 0)
+	sql, args, err = orm.Query().Select("*").
+		From("users").
+		Where("user_id", "=", 4).
+		OrWhereRaw(func(builder orm.SelectBuilder) squirrel.Sqlizer {
+			return builder.Where("user_id", "=", 3).Where("user_id", "=", 5)
+		}).
+		ToSql()
+	// SELECT * FROM users WHERE (user_id = ?) OR ((user_id = ?) AND (user_id = ?)) [4 3 5] <nil>
+	fmt.Println(sql, args, err)
+	// SELECT * FROM users WHERE (user_id = 4) OR ((user_id = 3) AND (user_id = 5))
+	db.Raw(sql, args...).Scan(&users4)
+	fmt.Println(users4)
+
 	/*
 		for i := 0; i < 100; i++ {
 			go func() {

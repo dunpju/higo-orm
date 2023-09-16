@@ -1,7 +1,6 @@
 package orm
 
 import (
-	"fmt"
 	"github.com/Masterminds/squirrel"
 )
 
@@ -86,7 +85,6 @@ func (this SelectBuilder) WhereRaw(fn func(builder SelectBuilder) squirrel.Sqliz
 	selectBuilder := query()
 	selectBuilder.isWhereRaw = true
 	sql, args, err := fn(selectBuilder).ToSql()
-	fmt.Println(sql, args, err)
 	this.wheres = append(this.wheres, and("", "RAW", raw{sql, args, err}))
 	return this
 }
@@ -128,5 +126,13 @@ func (this SelectBuilder) OrNotLike(column string, value interface{}) SelectBuil
 
 func (this SelectBuilder) OrWhereBetween(column string, first, second interface{}) SelectBuilder {
 	this.wheres = append(this.wheres, or(column, "BETWEEN", between{column, first, second}))
+	return this
+}
+
+func (this SelectBuilder) OrWhereRaw(fn func(builder SelectBuilder) squirrel.Sqlizer) SelectBuilder {
+	selectBuilder := query()
+	selectBuilder.isWhereRaw = true
+	sql, args, err := fn(selectBuilder).ToSql()
+	this.wheres = append(this.wheres, or("", "RAW", raw{sql, args, err}))
 	return this
 }
