@@ -99,7 +99,7 @@ func main() {
 		}).
 		ToSql()
 	// SELECT * FROM users WHERE ((user_id = ?) OR (user_id = ?)) [3 5] <nil>
-	fmt.Println(sql, args, err)
+	fmt.Println("users3:", sql, args, err)
 	// SELECT * FROM users WHERE ((user_id = 3) OR (user_id = 5))
 	db.Raw(sql, args...).Scan(&users3)
 	fmt.Println(users3)

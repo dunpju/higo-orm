@@ -1,7 +1,6 @@
 package orm
 
 import (
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"strings"
 )
@@ -85,7 +84,7 @@ func (this SelectBuilder) Having(pred interface{}, rest ...interface{}) SelectBu
 
 func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 	if this.isWhereRaw {
-		return whereRaw(this.wheres.collect)
+		return whereRaw(*this.wheres)
 	}
 	selectBuilder := squirrel.Select(this.columns...)
 	if this.from != "" {
@@ -133,43 +132,4 @@ func whereHandle(selectBuilder squirrel.SelectBuilder, wheres *wheres) (squirrel
 	}
 	selectBuilder = selectBuilder.Where(strings.Join(pred, " "), args...)
 	return selectBuilder, nil
-}
-
-func whereRaw(wheres []where) (string, []interface{}, error) {
-	pred := make([]string, 0)
-	args := make([]interface{}, 0)
-	for _, w := range wheres {
-		sql, arg, err := w.sqlizer.ToSql()
-		if err != nil {
-			return "", nil, err
-		}
-		pred, args, err = logic(w, sql, arg, pred, args)
-		if err != nil {
-			return "", nil, err
-		}
-	}
-	return strings.Join(pred, " "), args, nil
-}
-
-func logic(w where, sql string, arg []interface{}, pred []string, args []interface{}) ([]string, []interface{}, error) {
-	if w.logic == "AND" {
-		if len(pred) == 0 {
-			pred = append(pred, fmt.Sprintf("(%s)", sql))
-			args = append(args, arg...)
-		} else {
-			pred = append(pred, "AND")
-			pred = append(pred, fmt.Sprintf("(%s)", sql))
-			args = append(args, arg...)
-		}
-	} else {
-		if len(pred) == 0 {
-			pred = append(pred, fmt.Sprintf("(%s)", sql))
-			args = append(args, arg...)
-		} else {
-			pred = append(pred, "OR")
-			pred = append(pred, fmt.Sprintf("(%s)", sql))
-			args = append(args, arg...)
-		}
-	}
-	return pred, args, nil
 }
