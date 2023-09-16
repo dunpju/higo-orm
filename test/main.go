@@ -72,7 +72,7 @@ func main() {
 		WhereNull("update_time").
 		ToSql()
 	// SELECT * FROM users WHERE user_name IN (?,?) OR is_delete = ? AND update_time IS NULL [ggg ttttt 1] <nil>
-	fmt.Println(sql, args, err)
+	fmt.Println("users1:", sql, args, err)
 	if err != nil {
 		panic(err)
 	}
@@ -87,14 +87,14 @@ func main() {
 		From("users").
 		WhereBetween("day", "2023-06-11", "2023-06-12").
 		ToSql()
-	fmt.Println(sql, args, err)
+	fmt.Println("users2:", sql, args, err)
 	db.Raw(sql, args...).Scan(&users2)
 	fmt.Println(users2)
 
 	users3 := make([]map[string]interface{}, 0)
 	sql, args, err = orm.Query().Select("*").
 		From("users").
-		WhereRaw(func(builder orm.WhereRawBuilder) squirrel.Sqlizer {
+		WhereRaw(func(builder orm.WhereRawBuilder) orm.WhereRawBuilder {
 			return builder.Where("user_id", "=", 3).OrWhere("user_id", "=", 5)
 		}).
 		ToSql()
@@ -108,11 +108,21 @@ func main() {
 	sql, args, err = orm.Query().Select("*").
 		From("users").
 		Where("user_id", "=", 4).
-		OrWhereRaw(func(builder orm.WhereRawBuilder) squirrel.Sqlizer {
-			return builder.Where("user_id", "=", 3).Where("user_id", "=", 5)
+		OrWhereRaw(func(builder orm.WhereRawBuilder) orm.WhereRawBuilder {
+			// return builder.Where("user_id", "=", 3).Where("user_id", "=", 5)
+			userIds := make([]int64, 0)
+			userIds = append(userIds, 2)
+			userIds = append(userIds, 3)
+			b := builder.WhereIn("user_id", userIds)
+			//b = b.Where("user_id", "=", 3)
+			//b = b.Where("user_id", "=", 5)
+			b = b.OrWhere("user_id", "=", 1)
+			return b
 		}).
 		ToSql()
 	// SELECT * FROM users WHERE (user_id = ?) OR ((user_id = ?) AND (user_id = ?)) [4 3 5] <nil>
+	// SELECT * FROM users WHERE (user_id = ?) OR ((user_id IN (?,?)) AND (user_id = ?) AND (user_id = ?)) [4 2 3 3 5] <nil>
+	// SELECT * FROM users WHERE (user_id = ?) OR ((user_id IN (?,?)) OR (user_id = ?)) [4 2 3 1] <nil>
 	fmt.Println("users4:", sql, args, err)
 	// SELECT * FROM users WHERE (user_id = 4) OR ((user_id = 3) AND (user_id = 5))
 	db.Raw(sql, args...).Scan(&users4)
@@ -124,10 +134,48 @@ func main() {
 		Where("user_id", "=", 4).
 		ToSql()
 	// SELECT * FROM users WHERE (user_id = ?) [4] <nil>
-	fmt.Println(sql, args, err)
+	fmt.Println("users5:", sql, args, err)
 	// SELECT * FROM users WHERE (user_id = 4)
 	db.Raw(sql, args...).Scan(&users5)
 	fmt.Println(users5)
+
+	users6 := make([]map[string]interface{}, 0)
+	orm.Query().Select("user_id", "user_name").
+		From("users").
+		Where("user_id", "=", 8).
+		First(&users6)
+	// SELECT user_id, user_name FROM users WHERE (user_id = 8) LIMIT 1
+	fmt.Println(users6)
+
+	users7 := make([]map[string]interface{}, 0)
+	db7 := orm.Query().Select("user_id", "user_name").
+		From("users1").
+		Where("user_id", "=", 8).
+		First(&users7)
+	// SELECT user_id, user_name FROM users1 WHERE (user_id = 8) LIMIT 1
+	fmt.Println(users7)
+	// Error 1146 (42S02): Table 'test.users1' doesn't exist
+	fmt.Println(db7.Error)
+
+	users8 := make([]map[string]interface{}, 0)
+	db8 := orm.Query().Select("user_id", "user_name").
+		From("users").
+		Where("user_id", "=", 7).
+		First(&users8)
+	// SELECT user_id, user_name FROM users WHERE (user_id = 7) LIMIT 1
+	fmt.Println(users8)
+	fmt.Println(db8.Error) // <nil>
+
+	users9 := make([]map[string]interface{}, 0)
+	db9, paginate := orm.Query().Select("user_id", "user_name").
+		From("users").
+		Where("user_name", "=", "kkk").
+		Paginate(2, 2, &users9)
+	// SELECT user_id, user_name FROM users LIMIT 2 OFFSET 0    {8 2 1 0 0xc0002aabe8}
+	// SELECT user_id, user_name FROM users WHERE (user_name = 'kkk') LIMIT 2 OFFSET 0    {4 2 1 0 0xc0002aabe8}
+	// SELECT user_id, user_name FROM users WHERE (user_name = 'kkk') LIMIT 2 OFFSET 2    {4 2 1 0 0xc0002aabe8}
+	fmt.Println(users9, paginate)
+	fmt.Println(db9.Error) // <nil>
 
 	/*
 		for i := 0; i < 100; i++ {

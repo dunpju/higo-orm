@@ -16,8 +16,15 @@ var (
 	_dbOnce sync.Once
 )
 
-func Gorm() *gorm.DB {
-	return _db
+func Gorm() (*gorm.DB, error) {
+	var err error
+	_dbOnce.Do(func() {
+		_db, err = Init()
+	})
+	if err != nil {
+		return nil, err
+	}
+	return _db, nil
 }
 
 func Init() (*gorm.DB, error) {
