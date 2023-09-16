@@ -18,15 +18,27 @@ type where struct {
 	sqlizer squirrel.Sqlizer
 }
 
+func (this SelectBuilder) Raw(pred string, args ...interface{}) SelectBuilder {
+	this.isRaw = true
+	this.wheres.and().raw(pred, args, nil)
+	return this
+}
+
+func (this SelectBuilder) OrRaw(pred string, args ...interface{}) SelectBuilder {
+	this.isRaw = true
+	this.wheres.or().raw(pred, args, nil)
+	return this
+}
+
 func (this SelectBuilder) WhereRaw(fn func(builder WhereRawBuilder) WhereRawBuilder) SelectBuilder {
 	sql, args, err := fn(WhereRawBuilder{}).ToSql()
-	this.wheres.and().raw(sql, args, err)
+	this.wheres.and().whereRaw(sql, args, err)
 	return this
 }
 
 func (this SelectBuilder) OrWhereRaw(fn func(builder WhereRawBuilder) WhereRawBuilder) SelectBuilder {
 	sql, args, err := fn(WhereRawBuilder{}).ToSql()
-	this.wheres.or().raw(sql, args, err)
+	this.wheres.or().whereRaw(sql, args, err)
 	return this
 }
 

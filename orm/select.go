@@ -10,6 +10,7 @@ type SelectBuilder struct {
 	countColumn string
 	isSum       bool
 	sumColumn   string
+	isRaw       bool
 	isWhereRaw  bool
 	columns     []string
 	from        string
@@ -99,8 +100,8 @@ func (this SelectBuilder) sum(column string) SelectBuilder {
 }
 
 func (this SelectBuilder) ToSql() (string, []interface{}, error) {
-	if this.isWhereRaw {
-		return whereRaw(*this.wheres)
+	if this.isWhereRaw || this.isRaw {
+		return whereRawHandle(*this.wheres)
 	}
 	if this.isCount {
 		this.columns = make([]string, 0)

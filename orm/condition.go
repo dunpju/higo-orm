@@ -29,6 +29,8 @@ func conditionHandle(column, operator string, value interface{}) squirrel.Sqlize
 		return value.(between)
 	} else if operator == "RAW" {
 		return value.(raw)
+	} else if operator == "whereRaw" {
+		return value.(whereRaw)
 	} else if operator == "IN" {
 		return squirrel.Eq{column: value}
 	} else if operator == "NotIn" {

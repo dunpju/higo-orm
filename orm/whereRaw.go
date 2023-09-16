@@ -1,25 +1,11 @@
 package orm
 
-import "strings"
-
-func whereRaw(wheres wheres) (string, []interface{}, error) {
-	pred := make([]string, 0)
-	args := make([]interface{}, 0)
-	err := wheres.forEach(func(w where) (bool, error) {
-		sql, arg, err := w.sqlizer.ToSql()
-		if err != nil {
-			return false, err
-		}
-		pred, args, err = logic(w, sql, arg, pred, args)
-		if err != nil {
-			return false, err
-		}
-		return true, nil
-	})
+func whereRawHandle(wheres wheres) (string, []interface{}, error) {
+	pred, args, err := wheres.pred()
 	if err != nil {
 		return "", nil, err
 	}
-	return strings.Join(pred, " "), args, nil
+	return pred, args, nil
 }
 
 type WhereRawBuilder struct {
@@ -27,7 +13,7 @@ type WhereRawBuilder struct {
 }
 
 func (this WhereRawBuilder) ToSql() (string, []interface{}, error) {
-	return whereRaw(this.wheres)
+	return whereRawHandle(this.wheres)
 }
 
 func (this WhereRawBuilder) Where(column, operator string, value interface{}) WhereRawBuilder {

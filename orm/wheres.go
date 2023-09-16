@@ -56,10 +56,14 @@ func (w *wheres) or() *wheres {
 }
 
 func (w *wheres) raw(sql string, args []interface{}, err error) {
+	w.collect = append(w.collect, and("", "RAW", raw{sql, args, err}))
+}
+
+func (w *wheres) whereRaw(sql string, args []interface{}, err error) {
 	if w.logic == AND {
-		w.collect = append(w.collect, and("", "RAW", raw{sql, args, err}))
+		w.collect = append(w.collect, and("", "whereRaw", whereRaw{sql, args, err}))
 	} else {
-		w.collect = append(w.collect, or("", "RAW", raw{sql, args, err}))
+		w.collect = append(w.collect, or("", "whereRaw", whereRaw{sql, args, err}))
 	}
 }
 

@@ -211,6 +211,15 @@ func main() {
 	fmt.Println("db12: ", sum)
 	fmt.Println(db12.Error) // <nil>
 
+	users13 := make([]map[string]interface{}, 0)
+	db13 := orm.Query().Raw("SELECT * FROM users").
+		Where("user_id", "=", 1).
+		Get(&users13)
+	// SELECT * FROM users
+	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
+	fmt.Println("users13: ", users13)
+	fmt.Println(db13.Error) // <nil>
+
 	/*
 		for i := 0; i < 100; i++ {
 			go func() {
