@@ -91,6 +91,11 @@ func (this SelectBuilder) Count() (*gorm.DB, int64) {
 		}
 		db = db.Where(pred, args...)
 	}
+	if this.hasGroupBys {
+		for _, by := range this.groupBys {
+			db = db.Group(by)
+		}
+	}
 	db = db.Count(&count_)
 	return db, count_
 }

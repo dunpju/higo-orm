@@ -181,20 +181,35 @@ func main() {
 		Select("count(distinct(user_name))").
 		From("users").
 		// Where("user_name", "=", "kkk").
+		GroupBy("user_name").
 		Count()
 	// SELECT count(*) FROM `users` WHERE (user_name = 'kkk')
 	// SELECT count(distinct(user_name)) FROM `users`
+	// SELECT count(distinct(user_name)) FROM `users` GROUP BY `user_name`
 	fmt.Println("db10: ", count)
 	fmt.Println(db10.Error) // <nil>
 
-	db11, sum := orm.Query().
+	users11 := make([]map[string]interface{}, 0)
+	db11 := orm.Query().
+		//Select("count(distinct(user_name)) count", "user_name").
+		Select("count(user_name) count", "user_name").
+		From("users").
+		// Where("user_name", "=", "kkk").
+		GroupBy("user_name").
+		Get(&users11)
+	// SELECT count(distinct(user_name)) count, user_name FROM users GROUP BY user_name
+	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name
+	fmt.Println("db11: ", users11)
+	fmt.Println(db11.Error) // <nil>
+
+	db12, sum := orm.Query().
 		From("users").
 		Where("user_name", "=", "jjj").
 		Sum("is_delete")
 	// SELECT SUM(is_delete) count_ FROM users LIMIT 1
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
-	fmt.Println("db11: ", sum)
-	fmt.Println(db11.Error) // <nil>
+	fmt.Println("db12: ", sum)
+	fmt.Println(db12.Error) // <nil>
 
 	/*
 		for i := 0; i < 100; i++ {
