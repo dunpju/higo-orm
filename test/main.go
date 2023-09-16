@@ -213,7 +213,6 @@ func main() {
 
 	users13 := make([]map[string]interface{}, 0)
 	db13 := orm.Query().Raw("SELECT * FROM users").
-		Where("user_id", "=", 1).
 		Get(&users13)
 	// SELECT * FROM users
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
