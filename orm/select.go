@@ -1,10 +1,13 @@
 package orm
 
 import (
+	"fmt"
 	"github.com/Masterminds/squirrel"
+	"strings"
 )
 
 type SelectBuilder struct {
+	isWhereRaw  bool
 	columns     []string
 	from        string
 	joins       []join
@@ -22,16 +25,20 @@ type SelectBuilder struct {
 }
 
 func Query() SelectBuilder {
+	return query()
+}
+
+func query() SelectBuilder {
 	return SelectBuilder{
-		columns: make([]string, 0),
-		joins:   make([]join, 0),
-		wheres:  make([]where, 0),
-		orderBy: make([]string, 0),
+		columns:  make([]string, 0),
+		joins:    make([]join, 0),
+		wheres:   make([]where, 0),
+		orderBy:  make([]string, 0),
+		groupBys: make([]string, 0),
 	}
 }
 
 func (this SelectBuilder) Select(columns ...string) SelectBuilder {
-	this.columns = make([]string, 0)
 	this.columns = append(this.columns, columns...)
 	return this
 }
@@ -77,10 +84,18 @@ func (this SelectBuilder) Having(pred interface{}, rest ...interface{}) SelectBu
 }
 
 func (this SelectBuilder) ToSql() (string, []interface{}, error) {
+	if this.isWhereRaw {
+		return whereRaw(this.wheres)
+	}
 	selectBuilder := squirrel.Select(this.columns...)
-	selectBuilder = selectBuilder.From(this.from)
+	if this.from != "" {
+		selectBuilder = selectBuilder.From(this.from)
+	}
 	selectBuilder = joins(selectBuilder, this.joins)
-	selectBuilder = wheres(selectBuilder, this.wheres)
+	selectBuilder, err := wheres(selectBuilder, this.wheres)
+	if err != nil {
+		return "", nil, err
+	}
 	if this.hasOrderBy {
 		selectBuilder = selectBuilder.OrderBy(this.orderBy...)
 	}
@@ -99,28 +114,58 @@ func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 	return selectBuilder.ToSql()
 }
 
-func joins(selectBuilder squirrel.SelectBuilder, joins []join) squirrel.SelectBuilder {
-	for _, j := range joins {
-		if j.jCase == LeftJoin {
-			selectBuilder = selectBuilder.LeftJoin(j.join, j.rest)
-		} else if j.jCase == RightJoin {
-			selectBuilder = selectBuilder.RightJoin(j.join, j.rest)
-		} else if j.jCase == InnerJoin {
-			selectBuilder = selectBuilder.InnerJoin(j.join, j.rest)
-		} else {
-			selectBuilder = selectBuilder.Join(j.join, j.rest)
+func wheres(selectBuilder squirrel.SelectBuilder, wheres []where) (squirrel.SelectBuilder, error) {
+	pred := make([]string, 0)
+	args := make([]interface{}, 0)
+	for _, w := range wheres {
+		sql, arg, err := w.sqlizer.ToSql()
+		if err != nil {
+			return selectBuilder, err
+		}
+		pred, args, err = logic(w, sql, arg, pred, args)
+		if err != nil {
+			return selectBuilder, err
 		}
 	}
-	return selectBuilder
+	selectBuilder = selectBuilder.Where(strings.Join(pred, " "), args...)
+	return selectBuilder, nil
 }
 
-func wheres(selectBuilder squirrel.SelectBuilder, wheres []where) squirrel.SelectBuilder {
+func whereRaw(wheres []where) (string, []interface{}, error) {
+	pred := make([]string, 0)
+	args := make([]interface{}, 0)
 	for _, w := range wheres {
-		if w.logic == "AND" {
-			selectBuilder = selectBuilder.Where(w.sqlizer)
-		} else {
-			selectBuilder = selectBuilder.Where(w.sqlizer)
+		sql, arg, err := w.sqlizer.ToSql()
+		if err != nil {
+			return "", nil, err
+		}
+		pred, args, err = logic(w, sql, arg, pred, args)
+		if err != nil {
+			return "", nil, err
 		}
 	}
-	return selectBuilder
+	return strings.Join(pred, " "), args, nil
+}
+
+func logic(w where, sql string, arg []interface{}, pred []string, args []interface{}) ([]string, []interface{}, error) {
+	if w.logic == "AND" {
+		if len(pred) == 0 {
+			pred = append(pred, fmt.Sprintf("(%s)", sql))
+			args = append(args, arg...)
+		} else {
+			pred = append(pred, "AND")
+			pred = append(pred, fmt.Sprintf("(%s)", sql))
+			args = append(args, arg...)
+		}
+	} else {
+		if len(pred) == 0 {
+			pred = append(pred, fmt.Sprintf("(%s)", sql))
+			args = append(args, arg...)
+		} else {
+			pred = append(pred, "OR")
+			pred = append(pred, fmt.Sprintf("(%s)", sql))
+			args = append(args, arg...)
+		}
+	}
+	return pred, args, nil
 }
