@@ -25,7 +25,10 @@ type SelectBuilder struct {
 	hasGroupBys bool
 	groupBys    []string
 	hasHaving   bool
-	having      having
+	havings     []having
+	hasColumn   bool
+	column      []column
+	hasDistinct bool
 }
 
 func Query() SelectBuilder {
@@ -39,6 +42,8 @@ func query() SelectBuilder {
 		wheres:   newWheres(),
 		orderBy:  make([]string, 0),
 		groupBys: make([]string, 0),
+		havings:  make([]having, 0),
+		column:   make([]column, 0),
 	}
 }
 
@@ -72,18 +77,18 @@ func (this SelectBuilder) OrderBy(orderBys ...string) SelectBuilder {
 
 func (this SelectBuilder) GroupBy(groupBys ...string) SelectBuilder {
 	this.hasGroupBys = true
-	this.groupBys = groupBys
+	this.groupBys = append(this.groupBys, groupBys...)
 	return this
 }
 
-type having struct {
-	pred interface{}
-	rest []interface{}
+func (this SelectBuilder) Column(col interface{}, args ...interface{}) SelectBuilder {
+	this.hasColumn = true
+	this.column = append(this.column, column{column: col, args: args})
+	return this
 }
 
-func (this SelectBuilder) Having(pred interface{}, rest ...interface{}) SelectBuilder {
-	this.hasHaving = true
-	this.having = having{pred: pred, rest: rest}
+func (this SelectBuilder) Distinct() SelectBuilder {
+	this.hasDistinct = true
 	return this
 }
 
@@ -125,13 +130,23 @@ func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 		selectBuilder = selectBuilder.GroupBy(this.groupBys...)
 	}
 	if this.hasHaving {
-		selectBuilder = selectBuilder.Having(this.having.pred, this.having.rest)
+		for _, h := range this.havings {
+			selectBuilder = selectBuilder.Having(h.pred, h.rest...)
+		}
 	}
 	if this.hasOffset {
 		selectBuilder = selectBuilder.Offset(this.offset)
 	}
 	if this.hasLimit {
 		selectBuilder = selectBuilder.Limit(this.limit)
+	}
+	if this.hasColumn {
+		for _, c := range this.column {
+			selectBuilder = selectBuilder.Column(c.column, c.args...)
+		}
+	}
+	if this.hasDistinct {
+		selectBuilder = selectBuilder.Distinct()
 	}
 	return selectBuilder.ToSql()
 }

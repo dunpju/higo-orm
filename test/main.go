@@ -197,10 +197,17 @@ func main() {
 		// Where("user_name", "=", "kkk").
 		GroupBy("user_name").
 		OrderBy("count desc").
+		//Having("count > ?", 2).
+		//Having("count > ? AND count <= 4", 2).
+		Having("count > ?", 2).
+		Having("count <= ?", 4).
 		Get(&users11)
 	// SELECT count(distinct(user_name)) count, user_name FROM users GROUP BY user_name
 	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name
 	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name ORDER BY count desc
+	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name HAVING count >= (2) ORDER BY count desc
+	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name HAVING count > (2) AND count <= 4 ORDER BY count desc
+	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name HAVING count > (2) AND count <= (4) ORDER BY count desc
 	fmt.Println("db11: ", users11)
 	fmt.Println(db11.Error) // <nil>
 
@@ -240,6 +247,17 @@ func main() {
 	// SELECT * FROM users ORDER BY user_id desc LIMIT 1
 	fmt.Println("users15: ", users15)
 	fmt.Println(db15.Error) // <nil>
+
+	users16 := make([]map[string]interface{}, 0)
+	db16 := orm.Query().
+		Distinct().
+		Select("user_name").
+		From("users").
+		OrderBy("user_id desc").
+		Get(&users16)
+	// SELECT DISTINCT user_name FROM users ORDER BY user_id desc
+	fmt.Println("users16: ", users16)
+	fmt.Println(db16.Error) // <nil>
 
 	/*
 		for i := 0; i < 100; i++ {
