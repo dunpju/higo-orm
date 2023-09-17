@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/dunpju/higo-orm/orm"
-	"github.com/dunpju/higo-orm/orm/Insert"
 	"github.com/dunpju/higo-orm/orm/Transaction"
 	"time"
 )
@@ -28,13 +27,13 @@ func main() {
 		panic(err)
 	}
 
-	sql, args, err := Insert.Into("users").
+	sql, args, err := orm.Insert("users").
 		Columns("user_name", "day").
 		Values("ghgh", time.Now().Format(time.DateOnly)).
 		ToSql()
 	fmt.Println("Insert: ", sql, args, err)
 
-	db19, id := Insert.Into("users").
+	db19, id := orm.Insert("users").
 		Columns("user_name", "day", "is_delete", "create_time").
 		Values("ghgh19", time.Now().Format(time.DateOnly), 1, time.Now().Format(time.DateTime)).
 		LastInsertId()

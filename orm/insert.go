@@ -1,15 +1,14 @@
-package Insert
+package orm
 
 import (
 	"context"
 	"github.com/Masterminds/squirrel"
-	"github.com/dunpju/higo-orm/orm"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"time"
 )
 
-func Into(table string) InsertBuilder {
+func Insert(table string) InsertBuilder {
 	return into(table)
 }
 
@@ -17,12 +16,8 @@ func into(table string) InsertBuilder {
 	return InsertBuilder{builder: squirrel.Insert(table)}
 }
 
-func Transaction(db *gorm.DB) InsertBuilder {
-	return InsertBuilder{db: db}
-}
-
 type InsertBuilder struct {
-	db      *gorm.DB
+	DB      *gorm.DB
 	builder squirrel.InsertBuilder
 }
 
@@ -47,15 +42,15 @@ func (this InsertBuilder) ToSql() (string, []interface{}, error) {
 
 func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 	var db *gorm.DB
-	if this.db == nil {
-		_db, err := orm.Gorm()
+	if this.DB == nil {
+		_db_, err := Gorm()
 		if err != nil {
-			_db.Error = err
-			return _db, 0
+			_db_.Error = err
+			return _db_, 0
 		}
-		db = _db
+		db = _db_
 	} else {
-		db = this.db
+		db = this.DB
 	}
 
 	sql, args, err := this.ToSql()
@@ -84,8 +79,8 @@ func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 		if filter, ok := db.Logger.(gorm.ParamsFilter); ok {
 			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
 		}
-		affected, err := result.RowsAffected()
-		if err != nil {
+		affected, err1 := result.RowsAffected()
+		if err1 != nil {
 			return db.Dialector.Explain(sqlStr, vars...), 0
 		}
 		return db.Dialector.Explain(sqlStr, vars...), affected
