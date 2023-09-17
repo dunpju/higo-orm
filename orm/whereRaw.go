@@ -95,3 +95,8 @@ func (this WhereRawBuilder) OrWhereBetween(column string, first, second interfac
 	this.wheres.or().whereBetween(column, first, second)
 	return this
 }
+
+func (this WhereRawBuilder) Raw(pred string, args ...interface{}) WhereRawBuilder {
+	this.wheres.and().raw(pred, args, nil)
+	return this
+}

@@ -196,9 +196,11 @@ func main() {
 		From("users").
 		// Where("user_name", "=", "kkk").
 		GroupBy("user_name").
+		OrderBy("count desc").
 		Get(&users11)
 	// SELECT count(distinct(user_name)) count, user_name FROM users GROUP BY user_name
 	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name
+	// SELECT count(user_name) count, user_name FROM users GROUP BY user_name ORDER BY count desc
 	fmt.Println("db11: ", users11)
 	fmt.Println(db11.Error) // <nil>
 
@@ -218,6 +220,26 @@ func main() {
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
 	fmt.Println("users13: ", users13)
 	fmt.Println(db13.Error) // <nil>
+
+	users14 := make([]map[string]interface{}, 0)
+	db14 := orm.Query().Select("*").
+		From("users").
+		WhereRaw(func(builder orm.WhereRawBuilder) orm.WhereRawBuilder {
+			return builder.Raw("user_id = ?", 1)
+		}).
+		Get(&users14)
+	// SELECT * FROM users WHERE (user_id = 1)
+	fmt.Println("users14: ", users14)
+	fmt.Println(db14.Error) // <nil>
+
+	users15 := make([]map[string]interface{}, 0)
+	db15 := orm.Query().Select("*").
+		From("users").
+		OrderBy("user_id desc").
+		First(&users15)
+	// SELECT * FROM users ORDER BY user_id desc LIMIT 1
+	fmt.Println("users15: ", users15)
+	fmt.Println(db15.Error) // <nil>
 
 	/*
 		for i := 0; i < 100; i++ {
