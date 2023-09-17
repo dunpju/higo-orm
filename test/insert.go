@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/dunpju/higo-orm/orm"
+	"github.com/dunpju/higo-orm/orm/Insert"
+	"github.com/dunpju/higo-orm/orm/Transaction"
 	"time"
 )
 
@@ -26,32 +28,33 @@ func main() {
 		panic(err)
 	}
 
-	sql, args, err := orm.Insert("users").
+	sql, args, err := Insert.Into("users").
 		Columns("user_name", "day").
 		Values("ghgh", time.Now().Format(time.DateOnly)).
 		ToSql()
 	fmt.Println("Insert: ", sql, args, err)
 
-	db19, id := orm.Insert("users").
-		Columns("user_name", "day", "create_time").
-		Values("ghgh", time.Now().Format(time.DateOnly), time.Now().Format(time.DateTime)).
+	db19, id := Insert.Into("users").
+		Columns("user_name", "day", "is_delete", "create_time").
+		Values("ghgh19", time.Now().Format(time.DateOnly), 1, time.Now().Format(time.DateTime)).
 		LastInsertId()
 	fmt.Println("db19: ", id, db19.Error)
 
 	users20 := &Users{UserName: "h20", Day: time.Now(), IsDelete: 1, CreateTime: time.Now()}
 	db20, _ := orm.Gorm()
-	db20.Select("user_name", "day", "is_delete", "create_time").Create(&users20)
-	fmt.Println("db20: ", users20, db20.Error)
+	// 事务 https://learnku.com/docs/gorm/v2/transactions/9745
+	tx := db20.Begin()
+	// https://learnku.com/docs/gorm/v2/create/9732
+	tx.Select("user_name", "day", "is_delete", "create_time").Create(&users20)
+	fmt.Println("db20: ", users20, tx.Error)
 
-	/*users21 := map[string]interface{}{
-		"user_name":   "h21",
-		"day":         time.Now(),
-		"is_delete":   1,
-		"create_time": time.Now(),
-	}
-	db21, _ := orm.Gorm()
-	db20.Select("user_name", "day", "is_delete", "create_time").Create(&users21)
-	fmt.Println("db21: ", users21, db21.Error)*/
+	db21, id := Transaction.Begin(tx).Insert("users").
+		Columns("user_name", "day", "create_time").
+		Values("ghgh21", time.Now().Format(time.DateOnly), time.Now().Format(time.DateTime)).
+		LastInsertId()
+	fmt.Println("db21: ", id, db21.Error)
+	db21.Rollback()
+
 }
 
 type Users struct {
