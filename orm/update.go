@@ -2,7 +2,6 @@ package orm
 
 import (
 	"context"
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -23,7 +22,12 @@ type UpdateBuilder struct {
 }
 
 func (this UpdateBuilder) Update(table ...string) UpdateBuilder {
-	return Update(table...)
+	var t string
+	if len(table) > 0 {
+		t = table[0]
+	}
+	this.builder = squirrel.Update(t)
+	return this
 }
 
 func (this UpdateBuilder) Prefix(sql string, args ...interface{}) UpdateBuilder {
@@ -90,7 +94,6 @@ func (this UpdateBuilder) Save() (*gorm.DB, int64) {
 		}
 		db = _db_
 	} else {
-		fmt.Println(this.DB)
 		db = this.DB
 	}
 

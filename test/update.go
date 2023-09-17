@@ -26,21 +26,21 @@ func main() {
 		panic(err)
 	}
 
-	db22, affected := orm.Update().
-		Table("users").
-		Set("user_name", "user_name_98").
-		Where("user_id = ?", 98).
-		Save()
-	fmt.Println("db22: ", affected, db22.Error)
-
 	tx, _ := orm.Gorm()
+	fmt.Println(tx)
+	db22, affected := Transaction.Begin(tx).Update().
+		Table("users").
+		Set("user_name", "user_name_95").
+		Where("user_id = ?", 95).
+		Save()
+	fmt.Println("db22: ", affected, db22, db22.Error)
 
 	db23, affected := Transaction.Begin(tx).
 		Update().
 		Table("users").
-		Set("user_name", "user_name_98111").
+		Set("user_name", "user_name_98").
 		Where("user_id = ?", 98).
 		Save()
-	fmt.Println("db23: ", affected, db23.Error)
+	fmt.Println("db23: ", affected, db23, db23.Error)
 	db23.Rollback()
 }
