@@ -43,13 +43,13 @@ func (this SelectBuilder) InnerJoin(table, first, operator, second string, rest 
 func joins(selectBuilder squirrel.SelectBuilder, joins []join) squirrel.SelectBuilder {
 	for _, j := range joins {
 		if j.jCase == LeftJoin {
-			selectBuilder = selectBuilder.LeftJoin(j.join, j.rest)
+			selectBuilder = selectBuilder.LeftJoin(j.join, j.rest...)
 		} else if j.jCase == RightJoin {
-			selectBuilder = selectBuilder.RightJoin(j.join, j.rest)
+			selectBuilder = selectBuilder.RightJoin(j.join, j.rest...)
 		} else if j.jCase == InnerJoin {
-			selectBuilder = selectBuilder.InnerJoin(j.join, j.rest)
+			selectBuilder = selectBuilder.InnerJoin(j.join, j.rest...)
 		} else {
-			selectBuilder = selectBuilder.Join(j.join, j.rest)
+			selectBuilder = selectBuilder.Join(j.join, j.rest...)
 		}
 	}
 	return selectBuilder

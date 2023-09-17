@@ -259,6 +259,39 @@ func main() {
 	fmt.Println("users16: ", users16)
 	fmt.Println(db16.Error) // <nil>
 
+	users17 := make([]map[string]interface{}, 0)
+	db17 := orm.Query().
+		Select("*").
+		From("users AS A").
+		Join("ts_user AS B", "B.uname", "=", "A.user_name").
+		OrderBy("A.user_id desc").
+		Get(&users17)
+	// SELECT * FROM users AS A JOIN ts_user AS B ON B.uname = A.user_name ORDER BY A.user_id desc
+	fmt.Println("users17: ", users17)
+	fmt.Println(db17.Error) // <nil>
+
+	users18 := make([]map[string]interface{}, 0)
+	db18 := orm.Query().
+		Select("*").
+		From("users AS A").
+		InnerJoin("ts_user AS B", "B.uname", "=", "A.user_name").
+		OrderBy("A.user_id desc").
+		Get(&users18)
+	// SELECT * FROM users AS A INNER JOIN ts_user AS B ON B.uname = A.user_name ORDER BY A.user_id desc
+	fmt.Println("users18: ", users18)
+	fmt.Println(db18.Error) // <nil>
+
+	users19 := make([]map[string]interface{}, 0)
+	db19 := orm.Query().
+		Select("*").
+		From("ts_user AS A").
+		LeftJoin("users AS B", "B.user_name", "=", "A.uname").
+		OrderBy("B.user_id desc").
+		Get(&users19)
+	// SELECT * FROM ts_user AS A LEFT JOIN users AS B ON B.user_name = A.uname ORDER BY B.user_id desc
+	fmt.Println("users19: ", users19)
+	fmt.Println(db19.Error) // <nil>
+
 	/*
 		for i := 0; i < 100; i++ {
 			go func() {
