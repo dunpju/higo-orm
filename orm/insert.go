@@ -1,9 +1,9 @@
 package orm
 
 import (
-	"context"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
+	"time"
 )
 
 func Insert(into string) InsertBuilder {
@@ -32,7 +32,6 @@ func (this InsertBuilder) ToSql() (string, []interface{}, error) {
 	return this.builder.ToSql()
 }
 
-// Deprecated
 func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 	db, err := Gorm()
 	if err != nil {
@@ -44,20 +43,34 @@ func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 		db.Error = err
 		return db, 0
 	}
-	ctx := context.Background()
-	result, err := db.ConnPool.ExecContext(ctx, sql, args...)
+
+	var (
+		curTime = time.Now()
+		stmt    = db.Statement
+	)
+
+	stmt.SQL.WriteString(sql)
+	stmt.Vars = args
+
+	db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
+		sqlStr, vars := stmt.SQL.String(), stmt.Vars
+		if filter, ok := db.Logger.(gorm.ParamsFilter); ok {
+			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
+		}
+		return db.Dialector.Explain(sqlStr, vars...), db.RowsAffected
+	}, db.Error)
+
+	result, err := db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
 	if err != nil {
 		db.Error = err
 		return db, 0
 	}
-	db.Exec(sql, args...)
-	if db.Error != nil {
-		return db, 0
-	}
-	id, err := result.LastInsertId()
-	if err != nil {
+	insertID, err := result.LastInsertId()
+	insertOk := err == nil && insertID > 0
+	if !insertOk {
 		db.Error = err
 		return db, 0
 	}
-	return db, id
+	
+	return db, insertID
 }
