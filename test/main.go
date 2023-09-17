@@ -292,6 +292,18 @@ func main() {
 	fmt.Println("users19: ", users19)
 	fmt.Println(db19.Error) // <nil>
 
+	sql, args, err = orm.Insert("users").
+		Columns("user_name", "day").
+		Values("ghgh", time.Now().Format(time.DateOnly)).
+		ToSql()
+	fmt.Println("Insert: ", sql, args, err)
+
+	db19, id := orm.Insert("users").
+		Columns("user_name", "day", "create_time").
+		Values("ghgh", time.Now().Format(time.DateOnly), time.Now().Format(time.DateTime)).
+		LastInsertId()
+	fmt.Println("db19: ", id, db19.Error)
+
 	/*
 		for i := 0; i < 100; i++ {
 			go func() {
@@ -303,6 +315,15 @@ func main() {
 				fmt.Println(privilegeFlag)
 			}()
 		}*/
+}
+
+type Users struct {
+	UserId     int64
+	UserName   int64
+	Day        int64
+	IsDelete   int8
+	CreateTime time.Time
+	UpdateTime time.Time
 }
 
 type Admin struct {
