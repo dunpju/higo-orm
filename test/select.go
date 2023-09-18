@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/dunpju/higo-orm/orm"
+	"github.com/dunpju/higo-orm/him"
 )
 
 func main() {
-	orm.DbConfig().
+	him.DbConfig().
 		SetHost("192.168.8.99").
 		SetPort("3306").
 		SetDatabase("test").
@@ -20,7 +20,7 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	db, err := orm.Init()
+	db, err := him.Init()
 	if err != nil {
 		panic(err)
 	}
@@ -28,7 +28,7 @@ func main() {
 	userNames := make([]string, 0)
 	userNames = append(userNames, "ggg")
 	userNames = append(userNames, "ttttt")
-	sql, args, err := orm.Query().Select("*").
+	sql, args, err := him.Query().Select("*").
 		From("users").
 		WhereIn("user_name", userNames).
 		OrWhere("is_delete", "=", 1).
@@ -46,7 +46,7 @@ func main() {
 	fmt.Println(users1)
 
 	users2 := make([]map[string]interface{}, 0)
-	sql, args, err = orm.Query().Select("*").
+	sql, args, err = him.Query().Select("*").
 		From("users").
 		WhereBetween("day", "2023-06-11", "2023-06-12").
 		ToSql()
@@ -55,9 +55,9 @@ func main() {
 	fmt.Println(users2)
 
 	users3 := make([]map[string]interface{}, 0)
-	sql, args, err = orm.Query().Select("*").
+	sql, args, err = him.Query().Select("*").
 		From("users").
-		WhereRaw(func(builder orm.WhereRawBuilder) orm.WhereRawBuilder {
+		WhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
 			return builder.Where("user_id", "=", 3).OrWhere("user_id", "=", 5)
 		}).
 		ToSql()
@@ -68,10 +68,10 @@ func main() {
 	fmt.Println(users3)
 
 	users4 := make([]map[string]interface{}, 0)
-	sql, args, err = orm.Query().Select("*").
+	sql, args, err = him.Query().Select("*").
 		From("users").
 		Where("user_id", "=", 4).
-		OrWhereRaw(func(builder orm.WhereRawBuilder) orm.WhereRawBuilder {
+		OrWhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
 			// return builder.Where("user_id", "=", 3).Where("user_id", "=", 5)
 			userIds := make([]int64, 0)
 			userIds = append(userIds, 2)
@@ -92,7 +92,7 @@ func main() {
 	fmt.Println(users4)
 
 	users5 := make([]map[string]interface{}, 0)
-	sql, args, err = orm.Query().Select("user_id", "user_name", "day").
+	sql, args, err = him.Query().Select("user_id", "user_name", "day").
 		From("users").
 		Where("user_id", "=", 4).
 		ToSql()
@@ -103,7 +103,7 @@ func main() {
 	fmt.Println(users5)
 
 	users6 := make([]map[string]interface{}, 0)
-	orm.Query().Select("user_id", "user_name").
+	him.Query().Select("user_id", "user_name").
 		From("users").
 		Where("user_id", "=", 8).
 		First(&users6)
@@ -111,7 +111,7 @@ func main() {
 	fmt.Println(users6)
 
 	users7 := make([]map[string]interface{}, 0)
-	db7 := orm.Query().Select("user_id", "user_name").
+	db7 := him.Query().Select("user_id", "user_name").
 		From("users1").
 		Where("user_id", "=", 8).
 		First(&users7)
@@ -121,7 +121,7 @@ func main() {
 	fmt.Println(db7.Error)
 
 	users8 := make([]map[string]interface{}, 0)
-	db8 := orm.Query().Select("user_id", "user_name").
+	db8 := him.Query().Select("user_id", "user_name").
 		From("users").
 		Where("user_id", "=", 7).
 		First(&users8)
@@ -130,7 +130,7 @@ func main() {
 	fmt.Println(db8.Error) // <nil>
 
 	users9 := make([]map[string]interface{}, 0)
-	db9, paginate := orm.Query().Select("user_id", "user_name").
+	db9, paginate := him.Query().Select("user_id", "user_name").
 		From("users").
 		Where("user_name", "=", "kkk").
 		Paginate(2, 2, &users9)
@@ -140,7 +140,7 @@ func main() {
 	fmt.Println(users9, paginate)
 	fmt.Println(db9.Error) // <nil>
 
-	db10, count := orm.Query().
+	db10, count := him.Query().
 		Select("count(distinct(user_name))").
 		From("users").
 		// Where("user_name", "=", "kkk").
@@ -153,7 +153,7 @@ func main() {
 	fmt.Println(db10.Error) // <nil>
 
 	users11 := make([]map[string]interface{}, 0)
-	db11 := orm.Query().
+	db11 := him.Query().
 		//Select("count(distinct(user_name)) count", "user_name").
 		Select("count(user_name) count", "user_name").
 		From("users").
@@ -174,7 +174,7 @@ func main() {
 	fmt.Println("db11: ", users11)
 	fmt.Println(db11.Error) // <nil>
 
-	db12, sum := orm.Query().
+	db12, sum := him.Query().
 		From("users").
 		Where("user_name", "=", "jjj").
 		Sum("is_delete")
@@ -184,7 +184,7 @@ func main() {
 	fmt.Println(db12.Error) // <nil>
 
 	users13 := make([]map[string]interface{}, 0)
-	db13 := orm.Query().Raw("SELECT * FROM users").
+	db13 := him.Query().Raw("SELECT * FROM users").
 		Get(&users13)
 	// SELECT * FROM users
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
@@ -192,9 +192,9 @@ func main() {
 	fmt.Println(db13.Error) // <nil>
 
 	users14 := make([]map[string]interface{}, 0)
-	db14 := orm.Query().Select("*").
+	db14 := him.Query().Select("*").
 		From("users").
-		WhereRaw(func(builder orm.WhereRawBuilder) orm.WhereRawBuilder {
+		WhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
 			return builder.Raw("user_id = ?", 1)
 		}).
 		Get(&users14)
@@ -203,7 +203,7 @@ func main() {
 	fmt.Println(db14.Error) // <nil>
 
 	users15 := make([]map[string]interface{}, 0)
-	db15 := orm.Query().Select("*").
+	db15 := him.Query().Select("*").
 		From("users").
 		OrderBy("user_id desc").
 		First(&users15)
@@ -212,7 +212,7 @@ func main() {
 	fmt.Println(db15.Error) // <nil>
 
 	users16 := make([]map[string]interface{}, 0)
-	db16 := orm.Query().
+	db16 := him.Query().
 		Distinct().
 		Select("user_name").
 		From("users").
@@ -223,7 +223,7 @@ func main() {
 	fmt.Println(db16.Error) // <nil>
 
 	users17 := make([]map[string]interface{}, 0)
-	db17 := orm.Query().
+	db17 := him.Query().
 		Select("*").
 		From("users AS A").
 		Join("ts_user AS B", "B.uname", "=", "A.user_name").
@@ -234,7 +234,7 @@ func main() {
 	fmt.Println(db17.Error) // <nil>
 
 	users18 := make([]map[string]interface{}, 0)
-	db18 := orm.Query().
+	db18 := him.Query().
 		Select("*").
 		From("users AS A").
 		InnerJoin("ts_user AS B", "B.uname", "=", "A.user_name").
@@ -245,7 +245,7 @@ func main() {
 	fmt.Println(db18.Error) // <nil>
 
 	users19 := make([]map[string]interface{}, 0)
-	db19 := orm.Query().
+	db19 := him.Query().
 		Select("*").
 		From("ts_user AS A").
 		LeftJoin("users AS B", "B.user_name", "=", "A.uname").

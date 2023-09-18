@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/dunpju/higo-orm/orm"
-	"github.com/dunpju/higo-orm/orm/Transaction"
+	"github.com/dunpju/higo-orm/him"
+	"github.com/dunpju/higo-orm/him/Transaction"
 	"time"
 )
 
 func main() {
-	orm.DbConfig().
+	him.DbConfig().
 		SetHost("192.168.8.99").
 		SetPort("3306").
 		SetDatabase("test").
@@ -22,24 +22,24 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	_, err := orm.Init()
+	_, err := him.Init()
 	if err != nil {
 		panic(err)
 	}
 
-	sql, args, err := orm.Insert("users").
+	sql, args, err := him.Insert("users").
 		Columns("user_name", "day").
 		Values("ghgh", time.Now().Format(time.DateOnly)).
 		ToSql()
 	fmt.Println("Insert: ", sql, args, err)
 
-	db19, id := orm.Insert("users").
+	db19, id := him.Insert("users").
 		Columns("user_name", "day", "is_delete", "create_time").
 		Values("ghgh19", time.Now().Format(time.DateOnly), 1, time.Now().Format(time.DateTime)).
 		LastInsertId()
 	fmt.Println("db19: ", id, db19.Error)
 
-	db20, _ := orm.Gorm()
+	db20, _ := him.Gorm()
 	// 事务 https://learnku.com/docs/gorm/v2/transactions/9745
 	tx := db20.Begin()
 	// https://learnku.com/docs/gorm/v2/create/9732
@@ -57,7 +57,7 @@ func main() {
 		Update().
 		Table("users").
 		Set("user_name", "user_name_98").
-		Where("user_id = ?", 2).
+		Where("user_id", "=", 2).
 		Exec()
 	fmt.Println("db22: ", affected, fmt.Sprintf("%p", db22), db22.Error)
 	db21.Rollback()

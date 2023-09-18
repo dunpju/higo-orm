@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/dunpju/higo-orm/orm"
-	"github.com/dunpju/higo-orm/orm/Transaction"
+	"github.com/dunpju/higo-orm/him"
+	"github.com/dunpju/higo-orm/him/Transaction"
 )
 
 func main() {
-	orm.DbConfig().
+	him.DbConfig().
 		SetHost("192.168.8.99").
 		SetPort("3306").
 		SetDatabase("test").
@@ -21,7 +21,7 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	_, err := orm.Init()
+	_, err := him.Init()
 	if err != nil {
 		panic(err)
 	}

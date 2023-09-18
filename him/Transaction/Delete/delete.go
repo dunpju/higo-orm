@@ -1,10 +1,10 @@
 package Delete
 
 import (
-	"github.com/dunpju/higo-orm/orm"
+	"github.com/dunpju/higo-orm/him"
 	"gorm.io/gorm"
 )
 
-func Transaction(db *gorm.DB) orm.DeleteBuilder {
-	return orm.DeleteBuilder{DB: db}
+func Transaction(db *gorm.DB) him.DeleteBuilder {
+	return him.DeleteBuilder{DB: db}
 }

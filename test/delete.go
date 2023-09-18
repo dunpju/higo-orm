@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/him/Transaction"
-	"github.com/dunpju/higo-orm/orm"
 )
 
 func main() {
@@ -22,12 +21,12 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	_, err := orm.Init()
+	_, err := him.Init()
 	if err != nil {
 		panic(err)
 	}
 
-	gorm, err := orm.Gorm()
+	gorm, err := him.Gorm()
 	if err != nil {
 		panic(err)
 	}

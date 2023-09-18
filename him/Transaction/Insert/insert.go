@@ -1,10 +1,10 @@
 package Insert
 
 import (
-	"github.com/dunpju/higo-orm/orm"
+	"github.com/dunpju/higo-orm/him"
 	"gorm.io/gorm"
 )
 
-func Transaction(db *gorm.DB) orm.InsertBuilder {
-	return orm.InsertBuilder{DB: db}
+func Transaction(db *gorm.DB) him.InsertBuilder {
+	return him.InsertBuilder{DB: db}
 }

@@ -1,4 +1,4 @@
-package orm
+package him
 
 type Paginate struct {
 	Total       uint64

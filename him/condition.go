@@ -1,4 +1,4 @@
-package orm
+package him
 
 import "github.com/Masterminds/squirrel"
 

@@ -1,10 +1,10 @@
 package Transaction
 
 import (
-	"github.com/dunpju/higo-orm/orm"
-	"github.com/dunpju/higo-orm/orm/Transaction/Delete"
-	"github.com/dunpju/higo-orm/orm/Transaction/Insert"
-	"github.com/dunpju/higo-orm/orm/Transaction/Update"
+	"github.com/dunpju/higo-orm/him"
+	"github.com/dunpju/higo-orm/him/Transaction/Delete"
+	"github.com/dunpju/higo-orm/him/Transaction/Insert"
+	"github.com/dunpju/higo-orm/him/Transaction/Update"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func Begin(tx ...*gorm.DB) *Transaction {
 	if len(tx) > 0 {
 		transaction.db = tx[0]
 	} else {
-		g, err := orm.Gorm()
+		g, err := him.Gorm()
 		if err != nil {
 			transaction.Error = err
 		}
@@ -27,14 +27,14 @@ func Begin(tx ...*gorm.DB) *Transaction {
 	return transaction
 }
 
-func (this *Transaction) Insert(into string) orm.InsertBuilder {
+func (this *Transaction) Insert(into string) him.InsertBuilder {
 	return Insert.Transaction(this.db).Insert(into)
 }
 
-func (this *Transaction) Update(table ...string) orm.UpdateBuilder {
+func (this *Transaction) Update(table ...string) him.UpdateBuilder {
 	return Update.Transaction(this.db).Update(table...)
 }
 
-func (this *Transaction) Delete(from ...string) orm.DeleteBuilder {
+func (this *Transaction) Delete(from ...string) him.DeleteBuilder {
 	return Delete.Transaction(this.db).Delete(from...)
 }
