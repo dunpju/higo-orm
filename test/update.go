@@ -31,8 +31,8 @@ func main() {
 	fmt.Printf("%p\n", tx)*/
 	update1, affected := Transaction.Begin().Update().
 		Table("users").
-		Set("user_name", "user_name_1").
-		Where("user_id", "=", 1).
+		Set("user_name", "user_name_5").
+		Where("user_id", "=", 5).
 		Exec()
 	fmt.Println("update1: ", affected, fmt.Sprintf("%p", update1), update1.Error)
 
@@ -43,5 +43,9 @@ func main() {
 		Where("user_id", "=", 2).
 		Exec()
 	fmt.Println("update2: ", affected, fmt.Sprintf("%p", update2), update2.Error)
-	update2.Rollback()
+	if update2.Error != nil {
+		update2.Rollback()
+		return
+	}
+	update2.Commit()
 }
