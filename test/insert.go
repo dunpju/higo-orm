@@ -39,19 +39,27 @@ func main() {
 		LastInsertId()
 	fmt.Println("db19: ", id, db19.Error)
 
-	users20 := &Users{UserName: "h20", Day: time.Now(), IsDelete: 1, CreateTime: time.Now()}
 	db20, _ := orm.Gorm()
 	// 事务 https://learnku.com/docs/gorm/v2/transactions/9745
 	tx := db20.Begin()
 	// https://learnku.com/docs/gorm/v2/create/9732
-	tx.Select("user_name", "day", "is_delete", "create_time").Create(&users20)
-	fmt.Println("db20: ", users20, tx.Error)
+	//users20 := &Users{UserName: "h20", Day: time.Now(), IsDelete: 1, CreateTime: time.Now()}
+	//tx.Select("user_name", "day", "is_delete", "create_time").Create(&users20)
+	//fmt.Println("db20: ", users20, tx.Error)
 
 	db21, id := Transaction.Begin(tx).Insert("users").
 		Columns("user_name", "day", "create_time").
 		Values("ghgh21", time.Now().Format(time.DateOnly), time.Now().Format(time.DateTime)).
 		LastInsertId()
 	fmt.Println("db21: ", id, db21.Error)
+
+	db22, affected := Transaction.Begin(tx).
+		Update().
+		Table("users").
+		Set("user_name", "user_name_98").
+		Where("user_id = ?", 2).
+		Save()
+	fmt.Println("db22: ", affected, fmt.Sprintf("%p", db22), db22.Error)
 	db21.Rollback()
 
 }

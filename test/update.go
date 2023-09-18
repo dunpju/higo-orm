@@ -26,21 +26,22 @@ func main() {
 		panic(err)
 	}
 
-	tx, _ := orm.Gorm()
-	fmt.Println(tx)
-	db22, affected := Transaction.Begin(tx).Update().
+	/*gorm, _ := orm.Gorm()
+	tx := gorm.Begin()
+	fmt.Printf("%p\n", tx)*/
+	db23, affected := Transaction.Begin().Update().
 		Table("users").
 		Set("user_name", "user_name_95").
-		Where("user_id = ?", 95).
+		Where("user_id = ?", 1).
 		Save()
-	fmt.Println("db22: ", affected, db22, db22.Error)
+	fmt.Println("db23: ", affected, fmt.Sprintf("%p", db23), db23.Error)
 
-	db23, affected := Transaction.Begin(tx).
+	db24, affected := Transaction.Begin(db23).
 		Update().
 		Table("users").
-		Set("user_name", "user_name_98").
-		Where("user_id = ?", 98).
+		Set("user_name", "user_name111").
+		Where("user_id = ?", 2).
 		Save()
-	fmt.Println("db23: ", affected, db23, db23.Error)
-	db23.Rollback()
+	fmt.Println("db24: ", affected, fmt.Sprintf("%p", db24), db24.Error)
+	db24.Rollback()
 }

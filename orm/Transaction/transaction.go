@@ -12,14 +12,18 @@ type Transaction struct {
 	Error error
 }
 
-func Begin(db ...*gorm.DB) *Transaction {
-	tx := &Transaction{}
-	if len(db) > 0 {
-		tx.db = db[0]
+func Begin(tx ...*gorm.DB) *Transaction {
+	transaction := &Transaction{}
+	if len(tx) > 0 {
+		transaction.db = tx[0]
 	} else {
-		tx.db, tx.Error = orm.Gorm()
+		g, err := orm.Gorm()
+		if err != nil {
+			transaction.Error = err
+		}
+		transaction.db = g.Begin()
 	}
-	return tx
+	return transaction
 }
 
 func (this *Transaction) Insert(into string) orm.InsertBuilder {
