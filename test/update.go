@@ -29,19 +29,19 @@ func main() {
 	/*gorm, _ := orm.Gorm()
 	tx := gorm.Begin()
 	fmt.Printf("%p\n", tx)*/
-	db23, affected := Transaction.Begin().Update().
+	update1, affected := Transaction.Begin().Update().
 		Table("users").
-		Set("user_name", "user_name_95").
-		Where("user_id = ?", 1).
+		Set("user_name", "user_name_1").
+		Where("user_id", "=", 1).
 		Exec()
-	fmt.Println("db23: ", affected, fmt.Sprintf("%p", db23), db23.Error)
+	fmt.Println("update1: ", affected, fmt.Sprintf("%p", update1), update1.Error)
 
-	db24, affected := Transaction.Begin(db23).
+	update2, affected := Transaction.Begin(update1).
 		Update().
 		Table("users").
-		Set("user_name", "user_name111").
-		Where("user_id = ?", 2).
+		Set("user_name", "user_name_update_2").
+		Where("user_id", "=", 2).
 		Exec()
-	fmt.Println("db24: ", affected, fmt.Sprintf("%p", db24), db24.Error)
-	db24.Rollback()
+	fmt.Println("update2: ", affected, fmt.Sprintf("%p", update2), update2.Error)
+	update2.Rollback()
 }
