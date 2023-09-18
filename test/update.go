@@ -40,8 +40,26 @@ func main() {
 				Where("user_id", "=", 5).
 				Exec()
 			fmt.Println("update1: ", affected, fmt.Sprintf("%p", update1), update1.Error)
+			if update1.Error != nil {
+				update1.Rollback()
+				fmt.Println("update1 Rollback")
+			} else {
+				update1.Commit()
+			}
+		}()
+		go func() {
+			connect, err := him.DBConnect(him.DefaultConnect)
+			if err != nil {
+				panic(err)
+			}
+			/*update1, affected := connect.Begin().Update().
+				Table("users").
+				Set("user_name", "user_name_5").
+				Where("user_id", "=", 5).
+				Exec()
+			fmt.Println("update1: ", affected, fmt.Sprintf("%p", update1), update1.Error)*/
 
-			update2, affected := connect.Begin(update1).
+			update2, affected := connect.Begin().
 				Update().
 				Table("users").
 				Set("user_name", "user_name_update_2").
@@ -50,7 +68,7 @@ func main() {
 			fmt.Println("update2: ", affected, fmt.Sprintf("%p", update2), update2.Error)
 			if update2.Error != nil {
 				update2.Rollback()
-				fmt.Println("update Rollback")
+				fmt.Println("update2 Rollback")
 			} else {
 				update2.Commit()
 			}
