@@ -58,7 +58,7 @@ func main() {
 		Table("users").
 		Set("user_name", "user_name_98").
 		Where("user_id = ?", 2).
-		Save()
+		Exec()
 	fmt.Println("db22: ", affected, fmt.Sprintf("%p", db22), db22.Error)
 	db21.Rollback()
 

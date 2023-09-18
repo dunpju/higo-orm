@@ -26,22 +26,18 @@ func main() {
 		panic(err)
 	}
 
-	/*gorm, _ := orm.Gorm()
-	tx := gorm.Begin()
-	fmt.Printf("%p\n", tx)*/
-	db23, affected := Transaction.Begin().Update().
-		Table("users").
-		Set("user_name", "user_name_95").
+	delete1, affected := Transaction.Begin().Delete().
+		From("users").
 		Where("user_id = ?", 1).
 		Exec()
-	fmt.Println("db23: ", affected, fmt.Sprintf("%p", db23), db23.Error)
+	fmt.Println("delete1: ", affected, fmt.Sprintf("%p", delete1), delete1.Error)
 
-	db24, affected := Transaction.Begin(db23).
+	delete2, affected := Transaction.Begin(delete1).
 		Update().
 		Table("users").
-		Set("user_name", "user_name111").
+		Set("user_name", "user_name_delete").
 		Where("user_id = ?", 2).
 		Exec()
-	fmt.Println("db24: ", affected, fmt.Sprintf("%p", db24), db24.Error)
-	db24.Rollback()
+	fmt.Println("delete2: ", affected, fmt.Sprintf("%p", delete2), delete2.Error)
+	delete2.Commit()
 }

@@ -8,12 +8,8 @@ import (
 	"time"
 )
 
-func Insert(table string) InsertBuilder {
-	return into(table)
-}
-
-func into(table string) InsertBuilder {
-	return InsertBuilder{builder: squirrel.Insert(table)}
+func Insert(into string) InsertBuilder {
+	return InsertBuilder{builder: squirrel.Insert(into)}
 }
 
 type InsertBuilder struct {
@@ -21,8 +17,9 @@ type InsertBuilder struct {
 	builder squirrel.InsertBuilder
 }
 
-func (this InsertBuilder) Into(table string) InsertBuilder {
-	this.builder = squirrel.Insert(table)
+func (this InsertBuilder) Insert(into string) InsertBuilder {
+	builder := Insert(into)
+	this.builder = builder.builder
 	return this
 }
 

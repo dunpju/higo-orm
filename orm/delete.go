@@ -8,83 +8,68 @@ import (
 	"time"
 )
 
-func Update(table ...string) UpdateBuilder {
-	var t string
-	if len(table) > 0 {
-		t = table[0]
+func Delete(from ...string) DeleteBuilder {
+	var f string
+	if len(from) > 0 {
+		f = from[0]
 	}
-	return UpdateBuilder{builder: squirrel.Update(t)}
+	return DeleteBuilder{builder: squirrel.Delete(f)}
 }
 
-type UpdateBuilder struct {
+type DeleteBuilder struct {
 	DB      *gorm.DB
-	builder squirrel.UpdateBuilder
+	builder squirrel.DeleteBuilder
 }
 
-func (this UpdateBuilder) Update(table ...string) UpdateBuilder {
-	var t string
-	if len(table) > 0 {
-		t = table[0]
+func (this DeleteBuilder) Delete(from ...string) DeleteBuilder {
+	var f string
+	if len(from) > 0 {
+		f = from[0]
 	}
-	this.builder = squirrel.Update(t)
+	this.builder = squirrel.Delete(f)
 	return this
 }
 
-func (this UpdateBuilder) Prefix(sql string, args ...interface{}) UpdateBuilder {
+func (this DeleteBuilder) Prefix(sql string, args ...interface{}) DeleteBuilder {
 	this.builder = this.builder.Prefix(sql, args...)
 	return this
 }
 
-func (this UpdateBuilder) Table(table string) UpdateBuilder {
-	this.builder = this.builder.Table(table)
-	return this
-}
-
-func (this UpdateBuilder) Set(column string, value interface{}) UpdateBuilder {
-	this.builder = this.builder.Set(column, value)
-	return this
-}
-
-func (this UpdateBuilder) SetMap(clauses map[string]interface{}) UpdateBuilder {
-	this.builder = this.builder.SetMap(clauses)
-	return this
-}
-
-func (this UpdateBuilder) From(from string) UpdateBuilder {
+func (this DeleteBuilder) From(from string) DeleteBuilder {
 	this.builder = this.builder.From(from)
 	return this
 }
 
-func (this UpdateBuilder) Where(pred interface{}, args ...interface{}) UpdateBuilder {
+func (this DeleteBuilder) Where(pred interface{}, args ...interface{}) DeleteBuilder {
 	this.builder = this.builder.Where(pred, args...)
 	return this
 }
 
-func (this UpdateBuilder) OrderBy(orderBys ...string) UpdateBuilder {
+func (this DeleteBuilder) OrderBy(orderBys ...string) DeleteBuilder {
 	this.builder = this.builder.OrderBy(orderBys...)
 	return this
 }
 
-func (this UpdateBuilder) Limit(limit uint64) UpdateBuilder {
+func (this DeleteBuilder) Limit(limit uint64) DeleteBuilder {
 	this.builder = this.builder.Limit(limit)
 	return this
 }
 
-func (this UpdateBuilder) Offset(offset uint64) UpdateBuilder {
+func (this DeleteBuilder) Offset(offset uint64) DeleteBuilder {
 	this.builder = this.builder.Offset(offset)
 	return this
 }
 
-func (this UpdateBuilder) Suffix(sql string, args ...interface{}) UpdateBuilder {
+func (this DeleteBuilder) Suffix(sql string, args ...interface{}) DeleteBuilder {
 	this.builder = this.builder.Suffix(sql, args...)
 	return this
 }
 
-func (this UpdateBuilder) ToSql() (string, []interface{}, error) {
+func (this DeleteBuilder) ToSql() (string, []interface{}, error) {
 	return this.builder.ToSql()
 }
 
-func (this UpdateBuilder) Exec() (*gorm.DB, int64) {
+func (this DeleteBuilder) Exec() (*gorm.DB, int64) {
 	var db *gorm.DB
 	if this.DB == nil {
 		_db_, err := Gorm()

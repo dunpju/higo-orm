@@ -2,6 +2,7 @@ package Transaction
 
 import (
 	"github.com/dunpju/higo-orm/orm"
+	"github.com/dunpju/higo-orm/orm/Transaction/Delete"
 	"github.com/dunpju/higo-orm/orm/Transaction/Insert"
 	"github.com/dunpju/higo-orm/orm/Transaction/Update"
 	"gorm.io/gorm"
@@ -27,12 +28,13 @@ func Begin(tx ...*gorm.DB) *Transaction {
 }
 
 func (this *Transaction) Insert(into string) orm.InsertBuilder {
-	return Insert.Transaction(this.db).Into(into)
+	return Insert.Transaction(this.db).Insert(into)
 }
 
 func (this *Transaction) Update(table ...string) orm.UpdateBuilder {
 	return Update.Transaction(this.db).Update(table...)
 }
 
-func (this *Transaction) Delete(into string) {
+func (this *Transaction) Delete(from ...string) orm.DeleteBuilder {
+	return Delete.Transaction(this.db).Delete(from...)
 }
