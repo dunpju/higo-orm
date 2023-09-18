@@ -119,7 +119,7 @@ func (this SelectBuilder) ToSql() (string, []interface{}, error) {
 	selectBuilder := squirrel.Select(this.columns...)
 	selectBuilder = selectBuilder.From(this.from)
 	selectBuilder = joins(selectBuilder, this.joins)
-	selectBuilder, err := whereHandle(selectBuilder, this.wheres)
+	selectBuilder, err := this.whereHandle(selectBuilder, this.wheres)
 	if err != nil {
 		return "", nil, err
 	}

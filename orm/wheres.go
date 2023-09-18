@@ -1,6 +1,8 @@
 package orm
 
-import "strings"
+import (
+	"strings"
+)
 
 type wheres struct {
 	logic   Logic

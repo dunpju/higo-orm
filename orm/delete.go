@@ -13,25 +13,19 @@ func Delete(from ...string) DeleteBuilder {
 	if len(from) > 0 {
 		f = from[0]
 	}
-	return DeleteBuilder{builder: squirrel.Delete(f)}
+	return DeleteBuilder{builder: squirrel.Delete(f), wheres: newWheres()}
 }
 
 type DeleteBuilder struct {
 	DB      *gorm.DB
 	builder squirrel.DeleteBuilder
+	wheres  *wheres
 }
 
 func (this DeleteBuilder) Delete(from ...string) DeleteBuilder {
-	var f string
-	if len(from) > 0 {
-		f = from[0]
-	}
-	this.builder = squirrel.Delete(f)
-	return this
-}
-
-func (this DeleteBuilder) Prefix(sql string, args ...interface{}) DeleteBuilder {
-	this.builder = this.builder.Prefix(sql, args...)
+	builder := Delete(from...)
+	this.builder = builder.builder
+	this.wheres = builder.wheres
 	return this
 }
 
@@ -40,32 +34,113 @@ func (this DeleteBuilder) From(from string) DeleteBuilder {
 	return this
 }
 
-func (this DeleteBuilder) Where(pred interface{}, args ...interface{}) DeleteBuilder {
+func (this DeleteBuilder) WhereRaw(fn func(builder WhereRawBuilder) WhereRawBuilder) DeleteBuilder {
+	sql, args, err := fn(WhereRawBuilder{}).ToSql()
+	this.wheres.and().whereRaw(sql, args, err)
+	return this
+}
+
+func (this DeleteBuilder) OrWhereRaw(fn func(builder WhereRawBuilder) WhereRawBuilder) DeleteBuilder {
+	sql, args, err := fn(WhereRawBuilder{}).ToSql()
+	this.wheres.or().whereRaw(sql, args, err)
+	return this
+}
+
+func (this DeleteBuilder) Where(column, operator string, value interface{}) DeleteBuilder {
+	this.wheres.and().where(column, operator, value)
+	return this
+}
+
+func (this DeleteBuilder) WhereIn(column string, value interface{}) DeleteBuilder {
+	this.wheres.and().whereIn(column, value)
+	return this
+}
+
+func (this DeleteBuilder) WhereNotIn(column string, value interface{}) DeleteBuilder {
+	this.wheres.and().whereNotIn(column, value)
+	return this
+}
+
+func (this DeleteBuilder) WhereNull(column string) DeleteBuilder {
+	this.wheres.and().whereNull(column)
+	return this
+}
+
+func (this DeleteBuilder) WhereNotNull(column string) DeleteBuilder {
+	this.wheres.and().whereNotNull(column)
+	return this
+}
+
+func (this DeleteBuilder) WhereLike(column string, value interface{}) DeleteBuilder {
+	this.wheres.and().whereLike(column, value)
+	return this
+}
+
+func (this DeleteBuilder) NotLike(column string, value interface{}) DeleteBuilder {
+	this.wheres.and().whereNotLike(column, value)
+	return this
+}
+
+func (this DeleteBuilder) WhereBetween(column string, first, second interface{}) DeleteBuilder {
+	this.wheres.and().whereBetween(column, first, second)
+	return this
+}
+
+func (this DeleteBuilder) OrWhere(column, operator string, value interface{}) DeleteBuilder {
+	this.wheres.or().where(column, operator, value)
+	return this
+}
+
+func (this DeleteBuilder) OrWhereIn(column string, value interface{}) DeleteBuilder {
+	this.wheres.or().whereIn(column, value)
+	return this
+}
+
+func (this DeleteBuilder) OrWhereNotIn(column string, value interface{}) DeleteBuilder {
+	this.wheres.or().whereNotIn(column, value)
+	return this
+}
+
+func (this DeleteBuilder) OrWhereNull(column string) DeleteBuilder {
+	this.wheres.or().whereNull(column)
+	return this
+}
+
+func (this DeleteBuilder) OrWhereNotNull(column string) DeleteBuilder {
+	this.wheres.or().whereNotNull(column)
+	return this
+}
+
+func (this DeleteBuilder) OrLike(column string, value interface{}) DeleteBuilder {
+	this.wheres.or().whereLike(column, value)
+	return this
+}
+
+func (this DeleteBuilder) OrNotLike(column string, value interface{}) DeleteBuilder {
+	this.wheres.or().whereNotLike(column, value)
+	return this
+}
+
+func (this DeleteBuilder) OrWhereBetween(column string, first, second interface{}) DeleteBuilder {
+	this.wheres.or().whereBetween(column, first, second)
+	return this
+}
+
+func (this DeleteBuilder) whereHandle() (DeleteBuilder, error) {
+	pred, args, err := this.wheres.pred()
+	if err != nil {
+		return this, err
+	}
 	this.builder = this.builder.Where(pred, args...)
-	return this
-}
-
-func (this DeleteBuilder) OrderBy(orderBys ...string) DeleteBuilder {
-	this.builder = this.builder.OrderBy(orderBys...)
-	return this
-}
-
-func (this DeleteBuilder) Limit(limit uint64) DeleteBuilder {
-	this.builder = this.builder.Limit(limit)
-	return this
-}
-
-func (this DeleteBuilder) Offset(offset uint64) DeleteBuilder {
-	this.builder = this.builder.Offset(offset)
-	return this
-}
-
-func (this DeleteBuilder) Suffix(sql string, args ...interface{}) DeleteBuilder {
-	this.builder = this.builder.Suffix(sql, args...)
-	return this
+	return this, nil
 }
 
 func (this DeleteBuilder) ToSql() (string, []interface{}, error) {
+	builder, err := this.whereHandle()
+	if err != nil {
+		return "", nil, err
+	}
+	this = builder
 	return this.builder.ToSql()
 }
 

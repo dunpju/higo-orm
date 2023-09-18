@@ -13,20 +13,19 @@ func Update(table ...string) UpdateBuilder {
 	if len(table) > 0 {
 		t = table[0]
 	}
-	return UpdateBuilder{builder: squirrel.Update(t)}
+	return UpdateBuilder{builder: squirrel.Update(t), wheres: newWheres()}
 }
 
 type UpdateBuilder struct {
 	DB      *gorm.DB
 	builder squirrel.UpdateBuilder
+	wheres  *wheres
 }
 
 func (this UpdateBuilder) Update(table ...string) UpdateBuilder {
-	var t string
-	if len(table) > 0 {
-		t = table[0]
-	}
-	this.builder = squirrel.Update(t)
+	builder := Update(table...)
+	this.builder = builder.builder
+	this.wheres = builder.wheres
 	return this
 }
 
@@ -80,7 +79,21 @@ func (this UpdateBuilder) Suffix(sql string, args ...interface{}) UpdateBuilder 
 	return this
 }
 
+func (this UpdateBuilder) whereHandle() (UpdateBuilder, error) {
+	pred, args, err := this.wheres.pred()
+	if err != nil {
+		return this, err
+	}
+	this.builder = this.builder.Where(pred, args...)
+	return this, nil
+}
+
 func (this UpdateBuilder) ToSql() (string, []interface{}, error) {
+	builder, err := this.whereHandle()
+	if err != nil {
+		return "", nil, err
+	}
+	this = builder
 	return this.builder.ToSql()
 }
 

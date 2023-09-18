@@ -4,7 +4,7 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-func whereHandle(selectBuilder squirrel.SelectBuilder, wheres *wheres) (squirrel.SelectBuilder, error) {
+func (this SelectBuilder) whereHandle(selectBuilder squirrel.SelectBuilder, wheres *wheres) (squirrel.SelectBuilder, error) {
 	pred, args, err := wheres.pred()
 	if err != nil {
 		return squirrel.SelectBuilder{}, err

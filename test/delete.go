@@ -26,16 +26,28 @@ func main() {
 		panic(err)
 	}
 
-	delete1, affected := Transaction.Begin().Delete().
+	gorm, err := orm.Gorm()
+	if err != nil {
+		panic(err)
+	}
+	tx := gorm.Begin()
+	/*defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("delete Rollback: ", r)
+			tx.Rollback()
+		}
+	}()*/
+
+	delete1, affected := Transaction.Begin(tx).Delete().
 		From("users").
-		Where("user_id = ?", 1).
+		Where("user_id", "=", 1).
 		Exec()
 	fmt.Println("delete1: ", affected, fmt.Sprintf("%p", delete1), delete1.Error)
 
 	delete2, affected := Transaction.Begin(delete1).
 		Update().
 		Table("users").
-		Set("user_name", "user_name_delete").
+		Set("user_name", "user_name_delete111").
 		Where("user_id = ?", 2).
 		Exec()
 	fmt.Println("delete2: ", affected, fmt.Sprintf("%p", delete2), delete2.Error)
