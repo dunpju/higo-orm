@@ -3,9 +3,12 @@ package him
 import (
 	"fmt"
 	"github.com/Masterminds/squirrel"
+	"gorm.io/gorm"
 )
 
 type SelectBuilder struct {
+	db          *gorm.DB
+	connect     *connect
 	isCount     bool
 	countColumn string
 	isSum       bool
@@ -29,14 +32,29 @@ type SelectBuilder struct {
 	hasColumn   bool
 	column      []column
 	hasDistinct bool
+	Error       error
 }
 
-func Query() SelectBuilder {
-	return query()
+func Query(connect ...string) SelectBuilder {
+	if len(connect) > 0 {
+		dbc, err := getConnect(connect[0])
+		if err != nil {
+			return SelectBuilder{Error: err}
+		}
+		return query(dbc)
+	} else {
+		dbc, err := getConnect(DefaultConnect)
+		if err != nil {
+			return SelectBuilder{Error: err}
+		}
+		return query(dbc)
+	}
 }
 
-func query() SelectBuilder {
+func query(dbc *connect) SelectBuilder {
 	return SelectBuilder{
+		db:       dbc.db.GormDB(),
+		connect:  dbc,
 		columns:  make([]string, 0),
 		joins:    make([]join, 0),
 		wheres:   newWheres(),
@@ -45,6 +63,14 @@ func query() SelectBuilder {
 		havings:  make([]having, 0),
 		column:   make([]column, 0),
 	}
+}
+
+func (this SelectBuilder) Connect() *connect {
+	return this.connect
+}
+
+func (this SelectBuilder) DB() *gorm.DB {
+	return this.db
 }
 
 func (this SelectBuilder) Select(columns ...string) SelectBuilder {

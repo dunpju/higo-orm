@@ -8,24 +8,45 @@ import (
 	"time"
 )
 
-func Update(table ...string) UpdateBuilder {
+type UpdateBuilder struct {
+	db      *gorm.DB
+	connect *connect
+	builder squirrel.UpdateBuilder
+	wheres  *wheres
+	Error   error
+}
+
+func NewUpdateBuilder(connect ...string) UpdateBuilder {
+	if len(connect) > 0 {
+		dbc, err := getConnect(connect[0])
+		if err != nil {
+			return UpdateBuilder{Error: err}
+		}
+		return UpdateBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+	} else {
+		dbc, err := getConnect(DefaultConnect)
+		if err != nil {
+			return UpdateBuilder{Error: err}
+		}
+		return UpdateBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+	}
+}
+
+func (this UpdateBuilder) DB() *gorm.DB {
+	return this.db
+}
+
+func (this UpdateBuilder) Transaction(db *gorm.DB) UpdateBuilder {
+	this.db = db
+	return this
+}
+
+func (this UpdateBuilder) Update(table ...string) UpdateBuilder {
 	var t string
 	if len(table) > 0 {
 		t = table[0]
 	}
-	return UpdateBuilder{builder: squirrel.Update(t), wheres: newWheres()}
-}
-
-type UpdateBuilder struct {
-	DB      *gorm.DB
-	builder squirrel.UpdateBuilder
-	wheres  *wheres
-}
-
-func (this UpdateBuilder) Update(table ...string) UpdateBuilder {
-	builder := Update(table...)
-	this.builder = builder.builder
-	this.wheres = builder.wheres
+	this.builder = squirrel.Update(t)
 	return this
 }
 
@@ -185,29 +206,17 @@ func (this UpdateBuilder) ToSql() (string, []interface{}, error) {
 }
 
 func (this UpdateBuilder) Exec() (*gorm.DB, int64) {
-	var db *gorm.DB
-	if this.DB == nil {
-		_db_, err := Gorm()
-		if err != nil {
-			_db_.Error = err
-			return _db_, 0
-		}
-		db = _db_
-	} else {
-		db = this.DB
-	}
-
 	sql, args, err := this.ToSql()
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
 	var (
 		curTime = time.Now()
 		stmt    = &gorm.Statement{
-			DB:       db,
-			ConnPool: db.ConnPool,
+			DB:       this.db,
+			ConnPool: this.db.ConnPool,
 			Context:  context.Background(),
 			Clauses:  map[string]clause.Clause{},
 		}
@@ -217,25 +226,25 @@ func (this UpdateBuilder) Exec() (*gorm.DB, int64) {
 	stmt.SQL.WriteString(sql)
 	stmt.Vars = args
 
-	result, err := db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
+	result, err := this.db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
 
-	db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
+	this.db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
 		sqlStr, vars := stmt.SQL.String(), stmt.Vars
-		if filter, ok := db.Logger.(gorm.ParamsFilter); ok {
+		if filter, ok := this.db.Logger.(gorm.ParamsFilter); ok {
 			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
 		}
 		affected, err1 := result.RowsAffected()
 		if err1 != nil {
-			return db.Dialector.Explain(sqlStr, vars...), 0
+			return this.db.Dialector.Explain(sqlStr, vars...), 0
 		}
 		rowsAffected = affected
-		return db.Dialector.Explain(sqlStr, vars...), affected
-	}, db.Error)
+		return this.db.Dialector.Explain(sqlStr, vars...), affected
+	}, this.db.Error)
 
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
-	return db, rowsAffected
+	return this.db, rowsAffected
 }

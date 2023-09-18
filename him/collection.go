@@ -15,107 +15,82 @@ type counter struct {
 
 func (this SelectBuilder) First(dest interface{}) *gorm.DB {
 	this = this.Limit(1)
-	db, err := Gorm()
-	if err != nil {
-		db.Error = err
-		return db
-	}
 	sql, args, err := this.ToSql()
 	if err != nil {
-		db.Error = err
-		return db
+		this.db.Error = err
+		return this.db
 	}
-	return db.Raw(sql, args...).Scan(dest)
+	return this.db.Raw(sql, args...).Scan(dest)
 }
 
 func (this SelectBuilder) Get(dest interface{}) *gorm.DB {
-	db, err := Gorm()
-	if err != nil {
-		db.Error = err
-		return db
-	}
 	sql, args, err := this.ToSql()
 	if err != nil {
-		db.Error = err
-		return db
+		this.db.Error = err
+		return this.db
 	}
-	return db.Raw(sql, args...).Scan(dest)
+	return this.db.Raw(sql, args...).Scan(dest)
 }
 
 func (this SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, Paginate) {
-	db, err := Gorm()
-	if err != nil {
-		db.Error = err
-		return db, Paginate{}
-	}
 	countStatement := this.count().Limit(1)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
-		db.Error = err
-		return db, Paginate{}
+		this.db.Error = err
+		return this.db, Paginate{}
 	}
 	count_ := counter{}
-	db.Raw(countSql, args...).Scan(&count_)
-	if db.Error != nil {
-		return db, Paginate{}
+	this.db.Raw(countSql, args...).Scan(&count_)
+	if this.db.Error != nil {
+		return this.db, Paginate{}
 	}
 	offset := (page - 1) * perPage
 	sql, args, err := this.Offset(offset).Limit(perPage).ToSql()
 	if err != nil {
-		db.Error = err
-		return db, Paginate{}
+		this.db.Error = err
+		return this.db, Paginate{}
 	}
-	db.Raw(sql, args...).Scan(dest)
-	if db.Error != nil {
-		return db, Paginate{}
+	this.db.Raw(sql, args...).Scan(dest)
+	if this.db.Error != nil {
+		return this.db, Paginate{}
 	}
-	return db, Paginate{Total: uint64(count_.Count_), PerPage: perPage, CurrentPage: page, Items: dest}
+	return this.db, Paginate{Total: uint64(count_.Count_), PerPage: perPage, CurrentPage: page, Items: dest}
 }
 
-func (this SelectBuilder) Count() (*gorm.DB, int64) {
-	db, err := Gorm()
-	if err != nil {
-		db.Error = err
-		return db, 0
-	}
+func (this SelectBuilder) Count() int64 {
 	var count_ int64
-	db = db.Table(this.from)
+	this.db = this.db.Table(this.from)
 	if len(this.columns) > 0 {
-		db = db.Select(strings.Join(this.columns, ","))
+		this.db = this.db.Select(strings.Join(this.columns, ","))
 	}
 	if this.wheres.len() > 0 {
 		pred, args, err := this.wheres.pred()
 		if err != nil {
-			db.Error = err
-			return db, count_
+			this.db.Error = err
+			return count_
 		}
-		db = db.Where(pred, args...)
+		this.db = this.db.Where(pred, args...)
 	}
 	if this.hasGroupBys {
 		for _, by := range this.groupBys {
-			db = db.Group(by)
+			this.db = this.db.Group(by)
 		}
 	}
-	db = db.Count(&count_)
-	return db, count_
+	this.db = this.db.Count(&count_)
+	return count_
 }
 
-func (this SelectBuilder) Sum(column string) (*gorm.DB, uint64) {
-	db, err := Gorm()
-	if err != nil {
-		db.Error = err
-		return db, 0
-	}
+func (this SelectBuilder) Sum(column string) uint64 {
 	countStatement := this.sum(column)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return 0
 	}
 	count_ := counter{}
-	db.Raw(countSql, args...).Scan(&count_)
-	if db.Error != nil {
-		return db, 0
+	this.db.Raw(countSql, args...).Scan(&count_)
+	if this.db.Error != nil {
+		return 0
 	}
-	return db, uint64(count_.Count_)
+	return uint64(count_.Count_)
 }

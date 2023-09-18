@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
-	"github.com/dunpju/higo-orm/him/Transaction"
 )
 
 func main() {
-	him.DbConfig().
+	dbc := him.DbConfig(him.DefaultConnect).
 		SetHost("192.168.8.99").
 		SetPort("3306").
 		SetDatabase("test").
@@ -21,16 +20,15 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	_, err := him.Init()
+	_, err := him.Init(dbc)
 	if err != nil {
 		panic(err)
 	}
 
-	gorm, err := him.Gorm()
+	connect, err := him.DBConnect(him.DefaultConnect)
 	if err != nil {
 		panic(err)
 	}
-	tx := gorm.Begin()
 	/*defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("delete Rollback: ", r)
@@ -38,18 +36,18 @@ func main() {
 		}
 	}()*/
 
-	delete1, affected := Transaction.Begin(tx).Delete().
+	delete1, affected := connect.Begin().Delete().
 		From("users").
 		Where("user_id", "=", 1).
 		Exec()
 	fmt.Println("delete1: ", affected, fmt.Sprintf("%p", delete1), delete1.Error)
 
-	delete2, affected := Transaction.Begin(delete1).
+	delete2, affected := connect.Begin(delete1).
 		Update().
 		Table("users").
 		Set("user_name", "user_name_delete111").
 		Where("user_id", "=", 2).
 		Exec()
 	fmt.Println("delete2: ", affected, fmt.Sprintf("%p", delete2), delete2.Error)
-	delete2.Commit()
+	delete2.Rollback()
 }

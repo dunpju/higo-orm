@@ -7,27 +7,25 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
-	"sync"
 	"time"
 )
 
-var (
-	_db     *gorm.DB
-	_dbOnce sync.Once
-)
-
-func Gorm() (*gorm.DB, error) {
-	var err error
-	_dbOnce.Do(func() {
-		_db, err = Init()
-	})
-	if err != nil {
-		return nil, err
-	}
-	return _db, nil
+func Gorm(connect string) (*gorm.DB, error) {
+	connection, err := getConnect(connect)
+	return connection.db.GormDB(), err
 }
 
-func Init() (*gorm.DB, error) {
+func Default() (*gorm.DB, error) {
+	return Gorm(DefaultConnect)
+}
+
+func Init(dbc *DBConfig) (*gorm.DB, error) {
+	if dbc.connect == "" {
+		return nil, fmt.Errorf("connect cannot be empty")
+	}
+	if conn, ok := _connect.Load(dbc.connect); ok {
+		return conn.(*gorm.DB), nil
+	}
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
 		dbc.username,
 		dbc.password,
@@ -42,12 +40,17 @@ func Init() (*gorm.DB, error) {
 		return nil, err
 	}
 
+	slowThreshold := 3
+	if dbc.slowThreshold > 0 {
+		slowThreshold = dbc.slowThreshold
+	}
+
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold: time.Second,                 // 慢 SQL 阈值
-			LogLevel:      logger.LogLevel(level.code), // Log level
-			Colorful:      dbc.colorful,                // 彩色打印
+			SlowThreshold: time.Second * time.Duration(slowThreshold), // 慢 SQL 阈值
+			LogLevel:      logger.LogLevel(level.code),                // Log level
+			Colorful:      dbc.colorful,                               // 彩色打印
 		},
 	)
 
@@ -70,9 +73,7 @@ func Init() (*gorm.DB, error) {
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Duration(dbc.maxLifetime) * time.Second)
 
-	_dbOnce.Do(func() {
-		_db = db
-	})
+	_connect.Store(dbc.connect, newConnect(dbc, NewDB(db, dbc.connect)))
 
-	return _db, nil
+	return db, nil
 }

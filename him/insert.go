@@ -8,18 +8,40 @@ import (
 	"time"
 )
 
-func Insert(into string) InsertBuilder {
-	return InsertBuilder{builder: squirrel.Insert(into)}
+type InsertBuilder struct {
+	db      *gorm.DB
+	connect *connect
+	builder squirrel.InsertBuilder
+	Error   error
 }
 
-type InsertBuilder struct {
-	DB      *gorm.DB
-	builder squirrel.InsertBuilder
+func NewInsertBuilder(connect ...string) InsertBuilder {
+	if len(connect) > 0 {
+		dbc, err := getConnect(connect[0])
+		if err != nil {
+			return InsertBuilder{Error: err}
+		}
+		return InsertBuilder{db: dbc.db.GormDB(), connect: dbc}
+	} else {
+		dbc, err := getConnect(DefaultConnect)
+		if err != nil {
+			return InsertBuilder{Error: err}
+		}
+		return InsertBuilder{db: dbc.db.GormDB(), connect: dbc}
+	}
+}
+
+func (this InsertBuilder) DB() *gorm.DB {
+	return this.db
+}
+
+func (this InsertBuilder) Transaction(db *gorm.DB) InsertBuilder {
+	this.db = db
+	return this
 }
 
 func (this InsertBuilder) Insert(into string) InsertBuilder {
-	builder := Insert(into)
-	this.builder = builder.builder
+	this.builder = squirrel.Insert(into)
 	return this
 }
 
@@ -38,29 +60,17 @@ func (this InsertBuilder) ToSql() (string, []interface{}, error) {
 }
 
 func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
-	var db *gorm.DB
-	if this.DB == nil {
-		_db_, err := Gorm()
-		if err != nil {
-			_db_.Error = err
-			return _db_, 0
-		}
-		db = _db_
-	} else {
-		db = this.DB
-	}
-
 	sql, args, err := this.ToSql()
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
 	var (
 		curTime = time.Now()
 		stmt    = &gorm.Statement{
-			DB:       db,
-			ConnPool: db.ConnPool,
+			DB:       this.db,
+			ConnPool: this.db.ConnPool,
 			Context:  context.Background(),
 			Clauses:  map[string]clause.Clause{},
 		}
@@ -69,32 +79,32 @@ func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 	stmt.SQL.WriteString(sql)
 	stmt.Vars = args
 
-	result, err := db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
+	result, err := this.db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
 
-	db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
+	this.db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
 		sqlStr, vars := stmt.SQL.String(), stmt.Vars
-		if filter, ok := db.Logger.(gorm.ParamsFilter); ok {
+		if filter, ok := this.db.Logger.(gorm.ParamsFilter); ok {
 			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
 		}
 		affected, err1 := result.RowsAffected()
 		if err1 != nil {
-			return db.Dialector.Explain(sqlStr, vars...), 0
+			return this.db.Dialector.Explain(sqlStr, vars...), 0
 		}
-		return db.Dialector.Explain(sqlStr, vars...), affected
-	}, db.Error)
+		return this.db.Dialector.Explain(sqlStr, vars...), affected
+	}, this.db.Error)
 
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
 	insertID, err := result.LastInsertId()
 	insertOk := err == nil && insertID > 0
 
 	if !insertOk {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
-	return db, insertID
+	return this.db, insertID
 }

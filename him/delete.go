@@ -17,15 +17,44 @@ func Delete(from ...string) DeleteBuilder {
 }
 
 type DeleteBuilder struct {
-	DB      *gorm.DB
+	db      *gorm.DB
+	connect *connect
 	builder squirrel.DeleteBuilder
 	wheres  *wheres
+	Error   error
+}
+
+func NewDeleteBuilder(connect ...string) DeleteBuilder {
+	if len(connect) > 0 {
+		dbc, err := getConnect(connect[0])
+		if err != nil {
+			return DeleteBuilder{Error: err}
+		}
+		return DeleteBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+	} else {
+		dbc, err := getConnect(DefaultConnect)
+		if err != nil {
+			return DeleteBuilder{Error: err}
+		}
+		return DeleteBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+	}
+}
+
+func (this DeleteBuilder) DB() *gorm.DB {
+	return this.db
+}
+
+func (this DeleteBuilder) Transaction(db *gorm.DB) DeleteBuilder {
+	this.db = db
+	return this
 }
 
 func (this DeleteBuilder) Delete(from ...string) DeleteBuilder {
-	builder := Delete(from...)
-	this.builder = builder.builder
-	this.wheres = builder.wheres
+	var f string
+	if len(from) > 0 {
+		f = from[0]
+	}
+	this.builder = squirrel.Delete(f)
 	return this
 }
 
@@ -145,29 +174,17 @@ func (this DeleteBuilder) ToSql() (string, []interface{}, error) {
 }
 
 func (this DeleteBuilder) Exec() (*gorm.DB, int64) {
-	var db *gorm.DB
-	if this.DB == nil {
-		_db_, err := Gorm()
-		if err != nil {
-			_db_.Error = err
-			return _db_, 0
-		}
-		db = _db_
-	} else {
-		db = this.DB
-	}
-
 	sql, args, err := this.ToSql()
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
 	var (
 		curTime = time.Now()
 		stmt    = &gorm.Statement{
-			DB:       db,
-			ConnPool: db.ConnPool,
+			DB:       this.db,
+			ConnPool: this.db.ConnPool,
 			Context:  context.Background(),
 			Clauses:  map[string]clause.Clause{},
 		}
@@ -177,25 +194,25 @@ func (this DeleteBuilder) Exec() (*gorm.DB, int64) {
 	stmt.SQL.WriteString(sql)
 	stmt.Vars = args
 
-	result, err := db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
+	result, err := this.db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
 
-	db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
+	this.db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
 		sqlStr, vars := stmt.SQL.String(), stmt.Vars
-		if filter, ok := db.Logger.(gorm.ParamsFilter); ok {
+		if filter, ok := this.db.Logger.(gorm.ParamsFilter); ok {
 			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
 		}
 		affected, err1 := result.RowsAffected()
 		if err1 != nil {
-			return db.Dialector.Explain(sqlStr, vars...), 0
+			return this.db.Dialector.Explain(sqlStr, vars...), 0
 		}
 		rowsAffected = affected
-		return db.Dialector.Explain(sqlStr, vars...), affected
-	}, db.Error)
+		return this.db.Dialector.Explain(sqlStr, vars...), affected
+	}, this.db.Error)
 
 	if err != nil {
-		db.Error = err
-		return db, 0
+		this.db.Error = err
+		return this.db, 0
 	}
 
-	return db, rowsAffected
+	return this.db, rowsAffected
 }

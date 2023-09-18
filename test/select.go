@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	him.DbConfig().
+	dbc := him.DbConfig(him.DefaultConnect).
 		SetHost("192.168.8.99").
 		SetPort("3306").
 		SetDatabase("test").
@@ -20,7 +20,7 @@ func main() {
 		SetMaxLifetime(1000).
 		SetLogMode("Info").
 		SetColorful(true)
-	db, err := him.Init()
+	db, err := him.Init(dbc)
 	if err != nil {
 		panic(err)
 	}
@@ -140,7 +140,7 @@ func main() {
 	fmt.Println(users9, paginate)
 	fmt.Println(db9.Error) // <nil>
 
-	db10, count := him.Query().
+	count := him.Query().
 		Select("count(distinct(user_name))").
 		From("users").
 		// Where("user_name", "=", "kkk").
@@ -150,7 +150,6 @@ func main() {
 	// SELECT count(distinct(user_name)) FROM `users`
 	// SELECT count(distinct(user_name)) FROM `users` GROUP BY `user_name`
 	fmt.Println("db10: ", count)
-	fmt.Println(db10.Error) // <nil>
 
 	users11 := make([]map[string]interface{}, 0)
 	db11 := him.Query().
@@ -174,14 +173,13 @@ func main() {
 	fmt.Println("db11: ", users11)
 	fmt.Println(db11.Error) // <nil>
 
-	db12, sum := him.Query().
+	sum := him.Query().
 		From("users").
 		Where("user_name", "=", "jjj").
 		Sum("is_delete")
 	// SELECT SUM(is_delete) count_ FROM users LIMIT 1
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
 	fmt.Println("db12: ", sum)
-	fmt.Println(db12.Error) // <nil>
 
 	users13 := make([]map[string]interface{}, 0)
 	db13 := him.Query().Raw("SELECT * FROM users").
@@ -191,67 +189,79 @@ func main() {
 	fmt.Println("users13: ", users13)
 	fmt.Println(db13.Error) // <nil>
 
-	users14 := make([]map[string]interface{}, 0)
-	db14 := him.Query().Select("*").
-		From("users").
-		WhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
-			return builder.Raw("user_id = ?", 1)
-		}).
-		Get(&users14)
-	// SELECT * FROM users WHERE (user_id = 1)
-	fmt.Println("users14: ", users14)
-	fmt.Println(db14.Error) // <nil>
+	for i := 0; i < 10; i++ {
+		go func() {
+			connect, err := him.DBConnect(him.DefaultConnect)
+			if err != nil {
+				panic(err)
+			}
 
-	users15 := make([]map[string]interface{}, 0)
-	db15 := him.Query().Select("*").
-		From("users").
-		OrderBy("user_id desc").
-		First(&users15)
-	// SELECT * FROM users ORDER BY user_id desc LIMIT 1
-	fmt.Println("users15: ", users15)
-	fmt.Println(db15.Error) // <nil>
+			users14 := make([]map[string]interface{}, 0)
+			db14 := connect.Query().Select("*").
+				From("users").
+				WhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
+					return builder.Raw("user_id = ?", 1)
+				}).
+				Get(&users14)
+			// SELECT * FROM users WHERE (user_id = 1)
+			fmt.Println("users14: ", users14)
+			fmt.Println(db14.Error) // <nil>
 
-	users16 := make([]map[string]interface{}, 0)
-	db16 := him.Query().
-		Distinct().
-		Select("user_name").
-		From("users").
-		OrderBy("user_id desc").
-		Get(&users16)
-	// SELECT DISTINCT user_name FROM users ORDER BY user_id desc
-	fmt.Println("users16: ", users16)
-	fmt.Println(db16.Error) // <nil>
+			users15 := make([]map[string]interface{}, 0)
+			db15 := connect.Query().Select("*").
+				From("users").
+				OrderBy("user_id desc").
+				First(&users15)
+			// SELECT * FROM users ORDER BY user_id desc LIMIT 1
+			fmt.Println("users15: ", users15)
+			fmt.Println(db15.Error) // <nil>
 
-	users17 := make([]map[string]interface{}, 0)
-	db17 := him.Query().
-		Select("*").
-		From("users AS A").
-		Join("ts_user AS B", "B.uname", "=", "A.user_name").
-		OrderBy("A.user_id desc").
-		Get(&users17)
-	// SELECT * FROM users AS A JOIN ts_user AS B ON B.uname = A.user_name ORDER BY A.user_id desc
-	fmt.Println("users17: ", users17)
-	fmt.Println(db17.Error) // <nil>
+			users16 := make([]map[string]interface{}, 0)
+			db16 := connect.Query().
+				Distinct().
+				Select("user_name").
+				From("users").
+				OrderBy("user_id desc").
+				Get(&users16)
+			// SELECT DISTINCT user_name FROM users ORDER BY user_id desc
+			fmt.Println("users16: ", users16)
+			fmt.Println(db16.Error) // <nil>
 
-	users18 := make([]map[string]interface{}, 0)
-	db18 := him.Query().
-		Select("*").
-		From("users AS A").
-		InnerJoin("ts_user AS B", "B.uname", "=", "A.user_name").
-		OrderBy("A.user_id desc").
-		Get(&users18)
-	// SELECT * FROM users AS A INNER JOIN ts_user AS B ON B.uname = A.user_name ORDER BY A.user_id desc
-	fmt.Println("users18: ", users18)
-	fmt.Println(db18.Error) // <nil>
+			users17 := make([]map[string]interface{}, 0)
+			db17 := connect.Query().
+				Select("*").
+				From("users AS A").
+				Join("ts_user AS B", "B.uname", "=", "A.user_name").
+				OrderBy("A.user_id desc").
+				Get(&users17)
+			// SELECT * FROM users AS A JOIN ts_user AS B ON B.uname = A.user_name ORDER BY A.user_id desc
+			fmt.Println("users17: ", users17)
+			fmt.Println(db17.Error) // <nil>
 
-	users19 := make([]map[string]interface{}, 0)
-	db19 := him.Query().
-		Select("*").
-		From("ts_user AS A").
-		LeftJoin("users AS B", "B.user_name", "=", "A.uname").
-		OrderBy("B.user_id desc").
-		Get(&users19)
-	// SELECT * FROM ts_user AS A LEFT JOIN users AS B ON B.user_name = A.uname ORDER BY B.user_id desc
-	fmt.Println("users19: ", users19)
-	fmt.Println(db19.Error) // <nil>
+			users18 := make([]map[string]interface{}, 0)
+			db18 := connect.Query().
+				Select("*").
+				From("users AS A").
+				InnerJoin("ts_user AS B", "B.uname", "=", "A.user_name").
+				OrderBy("A.user_id desc").
+				Get(&users18)
+			// SELECT * FROM users AS A INNER JOIN ts_user AS B ON B.uname = A.user_name ORDER BY A.user_id desc
+			fmt.Println("users18: ", users18)
+			fmt.Println(db18.Error) // <nil>
+
+			users19 := make([]map[string]interface{}, 0)
+			db19 := connect.Query().
+				Select("*").
+				From("ts_user AS A").
+				LeftJoin("users AS B", "B.user_name", "=", "A.uname").
+				OrderBy("B.user_id desc").
+				Get(&users19)
+			// SELECT * FROM ts_user AS A LEFT JOIN users AS B ON B.user_name = A.uname ORDER BY B.user_id desc
+			fmt.Println("users19: ", users19)
+			fmt.Println(db19.Error) // <nil>
+		}()
+	}
+	for true {
+
+	}
 }
