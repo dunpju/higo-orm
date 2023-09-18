@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/dunpju/higo-orm/him"
+	"github.com/dunpju/higo-orm/him/Transaction"
 	"github.com/dunpju/higo-orm/orm"
-	"github.com/dunpju/higo-orm/orm/Transaction"
 )
 
 func main() {
-	orm.DbConfig().
+	him.DbConfig().
 		SetHost("192.168.8.99").
 		SetPort("3306").
 		SetDatabase("test").
