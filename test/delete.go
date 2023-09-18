@@ -48,7 +48,7 @@ func main() {
 		Update().
 		Table("users").
 		Set("user_name", "user_name_delete111").
-		Where("user_id = ?", 2).
+		Where("user_id", "=", 2).
 		Exec()
 	fmt.Println("delete2: ", affected, fmt.Sprintf("%p", delete2), delete2.Error)
 	delete2.Commit()
