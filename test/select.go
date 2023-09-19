@@ -18,7 +18,7 @@ func main() {
 		SetPrefix("tl_").
 		SetMaxIdle(3).
 		SetMaxOpen(5).
-		SetMaxLifetime(5).
+		SetMaxLifetime(60).
 		SetLogMode("Info").
 		SetColorful(true)
 	db, err := him.Init(dbc)
