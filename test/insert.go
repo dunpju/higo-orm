@@ -56,7 +56,7 @@ func main() {
 		LastInsertId()
 	fmt.Println("db21: ", id, db21.Error)
 
-	db22, affected := connect.Begin(db21).
+	db22, affected := connect.TX(db21).
 		Update().
 		Table("users").
 		Set("user_name", "user_name_98").

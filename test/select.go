@@ -25,10 +25,15 @@ func main() {
 		panic(err)
 	}
 
+	connect, err := him.DBConnect(him.DefaultConnect)
+	if err != nil {
+		panic(err)
+	}
+
 	userNames := make([]string, 0)
 	userNames = append(userNames, "ggg")
 	userNames = append(userNames, "ttttt")
-	sql, args, err := him.Query().Select("*").
+	sql, args, err := connect.Query().Select("*").
 		From("users").
 		WhereIn("user_name", userNames).
 		OrWhere("is_delete", "=", 1).
@@ -46,7 +51,7 @@ func main() {
 	fmt.Println(users1)
 
 	users2 := make([]map[string]interface{}, 0)
-	sql, args, err = him.Query().Select("*").
+	sql, args, err = connect.Query().Select("*").
 		From("users").
 		WhereBetween("day", "2023-06-11", "2023-06-12").
 		ToSql()
@@ -55,7 +60,7 @@ func main() {
 	fmt.Println(users2)
 
 	users3 := make([]map[string]interface{}, 0)
-	sql, args, err = him.Query().Select("*").
+	sql, args, err = connect.Query().Select("*").
 		From("users").
 		WhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
 			return builder.Where("user_id", "=", 3).OrWhere("user_id", "=", 5)
@@ -68,7 +73,7 @@ func main() {
 	fmt.Println(users3)
 
 	users4 := make([]map[string]interface{}, 0)
-	sql, args, err = him.Query().Select("*").
+	sql, args, err = connect.Query().Select("*").
 		From("users").
 		Where("user_id", "=", 4).
 		OrWhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
@@ -92,7 +97,7 @@ func main() {
 	fmt.Println(users4)
 
 	users5 := make([]map[string]interface{}, 0)
-	sql, args, err = him.Query().Select("user_id", "user_name", "day").
+	sql, args, err = connect.Query().Select("user_id", "user_name", "day").
 		From("users").
 		Where("user_id", "=", 4).
 		ToSql()
@@ -103,7 +108,7 @@ func main() {
 	fmt.Println(users5)
 
 	users6 := make([]map[string]interface{}, 0)
-	him.Query().Select("user_id", "user_name").
+	connect.Query().Select("user_id", "user_name").
 		From("users").
 		Where("user_id", "=", 8).
 		First(&users6)
@@ -111,7 +116,7 @@ func main() {
 	fmt.Println(users6)
 
 	users7 := make([]map[string]interface{}, 0)
-	db7 := him.Query().Select("user_id", "user_name").
+	db7 := connect.Query().Select("user_id", "user_name").
 		From("users1").
 		Where("user_id", "=", 8).
 		First(&users7)
@@ -121,7 +126,7 @@ func main() {
 	fmt.Println(db7.Error)
 
 	users8 := make([]map[string]interface{}, 0)
-	db8 := him.Query().Select("user_id", "user_name").
+	db8 := connect.Query().Select("user_id", "user_name").
 		From("users").
 		Where("user_id", "=", 7).
 		First(&users8)
@@ -130,7 +135,7 @@ func main() {
 	fmt.Println(db8.Error) // <nil>
 
 	users9 := make([]map[string]interface{}, 0)
-	db9, paginate := him.Query().Select("user_id", "user_name").
+	db9, paginate := connect.Query().Select("user_id", "user_name").
 		From("users").
 		Where("user_name", "=", "kkk").
 		Paginate(2, 2, &users9)
@@ -140,7 +145,7 @@ func main() {
 	fmt.Println(users9, paginate)
 	fmt.Println(db9.Error) // <nil>
 
-	count := him.Query().
+	count := connect.Query().
 		Select("count(distinct(user_name))").
 		From("users").
 		// Where("user_name", "=", "kkk").
@@ -152,7 +157,7 @@ func main() {
 	fmt.Println("db10: ", count)
 
 	users11 := make([]map[string]interface{}, 0)
-	db11 := him.Query().
+	db11 := connect.Query().
 		//Select("count(distinct(user_name)) count", "user_name").
 		Select("count(user_name) count", "user_name").
 		From("users").
@@ -173,7 +178,7 @@ func main() {
 	fmt.Println("db11: ", users11)
 	fmt.Println(db11.Error) // <nil>
 
-	sum := him.Query().
+	sum := connect.Query().
 		From("users").
 		Where("user_name", "=", "jjj").
 		Sum("is_delete")
@@ -182,7 +187,7 @@ func main() {
 	fmt.Println("db12: ", sum)
 
 	users13 := make([]map[string]interface{}, 0)
-	db13 := him.Query().Raw("SELECT * FROM users").
+	db13 := connect.Query().Raw("SELECT * FROM users").
 		Get(&users13)
 	// SELECT * FROM users
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1

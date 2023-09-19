@@ -31,6 +31,10 @@ func (this *DB) Begin(tx ...*gorm.DB) *Transaction {
 	return begin(this.connect, tx...)
 }
 
+func (this *DB) TX(tx ...*gorm.DB) *Transaction {
+	return this.Begin(tx...)
+}
+
 func (this *DB) GormDB() *gorm.DB {
 	return this.gormDB
 }

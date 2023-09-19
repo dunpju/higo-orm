@@ -42,12 +42,15 @@ func main() {
 		Exec()
 	fmt.Println("delete1: ", affected, fmt.Sprintf("%p", delete1), delete1.Error)
 
-	delete2, affected := connect.Begin(delete1).
+	delete2, affected := connect.TX(delete1).
 		Update().
 		Table("users").
 		Set("user_name", "user_name_delete111").
 		Where("user_id", "=", 2).
 		Exec()
 	fmt.Println("delete2: ", affected, fmt.Sprintf("%p", delete2), delete2.Error)
+	if delete2.Error != nil {
+		panic(delete2.Error)
+	}
 	delete2.Rollback()
 }
