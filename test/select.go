@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
+	"time"
 )
 
 func main() {
@@ -15,9 +16,9 @@ func main() {
 		SetCharset("utf8mb4").
 		SetDriver("mysql").
 		SetPrefix("tl_").
-		SetMaxIdle(5).
-		SetMaxOpen(10).
-		SetMaxLifetime(1000).
+		SetMaxIdle(3).
+		SetMaxOpen(5).
+		SetMaxLifetime(5).
 		SetLogMode("Info").
 		SetColorful(true)
 	db, err := him.Init(dbc)
@@ -196,13 +197,12 @@ func main() {
 
 	for i := 0; i < 10; i++ {
 		go func() {
-			connect, err := him.DBConnect(him.DefaultConnect)
+			connect14, err := him.DBConnect(him.DefaultConnect)
 			if err != nil {
 				panic(err)
 			}
-
 			users14 := make([]map[string]interface{}, 0)
-			db14 := connect.Query().Select("*").
+			db14 := connect14.Query().Select("*").
 				From("users").
 				WhereRaw(func(builder him.WhereRawBuilder) him.WhereRawBuilder {
 					return builder.Raw("user_id = ?", 1)
@@ -211,18 +211,29 @@ func main() {
 			// SELECT * FROM users WHERE (user_id = 1)
 			fmt.Println("users14: ", users14)
 			fmt.Println(db14.Error) // <nil>
-
+		}()
+		go func() {
+			connect15, err := him.DBConnect(him.DefaultConnect)
+			if err != nil {
+				panic(err)
+			}
 			users15 := make([]map[string]interface{}, 0)
-			db15 := connect.Query().Select("*").
+			db15 := connect15.Query().Select("*").
 				From("users").
 				OrderBy("user_id desc").
 				First(&users15)
 			// SELECT * FROM users ORDER BY user_id desc LIMIT 1
 			fmt.Println("users15: ", users15)
 			fmt.Println(db15.Error) // <nil>
+		}()
+		go func(i int) {
+			connect16, err := him.DBConnect(him.DefaultConnect)
+			if err != nil {
+				panic(err)
+			}
 
 			users16 := make([]map[string]interface{}, 0)
-			db16 := connect.Query().
+			db16 := connect16.Query().
 				Distinct().
 				Select("user_name").
 				From("users").
@@ -231,9 +242,12 @@ func main() {
 			// SELECT DISTINCT user_name FROM users ORDER BY user_id desc
 			fmt.Println("users16: ", users16)
 			fmt.Println(db16.Error) // <nil>
+			if i%2 == 0 {
+				time.Sleep(time.Duration(i) * time.Second)
+			}
 
 			users17 := make([]map[string]interface{}, 0)
-			db17 := connect.Query().
+			db17 := connect16.Query().
 				Select("*").
 				From("users AS A").
 				Join("ts_user AS B", "B.uname", "=", "A.user_name").
@@ -244,7 +258,7 @@ func main() {
 			fmt.Println(db17.Error) // <nil>
 
 			users18 := make([]map[string]interface{}, 0)
-			db18 := connect.Query().
+			db18 := connect16.Query().
 				Select("*").
 				From("users AS A").
 				InnerJoin("ts_user AS B", "B.uname", "=", "A.user_name").
@@ -255,7 +269,7 @@ func main() {
 			fmt.Println(db18.Error) // <nil>
 
 			users19 := make([]map[string]interface{}, 0)
-			db19 := connect.Query().
+			db19 := connect16.Query().
 				Select("*").
 				From("ts_user AS A").
 				LeftJoin("users AS B", "B.user_name", "=", "A.uname").
@@ -264,7 +278,7 @@ func main() {
 			// SELECT * FROM ts_user AS A LEFT JOIN users AS B ON B.user_name = A.uname ORDER BY B.user_id desc
 			fmt.Println("users19: ", users19)
 			fmt.Println(db19.Error) // <nil>
-		}()
+		}(i)
 	}
 	for true {
 
