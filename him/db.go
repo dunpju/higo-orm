@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 type DB struct {
 	gormDB  *gorm.DB
 	connect string
+	prep    *Preprocessor
 }
 
 func NewDB(db *gorm.DB, connect string) *DB {
@@ -37,4 +38,8 @@ func (this *DB) TX(tx ...*gorm.DB) *Transaction {
 
 func (this *DB) GormDB() *gorm.DB {
 	return this.gormDB
+}
+
+func (this *DB) Prep() *Preprocessor {
+	return newPreprocessor(this)
 }
