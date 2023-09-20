@@ -24,9 +24,9 @@ type DeleteBuilder struct {
 	Error   error
 }
 
-func NewDeleteBuilder(connect ...string) DeleteBuilder {
-	if len(connect) > 0 {
-		dbc, err := getConnect(connect[0])
+func newDeleteBuilder(connect string) DeleteBuilder {
+	if connect != "" {
+		dbc, err := getConnect(connect)
 		if err != nil {
 			return DeleteBuilder{Error: err}
 		}

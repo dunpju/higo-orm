@@ -16,9 +16,9 @@ type UpdateBuilder struct {
 	Error   error
 }
 
-func NewUpdateBuilder(connect ...string) UpdateBuilder {
-	if len(connect) > 0 {
-		dbc, err := getConnect(connect[0])
+func newUpdateBuilder(connect string) UpdateBuilder {
+	if connect != "" {
+		dbc, err := getConnect(connect)
 		if err != nil {
 			return UpdateBuilder{Error: err}
 		}

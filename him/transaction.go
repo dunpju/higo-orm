@@ -26,13 +26,13 @@ func begin(connect string, tx ...*gorm.DB) *Transaction {
 }
 
 func (this *Transaction) Insert(into string) InsertBuilder {
-	return NewInsertBuilder(this.connect).Transaction(this.db).Insert(into)
+	return newInsertBuilder(this.connect).Transaction(this.db).Insert(into)
 }
 
 func (this *Transaction) Update(table ...string) UpdateBuilder {
-	return NewUpdateBuilder(this.connect).Transaction(this.db).Update(table...)
+	return newUpdateBuilder(this.connect).Transaction(this.db).Update(table...)
 }
 
 func (this *Transaction) Delete(from ...string) DeleteBuilder {
-	return NewDeleteBuilder(this.connect).Transaction(this.db).Delete(from...)
+	return newDeleteBuilder(this.connect).Transaction(this.db).Delete(from...)
 }

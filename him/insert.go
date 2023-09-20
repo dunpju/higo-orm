@@ -19,7 +19,7 @@ type InsertBuilder struct {
 	Error      error
 }
 
-func newInsertBuilder(db *gorm.DB, connect *connect) InsertBuilder {
+func newDBInsertBuilder(db *gorm.DB, connect *connect) InsertBuilder {
 	return InsertBuilder{db: db, connect: connect, setColumns: newInsertColumn(), setValues: make([]*insertValue, 0)}
 }
 
@@ -27,19 +27,19 @@ func newErrorInsertBuilder(err error) InsertBuilder {
 	return InsertBuilder{Error: err}
 }
 
-func NewInsertBuilder(connect ...string) InsertBuilder {
-	if len(connect) > 0 {
-		dbc, err := getConnect(connect[0])
+func newInsertBuilder(connect string) InsertBuilder {
+	if connect != "" {
+		dbc, err := getConnect(connect)
 		if err != nil {
 			return newErrorInsertBuilder(err)
 		}
-		return newInsertBuilder(dbc.db.GormDB(), dbc)
+		return newDBInsertBuilder(dbc.db.GormDB(), dbc)
 	} else {
 		dbc, err := getConnect(DefaultConnect)
 		if err != nil {
 			return newErrorInsertBuilder(err)
 		}
-		return newInsertBuilder(dbc.db.GormDB(), dbc)
+		return newDBInsertBuilder(dbc.db.GormDB(), dbc)
 	}
 }
 

@@ -35,9 +35,9 @@ type SelectBuilder struct {
 	Error       error
 }
 
-func Query(connect ...string) SelectBuilder {
-	if len(connect) > 0 {
-		dbc, err := getConnect(connect[0])
+func newSelectBuilder(connect string) SelectBuilder {
+	if connect != "" {
+		dbc, err := getConnect(connect)
 		if err != nil {
 			return SelectBuilder{Error: err}
 		}

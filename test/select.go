@@ -146,7 +146,7 @@ func main() {
 	fmt.Println(users9, paginate)
 	fmt.Println(db9.Error) // <nil>
 
-	count := connect.Query().
+	select10, count := connect.Query().
 		Select("count(distinct(user_name))").
 		From("users").
 		// Where("user_name", "=", "kkk").
@@ -155,7 +155,7 @@ func main() {
 	// SELECT count(*) FROM `users` WHERE (user_name = 'kkk')
 	// SELECT count(distinct(user_name)) FROM `users`
 	// SELECT count(distinct(user_name)) FROM `users` GROUP BY `user_name`
-	fmt.Println("db10: ", count)
+	fmt.Println("select10: ", select10, count)
 
 	users11 := make([]map[string]interface{}, 0)
 	db11 := connect.Query().
@@ -179,13 +179,13 @@ func main() {
 	fmt.Println("db11: ", users11)
 	fmt.Println(db11.Error) // <nil>
 
-	sum := connect.Query().
+	select12, sum := connect.Query().
 		From("users").
 		Where("user_name", "=", "jjj").
 		Sum("is_delete")
 	// SELECT SUM(is_delete) count_ FROM users LIMIT 1
 	// SELECT SUM(is_delete) count_ FROM users WHERE (user_name = 'jjj') LIMIT 1
-	fmt.Println("db12: ", sum)
+	fmt.Println("select12: ", select12, sum)
 
 	users13 := make([]map[string]interface{}, 0)
 	db13 := connect.Query().Raw("SELECT * FROM users").

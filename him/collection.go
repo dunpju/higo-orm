@@ -57,7 +57,7 @@ func (this SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gor
 	return this.db, Paginate{Total: uint64(count_.Count_), PerPage: perPage, CurrentPage: page, Items: dest}
 }
 
-func (this SelectBuilder) Count() int64 {
+func (this SelectBuilder) Count() (*gorm.DB, int64) {
 	var count_ int64
 	this.db = this.db.Table(this.from)
 	if len(this.columns) > 0 {
@@ -67,7 +67,7 @@ func (this SelectBuilder) Count() int64 {
 		pred, args, err := this.wheres.pred()
 		if err != nil {
 			this.db.Error = err
-			return count_
+			return this.db, count_
 		}
 		this.db = this.db.Where(pred, args...)
 	}
@@ -77,20 +77,20 @@ func (this SelectBuilder) Count() int64 {
 		}
 	}
 	this.db = this.db.Count(&count_)
-	return count_
+	return this.db, count_
 }
 
-func (this SelectBuilder) Sum(column string) uint64 {
+func (this SelectBuilder) Sum(column string) (*gorm.DB, uint64) {
 	countStatement := this.sum(column)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
 		this.db.Error = err
-		return 0
+		return this.db, 0
 	}
 	count_ := counter{}
 	this.db.Raw(countSql, args...).Scan(&count_)
 	if this.db.Error != nil {
-		return 0
+		return this.db, 0
 	}
-	return uint64(count_.Count_)
+	return this.db, uint64(count_.Count_)
 }
