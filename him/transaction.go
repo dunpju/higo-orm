@@ -38,3 +38,7 @@ func (this *Transaction) Update() UpdateTable {
 func (this *Transaction) Delete() DeleteFrom {
 	return newDeleteFrom(this.dbc.DB(), this.gormDB)
 }
+
+func (this *Transaction) Raw(pred string, args ...interface{}) ExecRaw {
+	return newExecRaw(this.dbc.DB(), this.gormDB, pred, args)
+}

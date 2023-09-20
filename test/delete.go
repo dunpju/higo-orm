@@ -52,5 +52,11 @@ func main() {
 	if delete2.Error != nil {
 		panic(delete2.Error)
 	}
-	delete2.Rollback()
+	delete3, insertID, rowsAffected := connect.Begin(delete2).
+		Raw("DELETE FROM users WHERE (user_id = ?)", 3).
+		Exec()
+	// DELETE FROM users WHERE (user_id = 3)
+	// delete3:  0 1 0xc0001ced20 <nil>
+	fmt.Println("delete3: ", insertID, rowsAffected, fmt.Sprintf("%p", delete3), delete3.Error)
+	delete3.Commit()
 }
