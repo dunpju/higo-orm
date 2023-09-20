@@ -218,5 +218,6 @@ func (this ExecRaw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64)
 	} else {
 		gormDB, insertID, rowsAffected = newExecer(newSelectBuilder(this.db.connect).Raw(this.pred, this.args...), this.gormDB).exec()
 	}
+	this.db.gormDB = gormDB
 	return
 }
