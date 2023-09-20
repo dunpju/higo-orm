@@ -63,7 +63,14 @@ func main() {
 		Where("user_id", "=", 2).
 		Exec()
 	fmt.Println("db22: ", affected, fmt.Sprintf("%p", db22), db22.Error)
-	db21.Rollback()
+	db22.Rollback()
+
+	insert23, id := connect.Insert("users").
+		Set("user_name", "insert23").
+		Set("day", time.Now().Format(time.DateOnly)).
+		Set("create_time", time.Now().Format(time.DateTime)).
+		LastInsertId()
+	fmt.Println("insert23: ", id, insert23.Error)
 
 }
 
