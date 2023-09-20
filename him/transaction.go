@@ -10,7 +10,7 @@ type Transaction struct {
 	Error  error
 }
 
-func begin(db *DB, tx ...*gorm.DB) *Transaction {
+func begin(db *DB, tx *gorm.DB) *Transaction {
 	transaction := &Transaction{}
 	dbc, err := getConnect(db.connect)
 	if err != nil {
@@ -18,8 +18,8 @@ func begin(db *DB, tx ...*gorm.DB) *Transaction {
 		return transaction
 	}
 	transaction.dbc = dbc
-	if len(tx) > 0 {
-		transaction.gormDB = tx[0]
+	if tx != nil {
+		transaction.gormDB = tx
 	} else {
 		transaction.gormDB = dbc.DB().GormDB().Begin()
 	}

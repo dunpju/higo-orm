@@ -149,7 +149,11 @@ func (this DeleteFrom) From(from string) DeleteBuilder {
 
 func (this *DB) Begin(tx ...*gorm.DB) *Transaction {
 	this.begin = true
-	return begin(this, tx...)
+	var t *gorm.DB
+	if len(tx) > 0 {
+		t = tx[0]
+	}
+	return begin(this, t)
 }
 
 func (this *DB) TX(tx *gorm.DB) *Transaction {
