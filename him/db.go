@@ -30,7 +30,11 @@ func newSelect(db *DB, gormDB *gorm.DB) Select {
 }
 
 func (this Select) selectBuilder() SelectBuilder {
-	this.db.builder = newSelectBuilder(this.db.connect)
+	if this.db.begin {
+		this.db.builder = newSelectBuilder(this.db.connect).begin(this.gormDB)
+	} else {
+		this.db.builder = newSelectBuilder(this.db.connect)
+	}
 	return this.db.builder.(SelectBuilder)
 }
 func (this Select) Distinct() Select {
