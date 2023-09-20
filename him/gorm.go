@@ -24,7 +24,7 @@ func Init(dbc *DBConfig) (*gorm.DB, error) {
 		return nil, fmt.Errorf("connect cannot be empty")
 	}
 	if conn, ok := _connect.Load(dbc.connect); ok {
-		return conn.(*gorm.DB), nil
+		return conn.(*connect).DB().GormDB(), nil
 	}
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
 		dbc.username,
