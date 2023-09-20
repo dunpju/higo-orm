@@ -2,7 +2,7 @@
 
 ## 简介
 ```
-基于gorm和squirrel封装的简易orm
+基于gorm和squirrel封装的orm,使用简单
 ```
 
 ## 安装
