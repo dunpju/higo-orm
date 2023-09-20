@@ -73,6 +73,11 @@ func (this SelectBuilder) DB() *gorm.DB {
 	return this.db
 }
 
+func (this SelectBuilder) begin(db *gorm.DB) SelectBuilder {
+	this.db = db
+	return this
+}
+
 func (this SelectBuilder) Select(columns ...string) SelectBuilder {
 	this.columns = append(this.columns, columns...)
 	return this

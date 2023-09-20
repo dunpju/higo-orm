@@ -194,7 +194,7 @@ func (this *DB) Exec() (*gorm.DB, int64) {
 }
 
 func (this *DB) Raw(pred string, args ...interface{}) ExecRaw {
-	return newExecRaw(this, this.gormDB)
+	return newExecRaw(this, this.gormDB, pred, args)
 }
 
 type ExecRaw struct {
@@ -204,11 +204,15 @@ type ExecRaw struct {
 	args   []interface{}
 }
 
-func newExecRaw(db *DB, gormDB *gorm.DB) ExecRaw {
-	return ExecRaw{db: db, gormDB: gormDB}
+func newExecRaw(db *DB, gormDB *gorm.DB, pred string, args []interface{}) ExecRaw {
+	return ExecRaw{db: db, gormDB: gormDB, pred: pred, args: args}
 }
 
 func (this ExecRaw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
-	gormDB, insertID, rowsAffected = newExecer(newSelectBuilder(this.db.connect).Raw(this.pred, this.args...), this.gormDB).exec()
+	if this.db.begin {
+		gormDB, insertID, rowsAffected = newExecer(newSelectBuilder(this.db.connect).begin(this.gormDB).Raw(this.pred, this.args...), this.gormDB).exec()
+	} else {
+		gormDB, insertID, rowsAffected = newExecer(newSelectBuilder(this.db.connect).Raw(this.pred, this.args...), this.gormDB).exec()
+	}
 	return
 }
