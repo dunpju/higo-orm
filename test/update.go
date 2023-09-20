@@ -100,13 +100,15 @@ func main() {
 			}
 		}()
 	}
-	wg.Wait()
+
 	connect1, err := him.DBConnect(him.DefaultConnect)
 	if err != nil {
 		panic(err)
 	}
 	for i := 0; i < 10; i++ {
 		go func(i int) {
+			wg.Add(1)
+			defer wg.Done()
 			update5, affected := connect1.Begin().Update().
 				Table("users").
 				Set("user_name", fmt.Sprintf("update5_%d", i)).
@@ -133,8 +135,6 @@ func main() {
 			}
 		}(i)
 	}
-	for true {
-
-	}
+	wg.Wait()
 
 }
