@@ -42,3 +42,7 @@ func (this *Transaction) Delete() DeleteFrom {
 func (this *Transaction) Raw(pred string, args ...interface{}) ExecRaw {
 	return newExecRaw(this.dbc.DB(), this.gormDB, pred, args)
 }
+
+func (this *Transaction) GormDB() *gorm.DB {
+	return this.gormDB
+}

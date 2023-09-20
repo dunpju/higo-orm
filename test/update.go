@@ -109,21 +109,25 @@ func main() {
 		go func(i int) {
 			wg.Add(1)
 			defer wg.Done()
-			update5, affected := connect1.Begin().Update().
-				Table("users").
-				Set("user_name", fmt.Sprintf("update5_%d", i)).
-				Where("user_id", "=", 2).
-				Exec()
-			// UPDATE users SET user_name = 'update5_9' WHERE (user_id = 2)
-			fmt.Println("update5: ", affected, fmt.Sprintf("%p", update5), update5.Error)
-			if i%2 == 0 {
-				update5.Error = fmt.Errorf("测试异常回滚%d", i)
-			}
+			update5 := connect1.Begin().GormDB()
+			update := connect1.TX(update5).Update().Table("users")
+			update = update.Where("user_id", "=", 2)
+			update = update.Set("user_name", fmt.Sprintf("update5_%d", i))
+
 			update6, affected := connect1.Begin(update5).Update().
 				Table("users").
 				Set("user_name", fmt.Sprintf("update6_%d", i)).
 				Where("user_id", "=", 7).
 				Exec()
+
+			// sql交叉测试
+			update5, affected5 := update.Exec()
+			// UPDATE users SET user_name = 'update5_9' WHERE (user_id = 2)
+			fmt.Println("update5: ", affected5, fmt.Sprintf("%p", update5), update5.Error)
+			if i%2 == 0 {
+				update5.Error = fmt.Errorf("测试异常回滚%d", i)
+			}
+
 			// UPDATE users SET user_name = 'update6_9' WHERE (user_id = 2)
 			fmt.Println("update6: ", affected, fmt.Sprintf("%p", update6), update6.Error)
 			if update6.Error != nil {
