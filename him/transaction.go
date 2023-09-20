@@ -5,34 +5,36 @@ import (
 )
 
 type Transaction struct {
-	db      *gorm.DB
-	connect string
-	Error   error
+	gormDB *gorm.DB
+	dbc    *connect
+	Error  error
 }
 
-func begin(connect string, tx ...*gorm.DB) *Transaction {
-	transaction := &Transaction{connect: connect}
-	if len(tx) > 0 {
-		transaction.db = tx[0]
-	} else {
-		dbc, err := getConnect(connect)
-		if err != nil {
-			transaction.Error = err
-			return transaction
-		}
-		transaction.db = dbc.DB().GormDB().Begin()
+func begin(db *DB, tx ...*gorm.DB) *Transaction {
+	transaction := &Transaction{}
+	dbc, err := getConnect(db.connect)
+	if err != nil {
+		transaction.Error = err
+		return transaction
 	}
+	transaction.dbc = dbc
+	if len(tx) > 0 {
+		transaction.gormDB = tx[0]
+	} else {
+		transaction.gormDB = dbc.DB().GormDB().Begin()
+	}
+
 	return transaction
 }
 
-func (this *Transaction) Insert(into string) InsertBuilder {
-	return newInsertBuilder(this.connect).Transaction(this.db).Insert(into)
+func (this *Transaction) Insert() InsertInto {
+	return newInsertInto(this.dbc.DB(), this.gormDB)
 }
 
-func (this *Transaction) Update(table ...string) UpdateBuilder {
-	return newUpdateBuilder(this.connect).Transaction(this.db).Update(table...)
+func (this *Transaction) Update() UpdateTable {
+	return newUpdateFrom(this.dbc.DB(), this.gormDB)
 }
 
-func (this *Transaction) Delete(from ...string) DeleteBuilder {
-	return newDeleteBuilder(this.connect).Transaction(this.db).Delete(from...)
+func (this *Transaction) Delete() DeleteFrom {
+	return newDeleteFrom(this.dbc.DB(), this.gormDB)
 }

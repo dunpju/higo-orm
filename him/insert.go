@@ -2,7 +2,6 @@ package him
 
 import (
 	"context"
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,6 +14,7 @@ type InsertBuilder struct {
 	connect    *connect
 	setColumns *insertColumn
 	setValues  []*insertValue
+	affected   int64
 	builder    squirrel.InsertBuilder
 	Error      error
 }
@@ -47,12 +47,12 @@ func (this InsertBuilder) DB() *gorm.DB {
 	return this.db
 }
 
-func (this InsertBuilder) Transaction(db *gorm.DB) InsertBuilder {
+func (this InsertBuilder) begin(db *gorm.DB) InsertBuilder {
 	this.db = db
 	return this
 }
 
-func (this InsertBuilder) Insert(into string) InsertBuilder {
+func (this InsertBuilder) insert(into string) InsertBuilder {
 	this.builder = squirrel.Insert(into)
 	return this
 }
@@ -131,7 +131,6 @@ func (this InsertBuilder) Set(column string, value interface{}) InsertBuilder {
 
 func (this InsertBuilder) toBuilder() InsertBuilder {
 	for _, value := range this.setValues {
-		fmt.Println(value.values...)
 		this = this.values(value.values...)
 	}
 	this = this.columns(this.setColumns.columns...)
@@ -142,11 +141,21 @@ func (this InsertBuilder) ToSql() (string, []interface{}, error) {
 	return this.toBuilder().builder.ToSql()
 }
 
+func (this InsertBuilder) Save() (*gorm.DB, int64) {
+	builder, db, _ := this.save()
+	return db, builder.affected
+}
+
 func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
+	_, db, id := this.save()
+	return db, id
+}
+
+func (this InsertBuilder) save() (InsertBuilder, *gorm.DB, int64) {
 	sql, args, err := this.ToSql()
 	if err != nil {
 		this.db.Error = err
-		return this.db, 0
+		return this, this.db, 0
 	}
 
 	var (
@@ -178,16 +187,23 @@ func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 
 	if err != nil {
 		this.db.Error = err
-		return this.db, 0
+		return this, this.db, 0
 	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		this.db.Error = err
+		return this, this.db, 0
+	}
+	this.affected = affected
 
 	insertID, err := result.LastInsertId()
 	insertOk := err == nil && insertID > 0
 
 	if !insertOk {
 		this.db.Error = err
-		return this.db, 0
+		return this, this.db, 0
 	}
 
-	return this.db, insertID
+	return this, this.db, insertID
 }

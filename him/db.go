@@ -7,6 +7,7 @@ import (
 type DB struct {
 	gormDB  *gorm.DB
 	connect string
+	begin   bool
 	builder interface{}
 }
 
@@ -19,23 +20,78 @@ func (this *DB) Query() SelectBuilder {
 	return this.builder.(SelectBuilder)
 }
 
-func (this *DB) Insert(into string) InsertBuilder {
-	this.builder = newInsertBuilder(this.connect).Insert(into)
-	return this.builder.(InsertBuilder)
+func (this *DB) Insert() InsertInto {
+	return newInsertInto(this, this.gormDB)
 }
 
-func (this *DB) Update(table string) UpdateBuilder {
-	this.builder = newUpdateBuilder(this.connect).Update(table)
-	return this.builder.(UpdateBuilder)
+type InsertInto struct {
+	db      *DB
+	gormDB  *gorm.DB
+	builder InsertBuilder
 }
 
-func (this *DB) Delete(from string) DeleteBuilder {
-	this.builder = newDeleteBuilder(this.connect).Delete(from)
-	return this.builder.(DeleteBuilder)
+func newInsertInto(db *DB, gormDB *gorm.DB) InsertInto {
+	return InsertInto{db: db, gormDB: gormDB}
+}
+
+func (this InsertInto) Into(from string) InsertBuilder {
+	if this.db.begin {
+		this.builder = newInsertBuilder(this.db.connect).begin(this.gormDB).insert(from)
+	} else {
+		this.builder = newInsertBuilder(this.db.connect).insert(from)
+	}
+	return this.builder
+}
+
+func (this *DB) Update() UpdateTable {
+	return newUpdateFrom(this, this.gormDB)
+}
+
+type UpdateTable struct {
+	db      *DB
+	gormDB  *gorm.DB
+	builder UpdateBuilder
+}
+
+func newUpdateFrom(db *DB, gormDB *gorm.DB) UpdateTable {
+	return UpdateTable{db: db, gormDB: gormDB}
+}
+
+func (this UpdateTable) Table(from string) UpdateBuilder {
+	if this.db.begin {
+		this.db.builder = newUpdateBuilder(this.db.connect).begin(this.gormDB).update(from)
+	} else {
+		this.db.builder = newUpdateBuilder(this.db.connect).update(from)
+	}
+	return this.db.builder.(UpdateBuilder)
+}
+
+func (this *DB) Delete() DeleteFrom {
+	return newDeleteFrom(this, this.gormDB)
+}
+
+type DeleteFrom struct {
+	db      *DB
+	gormDB  *gorm.DB
+	builder DeleteBuilder
+}
+
+func newDeleteFrom(db *DB, gormDB *gorm.DB) DeleteFrom {
+	return DeleteFrom{db: db, gormDB: gormDB}
+}
+
+func (this DeleteFrom) From(from string) DeleteBuilder {
+	if this.db.begin {
+		this.db.builder = newDeleteBuilder(this.db.connect).begin(this.gormDB).delete(from)
+	} else {
+		this.db.builder = newDeleteBuilder(this.db.connect).delete(from)
+	}
+	return this.db.builder.(DeleteBuilder)
 }
 
 func (this *DB) Begin(tx ...*gorm.DB) *Transaction {
-	return begin(this.connect, tx...)
+	this.begin = true
+	return begin(this, tx...)
 }
 
 func (this *DB) TX(tx ...*gorm.DB) *Transaction {
@@ -68,6 +124,10 @@ func (this *DB) Sum(column string) (*gorm.DB, uint64) {
 
 func (this *DB) LastInsertId() (*gorm.DB, int64) {
 	return this.builder.(InsertBuilder).LastInsertId()
+}
+
+func (this *DB) Save() (*gorm.DB, int64) {
+	return this.builder.(InsertBuilder).Save()
 }
 
 func (this *DB) Exec() (*gorm.DB, int64) {

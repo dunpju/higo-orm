@@ -44,22 +44,13 @@ func (this DeleteBuilder) DB() *gorm.DB {
 	return this.db
 }
 
-func (this DeleteBuilder) Transaction(db *gorm.DB) DeleteBuilder {
+func (this DeleteBuilder) begin(db *gorm.DB) DeleteBuilder {
 	this.db = db
 	return this
 }
 
-func (this DeleteBuilder) Delete(from ...string) DeleteBuilder {
-	var f string
-	if len(from) > 0 {
-		f = from[0]
-	}
-	this.builder = squirrel.Delete(f)
-	return this
-}
-
-func (this DeleteBuilder) From(from string) DeleteBuilder {
-	this.builder = this.builder.From(from)
+func (this DeleteBuilder) delete(from string) DeleteBuilder {
+	this.builder = squirrel.Delete(from)
 	return this
 }
 

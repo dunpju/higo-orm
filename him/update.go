@@ -36,27 +36,18 @@ func (this UpdateBuilder) DB() *gorm.DB {
 	return this.db
 }
 
-func (this UpdateBuilder) Transaction(db *gorm.DB) UpdateBuilder {
+func (this UpdateBuilder) begin(db *gorm.DB) UpdateBuilder {
 	this.db = db
 	return this
 }
 
-func (this UpdateBuilder) Update(table ...string) UpdateBuilder {
-	var t string
-	if len(table) > 0 {
-		t = table[0]
-	}
-	this.builder = squirrel.Update(t)
+func (this UpdateBuilder) update(table string) UpdateBuilder {
+	this.builder = squirrel.Update(table)
 	return this
 }
 
 func (this UpdateBuilder) Prefix(sql string, args ...interface{}) UpdateBuilder {
 	this.builder = this.builder.Prefix(sql, args...)
-	return this
-}
-
-func (this UpdateBuilder) Table(table string) UpdateBuilder {
-	this.builder = this.builder.Table(table)
 	return this
 }
 
