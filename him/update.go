@@ -1,11 +1,8 @@
 package him
 
 import (
-	"context"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
-	"time"
 )
 
 type UpdateBuilder struct {
@@ -197,45 +194,6 @@ func (this UpdateBuilder) ToSql() (string, []interface{}, error) {
 }
 
 func (this UpdateBuilder) Exec() (*gorm.DB, int64) {
-	sql, args, err := this.ToSql()
-	if err != nil {
-		this.db.Error = err
-		return this.db, 0
-	}
-
-	var (
-		curTime = time.Now()
-		stmt    = &gorm.Statement{
-			DB:       this.db,
-			ConnPool: this.db.ConnPool,
-			Context:  context.Background(),
-			Clauses:  map[string]clause.Clause{},
-		}
-		rowsAffected int64
-	)
-
-	stmt.SQL.WriteString(sql)
-	stmt.Vars = args
-
-	result, err := this.db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
-
-	this.db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
-		sqlStr, vars := stmt.SQL.String(), stmt.Vars
-		if filter, ok := this.db.Logger.(gorm.ParamsFilter); ok {
-			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
-		}
-		affected, err1 := result.RowsAffected()
-		if err1 != nil {
-			return this.db.Dialector.Explain(sqlStr, vars...), 0
-		}
-		rowsAffected = affected
-		return this.db.Dialector.Explain(sqlStr, vars...), affected
-	}, this.db.Error)
-
-	if err != nil {
-		this.db.Error = err
-		return this.db, 0
-	}
-
-	return this.db, rowsAffected
+	gormDB, _, rowsAffected := newExecer(this, this.db).exec()
+	return gormDB, rowsAffected
 }

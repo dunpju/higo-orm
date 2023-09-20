@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
+	"sync"
 	"time"
 )
 
@@ -180,6 +181,7 @@ func main() {
 	fmt.Println(db11.Error) // <nil>
 
 	select12, sum := connect.Query().
+		Select("*").
 		From("users").
 		Where("user_name", "=", "jjj").
 		Sum("is_delete")
@@ -195,8 +197,12 @@ func main() {
 	fmt.Println("users13: ", users13)
 	fmt.Println(db13.Error) // <nil>
 
+	wg := sync.WaitGroup{}
+
 	for i := 0; i < 10; i++ {
 		go func() {
+			wg.Add(1)
+			defer wg.Done()
 			connect14, err := him.DBConnect(him.DefaultConnect)
 			if err != nil {
 				panic(err)
@@ -213,6 +219,8 @@ func main() {
 			fmt.Println(db14.Error) // <nil>
 		}()
 		go func() {
+			wg.Add(1)
+			defer wg.Done()
 			connect15, err := him.DBConnect(him.DefaultConnect)
 			if err != nil {
 				panic(err)
@@ -227,6 +235,8 @@ func main() {
 			fmt.Println(db15.Error) // <nil>
 		}()
 		go func(i int) {
+			wg.Add(1)
+			defer wg.Done()
 			connect16, err := him.DBConnect(him.DefaultConnect)
 			if err != nil {
 				panic(err)
@@ -280,7 +290,9 @@ func main() {
 			fmt.Println(db19.Error) // <nil>
 		}(i)
 	}
-	for true {
-
-	}
+	wg.Wait()
+	select1 := make([]map[string]interface{}, 0)
+	select1DB := connect.Query().Raw("SELECT * FROM users LIMIT 1").
+		Get(&select1)
+	fmt.Println("select1:", select1DB, select1)
 }

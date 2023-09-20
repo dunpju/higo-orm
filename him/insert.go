@@ -1,12 +1,9 @@
 package him
 
 import (
-	"context"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"sync"
-	"time"
 )
 
 type InsertBuilder struct {
@@ -152,58 +149,12 @@ func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 }
 
 func (this InsertBuilder) save() (InsertBuilder, *gorm.DB, int64) {
-	sql, args, err := this.ToSql()
-	if err != nil {
-		this.db.Error = err
-		return this, this.db, 0
+	gormDB, insertID, rowsAffected := newExecer(this, this.db).exec()
+	if gormDB.Error != nil {
+		this.Error = gormDB.Error
+		return this, gormDB, 0
 	}
-
-	var (
-		curTime = time.Now()
-		stmt    = &gorm.Statement{
-			DB:       this.db,
-			ConnPool: this.db.ConnPool,
-			Context:  context.Background(),
-			Clauses:  map[string]clause.Clause{},
-		}
-	)
-
-	stmt.SQL.WriteString(sql)
-	stmt.Vars = args
-
-	result, err := this.db.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
-
-	this.db.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
-		sqlStr, vars := stmt.SQL.String(), stmt.Vars
-		if filter, ok := this.db.Logger.(gorm.ParamsFilter); ok {
-			sqlStr, vars = filter.ParamsFilter(stmt.Context, stmt.SQL.String(), stmt.Vars...)
-		}
-		affected, err1 := result.RowsAffected()
-		if err1 != nil {
-			return this.db.Dialector.Explain(sqlStr, vars...), 0
-		}
-		return this.db.Dialector.Explain(sqlStr, vars...), affected
-	}, this.db.Error)
-
-	if err != nil {
-		this.db.Error = err
-		return this, this.db, 0
-	}
-
-	affected, err := result.RowsAffected()
-	if err != nil {
-		this.db.Error = err
-		return this, this.db, 0
-	}
-	this.affected = affected
-
-	insertID, err := result.LastInsertId()
-	insertOk := err == nil && insertID > 0
-
-	if !insertOk {
-		this.db.Error = err
-		return this, this.db, 0
-	}
-
+	this.db = gormDB
+	this.affected = rowsAffected
 	return this, this.db, insertID
 }

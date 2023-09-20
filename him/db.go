@@ -15,9 +15,63 @@ func newDB(db *gorm.DB, connect string) *DB {
 	return &DB{gormDB: db, connect: connect}
 }
 
-func (this *DB) Query() SelectBuilder {
-	this.builder = newSelectBuilder(this.connect)
-	return this.builder.(SelectBuilder)
+func (this *DB) Query() Select {
+	return newSelect(this, this.gormDB)
+}
+
+type Select struct {
+	db         *DB
+	gormDB     *gorm.DB
+	selectFrom SelectFrom
+}
+
+func newSelect(db *DB, gormDB *gorm.DB) Select {
+	return Select{db: db, gormDB: gormDB}
+}
+
+func (this Select) selectBuilder() SelectBuilder {
+	this.db.builder = newSelectBuilder(this.db.connect)
+	return this.db.builder.(SelectBuilder)
+}
+func (this Select) Distinct() Select {
+	this.db.builder = this.selectBuilder().Distinct()
+	return this
+}
+func (this Select) Select(columns ...string) SelectFrom {
+	this.db.builder = this.selectBuilder().Select(columns...)
+	return newSelectFrom(this.db, this.gormDB)
+}
+
+func (this Select) Raw(pred string, args ...interface{}) SelectRaw {
+	this.db.builder = this.selectBuilder().Raw(pred, args...)
+	return newSelectRaw(this.db, this.gormDB)
+}
+
+type SelectRaw struct {
+	db     *DB
+	gormDB *gorm.DB
+}
+
+func newSelectRaw(db *DB, gormDB *gorm.DB) SelectRaw {
+	return SelectRaw{db: db, gormDB: gormDB}
+}
+
+func (this SelectRaw) Get(dest interface{}) *gorm.DB {
+	return this.db.builder.(SelectBuilder).Get(dest)
+}
+
+type SelectFrom struct {
+	db     *DB
+	gormDB *gorm.DB
+}
+
+func newSelectFrom(db *DB, gormDB *gorm.DB) SelectFrom {
+	return SelectFrom{db: db, gormDB: gormDB}
+}
+
+func (this SelectFrom) From(from string) SelectBuilder {
+	this.db.builder = this.db.builder.(SelectBuilder).From(from)
+	return this.db.builder.(SelectBuilder)
 }
 
 func (this *DB) Insert() InsertInto {
@@ -137,4 +191,24 @@ func (this *DB) Exec() (*gorm.DB, int64) {
 		return del.Exec()
 	}
 	return nil, 0
+}
+
+func (this *DB) Raw(pred string, args ...interface{}) ExecRaw {
+	return newExecRaw(this, this.gormDB)
+}
+
+type ExecRaw struct {
+	db     *DB
+	gormDB *gorm.DB
+	pred   string
+	args   []interface{}
+}
+
+func newExecRaw(db *DB, gormDB *gorm.DB) ExecRaw {
+	return ExecRaw{db: db, gormDB: gormDB}
+}
+
+func (this ExecRaw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
+	gormDB, insertID, rowsAffected = newExecer(newSelectBuilder(this.db.connect).Raw(this.pred, this.args...), this.gormDB).exec()
+	return
 }
