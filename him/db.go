@@ -172,10 +172,16 @@ func (this *DB) GormDB() *gorm.DB {
 }
 
 func (this *DB) LastInsertId() (*gorm.DB, int64) {
+	if this.begin {
+		return this.Builder.(InsertBuilder).begin(this.gormDB).LastInsertId()
+	}
 	return this.Builder.(InsertBuilder).LastInsertId()
 }
 
 func (this *DB) Save() (*gorm.DB, int64) {
+	if this.begin {
+		return this.Builder.(InsertBuilder).begin(this.gormDB).Save()
+	}
 	return this.Builder.(InsertBuilder).Save()
 }
 
