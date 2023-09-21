@@ -44,6 +44,12 @@ func (this *BaseDao) CheckError(gormDB *gorm.DB) error {
 	return nil
 }
 
+type TransactionHandle func(tx *gorm.DB) error
+
+type Transactionable interface {
+	Transaction() TransactionHandle
+}
+
 type TX struct {
 	tx *gorm.DB
 }
