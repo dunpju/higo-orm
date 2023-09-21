@@ -8,7 +8,7 @@ type DB struct {
 	gormDB  *gorm.DB
 	connect string
 	begin   bool
-	builder interface{}
+	Builder interface{}
 }
 
 func newDB(db *gorm.DB, connect string) *DB {
@@ -31,23 +31,23 @@ func newSelect(db *DB, gormDB *gorm.DB) Select {
 
 func (this Select) selectBuilder() SelectBuilder {
 	if this.db.begin {
-		this.db.builder = newSelectBuilder(this.db.connect).begin(this.gormDB)
+		this.db.Builder = newSelectBuilder(this.db.connect).begin(this.gormDB)
 	} else {
-		this.db.builder = newSelectBuilder(this.db.connect)
+		this.db.Builder = newSelectBuilder(this.db.connect)
 	}
-	return this.db.builder.(SelectBuilder)
+	return this.db.Builder.(SelectBuilder)
 }
 func (this Select) Distinct() Select {
-	this.db.builder = this.selectBuilder().Distinct()
+	this.db.Builder = this.selectBuilder().Distinct()
 	return this
 }
 func (this Select) Select(columns ...string) SelectFrom {
-	this.db.builder = this.selectBuilder().Select(columns...)
+	this.db.Builder = this.selectBuilder()._select(columns...)
 	return newSelectFrom(this.db, this.gormDB)
 }
 
 func (this Select) Raw(pred string, args ...interface{}) SelectRaw {
-	this.db.builder = this.selectBuilder().Raw(pred, args...)
+	this.db.Builder = this.selectBuilder().Raw(pred, args...)
 	return newSelectRaw(this.db, this.gormDB)
 }
 
@@ -61,7 +61,7 @@ func newSelectRaw(db *DB, gormDB *gorm.DB) SelectRaw {
 }
 
 func (this SelectRaw) Get(dest interface{}) *gorm.DB {
-	return this.db.builder.(SelectBuilder).Get(dest)
+	return this.db.Builder.(SelectBuilder).Get(dest)
 }
 
 type SelectFrom struct {
@@ -74,8 +74,8 @@ func newSelectFrom(db *DB, gormDB *gorm.DB) SelectFrom {
 }
 
 func (this SelectFrom) From(from string) SelectBuilder {
-	this.db.builder = this.db.builder.(SelectBuilder).From(from)
-	return this.db.builder.(SelectBuilder)
+	this.db.Builder = this.db.Builder.(SelectBuilder)._from(from)
+	return this.db.Builder.(SelectBuilder)
 }
 
 func (this *DB) Insert() InsertInto {
@@ -117,11 +117,11 @@ func newUpdateFrom(db *DB, gormDB *gorm.DB) UpdateTable {
 
 func (this UpdateTable) Table(from string) UpdateBuilder {
 	if this.db.begin {
-		this.db.builder = newUpdateBuilder(this.db.connect).begin(this.gormDB).update(from)
+		this.db.Builder = newUpdateBuilder(this.db.connect).begin(this.gormDB).update(from)
 	} else {
-		this.db.builder = newUpdateBuilder(this.db.connect).update(from)
+		this.db.Builder = newUpdateBuilder(this.db.connect).update(from)
 	}
-	return this.db.builder.(UpdateBuilder)
+	return this.db.Builder.(UpdateBuilder)
 }
 
 func (this *DB) Delete() DeleteFrom {
@@ -140,11 +140,11 @@ func newDeleteFrom(db *DB, gormDB *gorm.DB) DeleteFrom {
 
 func (this DeleteFrom) From(from string) DeleteBuilder {
 	if this.db.begin {
-		this.db.builder = newDeleteBuilder(this.db.connect).begin(this.gormDB).delete(from)
+		this.db.Builder = newDeleteBuilder(this.db.connect).begin(this.gormDB).delete(from)
 	} else {
-		this.db.builder = newDeleteBuilder(this.db.connect).delete(from)
+		this.db.Builder = newDeleteBuilder(this.db.connect).delete(from)
 	}
-	return this.db.builder.(DeleteBuilder)
+	return this.db.Builder.(DeleteBuilder)
 }
 
 func (this *DB) Begin(tx ...*gorm.DB) *Transaction {
@@ -160,42 +160,47 @@ func (this *DB) TX(tx *gorm.DB) *Transaction {
 	return this.Begin(tx)
 }
 
+func (this *DB) Set(column string, value interface{}) *DB {
+	this.Builder = this.Builder.(UpdateBuilder).Set(column, value)
+	return this
+}
+
 func (this *DB) GormDB() *gorm.DB {
 	return this.gormDB
 }
 
 func (this *DB) First(dest interface{}) *gorm.DB {
-	return this.builder.(SelectBuilder).First(dest)
+	return this.Builder.(SelectBuilder).First(dest)
 }
 
 func (this *DB) Get(dest interface{}) *gorm.DB {
-	return this.builder.(SelectBuilder).Get(dest)
+	return this.Builder.(SelectBuilder).Get(dest)
 }
 
 func (this *DB) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, Paginate) {
-	return this.builder.(SelectBuilder).Paginate(page, perPage, dest)
+	return this.Builder.(SelectBuilder).Paginate(page, perPage, dest)
 }
 
 func (this *DB) Count() (*gorm.DB, int64) {
-	return this.builder.(SelectBuilder).Count()
+	return this.Builder.(SelectBuilder).Count()
 }
 
 func (this *DB) Sum(column string) (*gorm.DB, uint64) {
-	return this.builder.(SelectBuilder).Sum(column)
+	return this.Builder.(SelectBuilder).Sum(column)
 }
 
 func (this *DB) LastInsertId() (*gorm.DB, int64) {
-	return this.builder.(InsertBuilder).LastInsertId()
+	return this.Builder.(InsertBuilder).LastInsertId()
 }
 
 func (this *DB) Save() (*gorm.DB, int64) {
-	return this.builder.(InsertBuilder).Save()
+	return this.Builder.(InsertBuilder).Save()
 }
 
 func (this *DB) Exec() (*gorm.DB, int64) {
-	if update, ok := this.builder.(UpdateBuilder); ok {
+	if update, ok := this.Builder.(UpdateBuilder); ok {
 		return update.Exec()
-	} else if del, ok1 := this.builder.(DeleteBuilder); ok1 {
+	} else if del, ok1 := this.Builder.(DeleteBuilder); ok1 {
 		return del.Exec()
 	}
 	return nil, 0

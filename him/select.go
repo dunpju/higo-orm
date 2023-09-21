@@ -78,12 +78,12 @@ func (this SelectBuilder) begin(db *gorm.DB) SelectBuilder {
 	return this
 }
 
-func (this SelectBuilder) Select(columns ...string) SelectBuilder {
+func (this SelectBuilder) _select(columns ...string) SelectBuilder {
 	this.columns = append(this.columns, columns...)
 	return this
 }
 
-func (this SelectBuilder) From(from string) SelectBuilder {
+func (this SelectBuilder) _from(from string) SelectBuilder {
 	this.from = from
 	return this
 }
