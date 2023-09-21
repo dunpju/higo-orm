@@ -181,8 +181,14 @@ func (this *DB) Save() (*gorm.DB, int64) {
 
 func (this *DB) Exec() (*gorm.DB, int64) {
 	if update, ok := this.Builder.(UpdateBuilder); ok {
+		if this.begin {
+			return update.begin(this.gormDB).Exec()
+		}
 		return update.Exec()
 	} else if del, ok1 := this.Builder.(DeleteBuilder); ok1 {
+		if this.begin {
+			return del.begin(this.gormDB).Exec()
+		}
 		return del.Exec()
 	}
 	return nil, 0
