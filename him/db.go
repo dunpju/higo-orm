@@ -169,26 +169,6 @@ func (this *DB) GormDB() *gorm.DB {
 	return this.gormDB
 }
 
-func (this *DB) First(dest interface{}) *gorm.DB {
-	return this.Builder.(SelectBuilder).First(dest)
-}
-
-func (this *DB) Get(dest interface{}) *gorm.DB {
-	return this.Builder.(SelectBuilder).Get(dest)
-}
-
-func (this *DB) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, Paginate) {
-	return this.Builder.(SelectBuilder).Paginate(page, perPage, dest)
-}
-
-func (this *DB) Count() (*gorm.DB, int64) {
-	return this.Builder.(SelectBuilder).Count()
-}
-
-func (this *DB) Sum(column string) (*gorm.DB, uint64) {
-	return this.Builder.(SelectBuilder).Sum(column)
-}
-
 func (this *DB) LastInsertId() (*gorm.DB, int64) {
 	return this.Builder.(InsertBuilder).LastInsertId()
 }
