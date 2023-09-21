@@ -295,4 +295,8 @@ func main() {
 	select1DB := connect.Query().Raw("SELECT * FROM users LIMIT 1").
 		Get(&select1)
 	fmt.Println("select1:", select1DB, select1)
+	select2 := make([]map[string]interface{}, 0)
+	select2DB := connect.Query().Select().From("users").
+		Get(&select2)
+	fmt.Println("select2:", select2DB, select2)
 }
