@@ -7,10 +7,11 @@ import (
 
 type BaseDao struct {
 	db *DB
+	tx TXHandle
 }
 
-func NewBaseDao(connect string) *BaseDao {
-	return newBaseDao(connect)
+func NewBaseDao(connect string, tx TXHandle) *BaseDao {
+	return newBaseDao(connect).setTx(tx)
 }
 
 func newBaseDao(connect string) *BaseDao {
@@ -19,6 +20,11 @@ func newBaseDao(connect string) *BaseDao {
 		panic(err)
 	}
 	return &BaseDao{db: conn}
+}
+
+func (this *BaseDao) setTx(tx TXHandle) *BaseDao {
+	this.tx = tx
+	return this
 }
 
 func (this *BaseDao) DB() *DB {
@@ -30,7 +36,7 @@ func (this *BaseDao) GormDB() *gorm.DB {
 }
 
 func (this *BaseDao) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
-	return newBaseDao(this.db.connect).db.GormDB().Begin(opts...)
+	return newBaseDao(this.db.connect).setTx(this.tx).db.GormDB().Begin(opts...)
 }
 
 func (this *BaseDao) Begin(opts ...*sql.TxOptions) *TX {
@@ -44,10 +50,10 @@ func (this *BaseDao) CheckError(gormDB *gorm.DB) error {
 	return nil
 }
 
-type TransactionHandle func(tx *gorm.DB) error
+type TXHandle func(tx *gorm.DB) error
 
 type Transactionable interface {
-	Transaction() TransactionHandle
+	Transaction() TXHandle
 }
 
 type TX struct {
