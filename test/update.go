@@ -18,7 +18,7 @@ func main() {
 		SetPrefix("tl_").
 		SetMaxIdle(5).
 		SetMaxOpen(10).
-		SetMaxLifetime(1000).
+		SetMaxLifetime(60).
 		SetLogMode("Info").
 		SetColorful(true).
 		Init()
@@ -140,5 +140,8 @@ func main() {
 		}(i)
 	}
 	wg.Wait()
+	// 测试连接60s后是否会释放
+	for true {
 
+	}
 }
