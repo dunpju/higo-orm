@@ -68,7 +68,7 @@ func (this *TX) Transaction(fn func(tx *gorm.DB) error) error {
 	return this.tx.Transaction(func(tx *gorm.DB) (err error) {
 		err = fn(tx)
 		if err == nil {
-			tx.Commit()
+			return tx.Commit().Error
 		}
 		return
 	})
