@@ -20,9 +20,8 @@ func (this *DB) Query() Select {
 }
 
 type Select struct {
-	db         *DB
-	gormDB     *gorm.DB
-	selectFrom SelectFrom
+	db     *DB
+	gormDB *gorm.DB
 }
 
 func newSelect(db *DB, gormDB *gorm.DB) Select {
@@ -86,9 +85,8 @@ func (this *DB) Insert() InsertInto {
 }
 
 type InsertInto struct {
-	db      *DB
-	gormDB  *gorm.DB
-	builder InsertBuilder
+	db     *DB
+	gormDB *gorm.DB
 }
 
 func newInsertInto(db *DB, gormDB *gorm.DB) InsertInto {
@@ -97,11 +95,11 @@ func newInsertInto(db *DB, gormDB *gorm.DB) InsertInto {
 
 func (this InsertInto) Into(from string) InsertBuilder {
 	if this.db.begin {
-		this.builder = newInsertBuilder(this.db.connect).begin(this.gormDB).insert(from)
+		this.db.Builder = newInsertBuilder(this.db.connect).begin(this.gormDB).insert(from)
 	} else {
-		this.builder = newInsertBuilder(this.db.connect).insert(from)
+		this.db.Builder = newInsertBuilder(this.db.connect).insert(from)
 	}
-	return this.builder
+	return this.db.Builder.(InsertBuilder)
 }
 
 func (this *DB) Update() UpdateTable {
@@ -109,9 +107,8 @@ func (this *DB) Update() UpdateTable {
 }
 
 type UpdateTable struct {
-	db      *DB
-	gormDB  *gorm.DB
-	builder UpdateBuilder
+	db     *DB
+	gormDB *gorm.DB
 }
 
 func newUpdateFrom(db *DB, gormDB *gorm.DB) UpdateTable {
@@ -132,9 +129,8 @@ func (this *DB) Delete() DeleteFrom {
 }
 
 type DeleteFrom struct {
-	db      *DB
-	gormDB  *gorm.DB
-	builder DeleteBuilder
+	db     *DB
+	gormDB *gorm.DB
 }
 
 func newDeleteFrom(db *DB, gormDB *gorm.DB) DeleteFrom {
