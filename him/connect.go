@@ -25,7 +25,7 @@ func getConnect(connection string) (*connect, error) {
 	if conn, ok := _connect.Load(connection); ok {
 		return newConnect(conn.(*connect).Dbc(), newDB(conn.(*connect).DB().GormDB(), conn.(*connect).dbc.connect)), nil
 	}
-	return nil, fmt.Errorf("connect inexistence")
+	return nil, fmt.Errorf("connect nonexistent")
 }
 
 type connect struct {

@@ -6,25 +6,20 @@ import (
 )
 
 type BaseDao struct {
-	db *DB
-	tx TXHandle
+	db  *DB
+	err error
 }
 
-func NewBaseDao(connect string, tx TXHandle) *BaseDao {
-	return newBaseDao(connect).setTx(tx)
+func NewBaseDao(connect string) (*BaseDao, error) {
+	return newBaseDao(connect)
 }
 
-func newBaseDao(connect string) *BaseDao {
+func newBaseDao(connect string) (*BaseDao, error) {
 	conn, err := DBConnect(connect)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return &BaseDao{db: conn}
-}
-
-func (this *BaseDao) setTx(tx TXHandle) *BaseDao {
-	this.tx = tx
-	return this
+	return &BaseDao{db: conn}, nil
 }
 
 func (this *BaseDao) DB() *DB {
@@ -35,25 +30,21 @@ func (this *BaseDao) GormDB() *gorm.DB {
 	return this.db.GormDB()
 }
 
+func (this *BaseDao) Error() error {
+	return this.err
+}
+
 func (this *BaseDao) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
-	return newBaseDao(this.db.connect).setTx(this.tx).db.GormDB().Begin(opts...)
+	baseDao, err := newBaseDao(this.db.connect)
+	if err != nil {
+		this.err = err
+		return nil
+	}
+	return baseDao.db.GormDB().Begin(opts...)
 }
 
 func (this *BaseDao) Begin(opts ...*sql.TxOptions) *TX {
 	return newTX(this.BeginTX(opts...))
-}
-
-func (this *BaseDao) CheckError(gormDB *gorm.DB) error {
-	if gormDB.Error != nil {
-		return gormDB.Error
-	}
-	return nil
-}
-
-type TXHandle func(tx *gorm.DB) error
-
-type Transactionable interface {
-	Transaction() TXHandle
 }
 
 type TX struct {

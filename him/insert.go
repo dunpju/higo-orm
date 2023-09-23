@@ -1,13 +1,14 @@
 package him
 
 import (
+	"fmt"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
 	"sync"
 )
 
 type InsertBuilder struct {
-	db         *gorm.DB
+	db         *DB
 	connect    *connect
 	setColumns *insertColumn
 	setValues  []*insertValue
@@ -16,36 +17,30 @@ type InsertBuilder struct {
 	Error      error
 }
 
-func newDBInsertBuilder(db *gorm.DB, connect *connect) InsertBuilder {
-	return InsertBuilder{db: db, connect: connect, setColumns: newInsertColumn(), setValues: make([]*insertValue, 0)}
+func newDBInsertBuilder(db *DB, connect *connect) InsertBuilder {
+	insertBuilder := InsertBuilder{db: db, connect: connect, setColumns: newInsertColumn(), setValues: make([]*insertValue, 0)}
+	insertBuilder.db.Builder = insertBuilder
+	return insertBuilder
 }
 
 func newErrorInsertBuilder(err error) InsertBuilder {
 	return InsertBuilder{Error: err}
 }
 
-func newInsertBuilder(connect string) InsertBuilder {
-	if connect != "" {
-		dbc, err := getConnect(connect)
-		if err != nil {
-			return newErrorInsertBuilder(err)
-		}
-		return newDBInsertBuilder(dbc.db.GormDB(), dbc)
+func newInsertBuilder(db *DB) InsertBuilder {
+	if conn, ok := _connect.Load(db.connect); ok {
+		return newDBInsertBuilder(db, conn.(*connect))
 	} else {
-		dbc, err := getConnect(DefaultConnect)
-		if err != nil {
-			return newErrorInsertBuilder(err)
-		}
-		return newDBInsertBuilder(dbc.db.GormDB(), dbc)
+		return newErrorInsertBuilder(fmt.Errorf("db connect nonexistent"))
 	}
 }
 
 func (this InsertBuilder) DB() *gorm.DB {
-	return this.db
+	return this.db.GormDB()
 }
 
 func (this InsertBuilder) begin(db *gorm.DB) InsertBuilder {
-	this.db = db
+	this.db.gormDB = db
 	return this
 }
 
@@ -135,7 +130,8 @@ func (this InsertBuilder) toBuilder() InsertBuilder {
 }
 
 func (this InsertBuilder) ToSql() (string, []interface{}, error) {
-	return this.toBuilder().builder.ToSql()
+	this.db.Builder = this.toBuilder().builder
+	return this.db.Builder.(squirrel.InsertBuilder).ToSql()
 }
 
 func (this InsertBuilder) Save() (*gorm.DB, int64) {
@@ -149,12 +145,12 @@ func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 }
 
 func (this InsertBuilder) save() (InsertBuilder, *gorm.DB, int64) {
-	gormDB, insertID, rowsAffected := newExecer(this, this.db).exec()
+	gormDB, insertID, rowsAffected := newExecer(this, this.db.GormDB()).exec()
 	if gormDB.Error != nil {
 		this.Error = gormDB.Error
 		return this, gormDB, 0
 	}
-	this.db = gormDB
+	this.db.gormDB = gormDB
 	this.affected = rowsAffected
-	return this, this.db, insertID
+	return this, this.db.gormDB, insertID
 }

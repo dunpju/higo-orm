@@ -54,14 +54,14 @@ func Init(dbc *DBConfig) (*gorm.DB, error) {
 		},
 	)
 
-	dbPool, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	gormDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	sqlDB, err := dbPool.DB()
+	sqlDB, err := gormDB.DB()
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func Init(dbc *DBConfig) (*gorm.DB, error) {
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Duration(dbc.maxLifetime) * time.Second)
 
-	_connect.Store(dbc.connect, newConnect(dbc, newDB(dbPool, dbc.connect)))
+	_connect.Store(dbc.connect, newConnect(dbc, newDB(gormDB, dbc.connect)))
 
-	return dbPool, nil
+	return gormDB, nil
 }

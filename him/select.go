@@ -7,7 +7,7 @@ import (
 )
 
 type SelectBuilder struct {
-	db          *gorm.DB
+	db          *DB
 	connect     *connect
 	isCount     bool
 	countColumn string
@@ -53,7 +53,7 @@ func newSelectBuilder(connect string) SelectBuilder {
 
 func query(dbc *connect) SelectBuilder {
 	return SelectBuilder{
-		db:       dbc.db.GormDB(),
+		db:       dbc.db,
 		connect:  dbc,
 		columns:  make([]string, 0),
 		joins:    make([]join, 0),
@@ -70,11 +70,11 @@ func (this SelectBuilder) Connect() *connect {
 }
 
 func (this SelectBuilder) DB() *gorm.DB {
-	return this.db
+	return this.db.GormDB()
 }
 
 func (this SelectBuilder) begin(db *gorm.DB) SelectBuilder {
-	this.db = db
+	this.db.gormDB = db
 	return this
 }
 
