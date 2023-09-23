@@ -118,6 +118,7 @@ func (this InsertBuilder) Set(column string, value interface{}) InsertBuilder {
 	} else {
 		this.setValues = append(this.setValues, newInsertValue(value))
 	}
+	this.db.Builder = this
 	return this
 }
 
@@ -130,8 +131,8 @@ func (this InsertBuilder) toBuilder() InsertBuilder {
 }
 
 func (this InsertBuilder) ToSql() (string, []interface{}, error) {
-	this.db.Builder = this.toBuilder().builder
-	return this.db.Builder.(squirrel.InsertBuilder).ToSql()
+	this.builder = this.toBuilder().builder
+	return this.builder.ToSql()
 }
 
 func (this InsertBuilder) Save() (*gorm.DB, int64) {

@@ -26,8 +26,9 @@ func newInsertInto(db *DB, gormDB *gorm.DB) InsertInto {
 
 func (this InsertInto) Into(from string) InsertBuilder {
 	if this.db.begin {
-		return newInsertBuilder(this.db).begin(this.gormDB).insert(from)
+		this.db.Builder = newInsertBuilder(this.db).begin(this.gormDB).insert(from)
 	} else {
-		return newInsertBuilder(this.db).insert(from)
+		this.db.Builder = newInsertBuilder(this.db).insert(from)
 	}
+	return this.db.Builder.(InsertBuilder)
 }
