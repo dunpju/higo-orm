@@ -21,6 +21,10 @@ func DBConnect(connection string) (*DB, error) {
 	return conn.DB(), nil
 }
 
+func GetConnect(connection string) (*connect, error) {
+	return getConnect(connection)
+}
+
 func getConnect(connection string) (*connect, error) {
 	if conn, ok := _connect.Load(connection); ok {
 		return newConnect(conn.(*connect).Dbc(), newDB(conn.(*connect).DB().GormDB(), conn.(*connect).dbc.connect)), nil
