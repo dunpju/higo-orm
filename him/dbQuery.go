@@ -8,6 +8,7 @@ func (this *DB) Query() Select {
 		this.Error = err
 	} else {
 		this.slaveDB = newDB(conn.DB().GormDB(), this.connect)
+		this.slaveDB.begin = this.begin
 		return newSelect(this.slaveDB, this.gormDB)
 	}
 	return newSelect(this, nil)
@@ -31,10 +32,12 @@ func (this Select) selectBuilder() SelectBuilder {
 	}
 	return this.db.Builder.(SelectBuilder)
 }
+
 func (this Select) Distinct() Select {
 	this.db.Builder = this.selectBuilder().Distinct()
 	return this
 }
+
 func (this Select) Select(columns ...string) SelectFrom {
 	if len(columns) == 0 {
 		columns = append(columns, "*")

@@ -2,6 +2,7 @@ package him
 
 import (
 	"database/sql"
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -57,6 +58,11 @@ func newTX(tx *gorm.DB) *TX {
 
 func (this *TX) Transaction(fn func(tx *gorm.DB) error) error {
 	return this.tx.Transaction(func(tx *gorm.DB) (err error) {
+		defer func() {
+			if r := recover(); r != nil {
+				err = fmt.Errorf("%s", r)
+			}
+		}()
 		err = fn(tx)
 		if err == nil {
 			return tx.Commit().Error

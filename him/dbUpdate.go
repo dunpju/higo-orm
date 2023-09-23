@@ -8,6 +8,7 @@ func (this *DB) Update() UpdateTable {
 		this.Error = err
 	} else {
 		this.slaveDB = newDB(conn.DB().GormDB(), this.connect)
+		this.slaveDB.begin = this.begin
 		return newUpdateFrom(this.slaveDB, this.gormDB)
 	}
 	return newUpdateFrom(this, nil)

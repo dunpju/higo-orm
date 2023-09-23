@@ -10,6 +10,7 @@ func (this *DB) Insert() InsertInto {
 		this.Error = err
 	} else {
 		this.slaveDB = newDB(conn.DB().GormDB(), this.connect)
+		this.slaveDB.begin = this.begin
 		return newInsertInto(this.slaveDB, this.gormDB)
 	}
 	return newInsertInto(this, nil)
