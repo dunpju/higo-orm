@@ -1,13 +1,14 @@
-package him
+package arm
 
 import (
 	"database/sql"
 	"fmt"
+	"github.com/dunpju/higo-orm/him"
 	"gorm.io/gorm"
 )
 
 type BaseDao struct {
-	db  *DB
+	db  *him.DB
 	err error
 }
 
@@ -16,14 +17,14 @@ func NewBaseDao(connect string) (*BaseDao, error) {
 }
 
 func newBaseDao(connect string) (*BaseDao, error) {
-	conn, err := DBConnect(connect)
+	conn, err := him.DBConnect(connect)
 	if err != nil {
 		return nil, err
 	}
 	return &BaseDao{db: conn}, nil
 }
 
-func (this *BaseDao) DB() *DB {
+func (this *BaseDao) DB() *him.DB {
 	return this.db
 }
 
@@ -36,7 +37,7 @@ func (this *BaseDao) Error() error {
 }
 
 func (this *BaseDao) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
-	baseDao, err := newBaseDao(this.db.connect)
+	baseDao, err := newBaseDao(this.db.Connect())
 	if err != nil {
 		this.err = err
 		return nil

@@ -17,6 +17,10 @@ func newDB(db *gorm.DB, connect string) *DB {
 	return &DB{gormDB: db, connect: connect}
 }
 
+func (this *DB) Connect() string {
+	return this.connect
+}
+
 func (this *DB) Begin(tx ...*gorm.DB) *Transaction {
 	this.begin = true
 	if len(tx) > 0 {
