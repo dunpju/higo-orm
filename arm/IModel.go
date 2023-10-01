@@ -1,8 +1,11 @@
 package arm
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/dunpju/higo-orm/him"
+)
 
-type Property func(class IModel)
+type Property func(model IModel)
 type Properties []Property
 
 func (this Properties) Apply(model IModel) {
@@ -12,14 +15,59 @@ func (this Properties) Apply(model IModel) {
 }
 
 type IModel interface {
-	New() IModel
-	Mutate(attrs ...Property) IModel
+	DB() *him.DB
+	TableName() *TableName
 	Exist() bool
-	TableName() TableName
 }
 
-type TableName string
+type IConstructor[T any] interface {
+	New(properties ...Property) T
+}
 
-func (this TableName) Alias(alias string) string {
-	return fmt.Sprintf("%s AS %s", this, alias)
+type TableName struct {
+	table, alias string
+}
+
+func NewTableName(table string) *TableName {
+	return &TableName{table: table}
+}
+
+// Alias Table alias
+func (this *TableName) Alias(alias string) *TableName {
+	this.alias = alias
+	return this
+}
+
+// GetAlias Get Table alias
+func (this *TableName) GetAlias() string {
+	return this.alias
+}
+
+func (this *TableName) String() string {
+	if this.alias != "" {
+		return fmt.Sprintf("%s AS %s", this.table, this.alias)
+	}
+	return this.table
+}
+
+type Fields string
+
+func (this Fields) AS(as string) string {
+	return fmt.Sprintf("%s AS %s", this, as)
+}
+
+func (this Fields) ASC() string {
+	return fmt.Sprintf("%s ASC", this)
+}
+
+func (this Fields) DESC() string {
+	return fmt.Sprintf("%s DESC", this)
+}
+
+func (this Fields) COUNT() string {
+	return fmt.Sprintf("COUNT(%s)", this)
+}
+
+func (this Fields) SUM() string {
+	return fmt.Sprintf("SUM(%s)", this)
 }

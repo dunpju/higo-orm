@@ -1,5 +1,18 @@
 
-type Impl struct {
+const (
+	SchoolId   = "schoolId"   //主键
+	SchoolName = "schoolName" //学校名称
+	Ip         = "ip"         //海康存储ip地址
+	Port       = "port"       //海康存储端口
+	UserName   = "userName"   //海康存储用户名
+	Password   = "password"   //海康存储用户密码
+	IsDelete   = "isDelete"   //是否删除:1-否,2-是
+	CreateTime = "createTime" //创建时间
+	UpdateTime = "updateTime" //更新时间
+	DeleteTime = "deleteTime" //删除时间
+)
+
+type Model struct {
 	SchoolId   int64     `gorm:"column:schoolId" json:"schoolId" comment:"主键"`
 	SchoolName string    `gorm:"column:schoolName" json:"schoolName" comment:"学校名称"`
 	Ip         string    `gorm:"column:ip" json:"ip" comment:"海康存储ip地址"`
@@ -12,37 +25,24 @@ type Impl struct {
 	DeleteTime time.Time `gorm:"column:deleteTime" json:"deleteTime" comment:"删除时间"`
 }
 
-// init Validator
-func init() {
-	New().RegisterValidator()
+func New(attrs ...arm.Property) *Model {
+    model := &Model{}
+	return model.Mutate(attrs...)
 }
 
-func New(attrs ...higo.Property) *Impl {
-	impl := &Impl{}
-	return impl
-}
-
-func TableName() string {
-	return "school"
-}
-
-func (this *Impl) New() higo.IClass {
+func (this *Model) New() *Model {
 	return New()
 }
 
-func (this *Impl) TableName() string {
-	return TableName()
+func (this *Model) TableName() TableName {
+	return "school"
 }
 
-func (this *Impl) Alias(alias string) string {
-	return this.TableName() + " AS " + alias
-}
-
-func (this *Impl) Mutate(attrs ...higo.Property) higo.Model {
-	higo.Propertys(attrs).Apply(this)
+func (this *Model) Mutate(attrs ...arm.Property) *Model {
+	arm.Properties(attrs).Apply(this)
 	return this
 }
 
-func (this *Impl) Exist() bool {
+func (this *Model) Exist() bool {
 	return this.SchoolId > 0
 }

@@ -8,13 +8,13 @@ type DB struct {
 	gormDB  *gorm.DB
 	connect string
 	begin   bool
-	slaveDB *DB
+	db      *DB
 	Builder interface{}
 	Error   error
 }
 
-func newDB(db *gorm.DB, connect string) *DB {
-	return &DB{gormDB: db, connect: connect}
+func newDB(db *gorm.DB, connect string, begin bool) *DB {
+	return &DB{gormDB: db, connect: connect, begin: begin}
 }
 
 func (this *DB) Connect() string {
@@ -34,7 +34,7 @@ func (this *DB) TX(tx *gorm.DB) *Transaction {
 }
 
 func (this *DB) Set(column string, value interface{}) *DB {
-	this.slaveDB.Builder = this.slaveDB.Builder.(UpdateBuilder).Set(column, value)
+	this.db.Builder = this.db.Builder.(UpdateBuilder).Set(column, value)
 	return this
 }
 
@@ -44,25 +44,25 @@ func (this *DB) GormDB() *gorm.DB {
 
 func (this *DB) LastInsertId() (*gorm.DB, int64) {
 	if this.begin {
-		return this.slaveDB.Builder.(InsertBuilder).begin(this.gormDB).LastInsertId()
+		return this.db.Builder.(InsertBuilder).begin(this.gormDB).LastInsertId()
 	}
-	return this.slaveDB.Builder.(InsertBuilder).LastInsertId()
+	return this.db.Builder.(InsertBuilder).LastInsertId()
 }
 
 func (this *DB) Save() (*gorm.DB, int64) {
 	if this.begin {
-		return this.slaveDB.Builder.(InsertBuilder).begin(this.gormDB).Save()
+		return this.db.Builder.(InsertBuilder).begin(this.gormDB).Save()
 	}
-	return this.slaveDB.Builder.(InsertBuilder).Save()
+	return this.db.Builder.(InsertBuilder).Save()
 }
 
 func (this *DB) Exec() (*gorm.DB, int64) {
-	if update, ok := this.slaveDB.Builder.(UpdateBuilder); ok {
+	if update, ok := this.db.Builder.(UpdateBuilder); ok {
 		if this.begin {
 			return update.begin(this.gormDB).Exec()
 		}
 		return update.Exec()
-	} else if del, ok1 := this.slaveDB.Builder.(DeleteBuilder); ok1 {
+	} else if del, ok1 := this.db.Builder.(DeleteBuilder); ok1 {
 		if this.begin {
 			return del.begin(this.gormDB).Exec()
 		}
