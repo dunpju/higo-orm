@@ -35,7 +35,7 @@ type Model struct {
 }
 
 func New(properties ...arm.Property) *Model {
-	return (&Model{}).New(properties...)
+	return (&Model{BaseModel: model.NewBaseModel()}).New(properties...)
 }
 
 func Select(columns ...string) him.SelectBuilder {

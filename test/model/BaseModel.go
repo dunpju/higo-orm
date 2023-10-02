@@ -9,6 +9,10 @@ type BaseModel struct {
 	*arm.Model
 }
 
+func NewBaseModel() *BaseModel {
+	return &BaseModel{}
+}
+
 func (this *BaseModel) DB() *him.DB {
 	db, err := him.DBConnect(him.DefaultConnect)
 	if err != nil {
