@@ -71,3 +71,7 @@ func (this Fields) COUNT() string {
 func (this Fields) SUM() string {
 	return fmt.Sprintf("SUM(%s)", this)
 }
+
+func (this Fields) String() string {
+	return string(this)
+}

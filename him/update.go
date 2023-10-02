@@ -29,6 +29,11 @@ func newUpdateBuilder(connect string) UpdateBuilder {
 	}
 }
 
+func (this UpdateBuilder) update(table string) UpdateBuilder {
+	this.builder = squirrel.Update(table)
+	return this
+}
+
 func (this UpdateBuilder) DB() *gorm.DB {
 	return this.db
 }
@@ -38,18 +43,13 @@ func (this UpdateBuilder) begin(db *gorm.DB) UpdateBuilder {
 	return this
 }
 
-func (this UpdateBuilder) update(table string) UpdateBuilder {
-	this.builder = squirrel.Update(table)
-	return this
-}
-
 func (this UpdateBuilder) Prefix(sql string, args ...interface{}) UpdateBuilder {
 	this.builder = this.builder.Prefix(sql, args...)
 	return this
 }
 
-func (this UpdateBuilder) Set(column string, value interface{}) UpdateBuilder {
-	this.builder = this.builder.Set(column, value)
+func (this UpdateBuilder) Set(column any, value interface{}) UpdateBuilder {
+	this.builder = this.builder.Set(columnToString(column), value)
 	return this
 }
 
@@ -95,83 +95,83 @@ func (this UpdateBuilder) OrWhereRaw(fn func(builder WhereRawBuilder) WhereRawBu
 	return this
 }
 
-func (this UpdateBuilder) Where(column, operator string, value interface{}) UpdateBuilder {
-	this.wheres.and().where(column, operator, value)
+func (this UpdateBuilder) Where(column any, operator string, value interface{}) UpdateBuilder {
+	this.wheres.and().where(columnToString(column), operator, value)
 	return this
 }
 
-func (this UpdateBuilder) WhereIn(column string, value interface{}) UpdateBuilder {
-	this.wheres.and().whereIn(column, value)
+func (this UpdateBuilder) WhereIn(column any, value interface{}) UpdateBuilder {
+	this.wheres.and().whereIn(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) WhereNotIn(column string, value interface{}) UpdateBuilder {
-	this.wheres.and().whereNotIn(column, value)
+func (this UpdateBuilder) WhereNotIn(column any, value interface{}) UpdateBuilder {
+	this.wheres.and().whereNotIn(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) WhereNull(column string) UpdateBuilder {
-	this.wheres.and().whereNull(column)
+func (this UpdateBuilder) WhereNull(column any) UpdateBuilder {
+	this.wheres.and().whereNull(columnToString(column))
 	return this
 }
 
-func (this UpdateBuilder) WhereNotNull(column string) UpdateBuilder {
-	this.wheres.and().whereNotNull(column)
+func (this UpdateBuilder) WhereNotNull(column any) UpdateBuilder {
+	this.wheres.and().whereNotNull(columnToString(column))
 	return this
 }
 
-func (this UpdateBuilder) WhereLike(column string, value interface{}) UpdateBuilder {
-	this.wheres.and().whereLike(column, value)
+func (this UpdateBuilder) WhereLike(column any, value interface{}) UpdateBuilder {
+	this.wheres.and().whereLike(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) NotLike(column string, value interface{}) UpdateBuilder {
-	this.wheres.and().whereNotLike(column, value)
+func (this UpdateBuilder) NotLike(column any, value interface{}) UpdateBuilder {
+	this.wheres.and().whereNotLike(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) WhereBetween(column string, first, second interface{}) UpdateBuilder {
-	this.wheres.and().whereBetween(column, first, second)
+func (this UpdateBuilder) WhereBetween(column any, first, second interface{}) UpdateBuilder {
+	this.wheres.and().whereBetween(columnToString(column), first, second)
 	return this
 }
 
-func (this UpdateBuilder) OrWhere(column, operator string, value interface{}) UpdateBuilder {
-	this.wheres.or().where(column, operator, value)
+func (this UpdateBuilder) OrWhere(column any, operator string, value interface{}) UpdateBuilder {
+	this.wheres.or().where(columnToString(column), operator, value)
 	return this
 }
 
-func (this UpdateBuilder) OrWhereIn(column string, value interface{}) UpdateBuilder {
-	this.wheres.or().whereIn(column, value)
+func (this UpdateBuilder) OrWhereIn(column any, value interface{}) UpdateBuilder {
+	this.wheres.or().whereIn(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) OrWhereNotIn(column string, value interface{}) UpdateBuilder {
-	this.wheres.or().whereNotIn(column, value)
+func (this UpdateBuilder) OrWhereNotIn(column any, value interface{}) UpdateBuilder {
+	this.wheres.or().whereNotIn(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) OrWhereNull(column string) UpdateBuilder {
-	this.wheres.or().whereNull(column)
+func (this UpdateBuilder) OrWhereNull(column any) UpdateBuilder {
+	this.wheres.or().whereNull(columnToString(column))
 	return this
 }
 
-func (this UpdateBuilder) OrWhereNotNull(column string) UpdateBuilder {
-	this.wheres.or().whereNotNull(column)
+func (this UpdateBuilder) OrWhereNotNull(column any) UpdateBuilder {
+	this.wheres.or().whereNotNull(columnToString(column))
 	return this
 }
 
-func (this UpdateBuilder) OrLike(column string, value interface{}) UpdateBuilder {
-	this.wheres.or().whereLike(column, value)
+func (this UpdateBuilder) OrLike(column any, value interface{}) UpdateBuilder {
+	this.wheres.or().whereLike(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) OrNotLike(column string, value interface{}) UpdateBuilder {
-	this.wheres.or().whereNotLike(column, value)
+func (this UpdateBuilder) OrNotLike(column any, value interface{}) UpdateBuilder {
+	this.wheres.or().whereNotLike(columnToString(column), value)
 	return this
 }
 
-func (this UpdateBuilder) OrWhereBetween(column string, first, second interface{}) UpdateBuilder {
-	this.wheres.or().whereBetween(column, first, second)
+func (this UpdateBuilder) OrWhereBetween(column any, first, second interface{}) UpdateBuilder {
+	this.wheres.or().whereBetween(columnToString(column), first, second)
 	return this
 }
 

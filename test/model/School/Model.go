@@ -42,6 +42,18 @@ func Select(columns ...string) him.SelectBuilder {
 	return New().Model.Select(columns...)
 }
 
+func Insert() him.InsertBuilder {
+	return New().Model.Insert()
+}
+
+func Update() him.UpdateBuilder {
+	return New().Model.Update()
+}
+
+func Delete() him.DeleteBuilder {
+	return New().Model.Delete()
+}
+
 func Raw(pred string, args ...interface{}) him.RawBuilder {
 	return New().Model.Raw(pred, args...)
 }

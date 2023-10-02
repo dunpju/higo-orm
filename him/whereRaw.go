@@ -16,83 +16,83 @@ func (this WhereRawBuilder) ToSql() (string, []interface{}, error) {
 	return whereRawHandle(this.wheres)
 }
 
-func (this WhereRawBuilder) Where(column, operator string, value interface{}) WhereRawBuilder {
-	this.wheres.and().where(column, operator, value)
+func (this WhereRawBuilder) Where(column any, operator string, value interface{}) WhereRawBuilder {
+	this.wheres.and().where(columnToString(column), operator, value)
 	return this
 }
 
-func (this WhereRawBuilder) WhereIn(column string, value interface{}) WhereRawBuilder {
-	this.wheres.and().whereIn(column, value)
+func (this WhereRawBuilder) WhereIn(column any, value interface{}) WhereRawBuilder {
+	this.wheres.and().whereIn(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) WhereNotIn(column string, value interface{}) WhereRawBuilder {
-	this.wheres.and().whereNotIn(column, value)
+func (this WhereRawBuilder) WhereNotIn(column any, value interface{}) WhereRawBuilder {
+	this.wheres.and().whereNotIn(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) WhereNull(column string) WhereRawBuilder {
-	this.wheres.and().whereNull(column)
+func (this WhereRawBuilder) WhereNull(column any) WhereRawBuilder {
+	this.wheres.and().whereNull(columnToString(column))
 	return this
 }
 
-func (this WhereRawBuilder) WhereNotNull(column string) WhereRawBuilder {
-	this.wheres.and().whereNotNull(column)
+func (this WhereRawBuilder) WhereNotNull(column any) WhereRawBuilder {
+	this.wheres.and().whereNotNull(columnToString(column))
 	return this
 }
 
-func (this WhereRawBuilder) WhereLike(column string, value interface{}) WhereRawBuilder {
-	this.wheres.and().whereLike(column, value)
+func (this WhereRawBuilder) WhereLike(column any, value interface{}) WhereRawBuilder {
+	this.wheres.and().whereLike(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) NotLike(column string, value interface{}) WhereRawBuilder {
-	this.wheres.and().whereNotLike(column, value)
+func (this WhereRawBuilder) NotLike(column any, value interface{}) WhereRawBuilder {
+	this.wheres.and().whereNotLike(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) WhereBetween(column string, first, second interface{}) WhereRawBuilder {
-	this.wheres.and().whereBetween(column, first, second)
+func (this WhereRawBuilder) WhereBetween(column any, first, second interface{}) WhereRawBuilder {
+	this.wheres.and().whereBetween(columnToString(column), first, second)
 	return this
 }
 
-func (this WhereRawBuilder) OrWhere(column, operator string, value interface{}) WhereRawBuilder {
-	this.wheres.or().where(column, operator, value)
+func (this WhereRawBuilder) OrWhere(column any, operator string, value interface{}) WhereRawBuilder {
+	this.wheres.or().where(columnToString(column), operator, value)
 	return this
 }
 
-func (this WhereRawBuilder) OrWhereIn(column string, value interface{}) WhereRawBuilder {
-	this.wheres.or().whereIn(column, value)
+func (this WhereRawBuilder) OrWhereIn(column any, value interface{}) WhereRawBuilder {
+	this.wheres.or().whereIn(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) OrWhereNotIn(column string, value interface{}) WhereRawBuilder {
-	this.wheres.or().whereNotIn(column, value)
+func (this WhereRawBuilder) OrWhereNotIn(column any, value interface{}) WhereRawBuilder {
+	this.wheres.or().whereNotIn(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) OrWhereNull(column string) WhereRawBuilder {
-	this.wheres.or().whereNull(column)
+func (this WhereRawBuilder) OrWhereNull(column any) WhereRawBuilder {
+	this.wheres.or().whereNull(columnToString(column))
 	return this
 }
 
-func (this WhereRawBuilder) OrWhereNotNull(column string) WhereRawBuilder {
-	this.wheres.or().whereNotNull(column)
+func (this WhereRawBuilder) OrWhereNotNull(column any) WhereRawBuilder {
+	this.wheres.or().whereNotNull(columnToString(column))
 	return this
 }
 
-func (this WhereRawBuilder) OrLike(column string, value interface{}) WhereRawBuilder {
-	this.wheres.or().whereLike(column, value)
+func (this WhereRawBuilder) OrLike(column any, value interface{}) WhereRawBuilder {
+	this.wheres.or().whereLike(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) OrNotLike(column string, value interface{}) WhereRawBuilder {
-	this.wheres.or().whereNotLike(column, value)
+func (this WhereRawBuilder) OrNotLike(column any, value interface{}) WhereRawBuilder {
+	this.wheres.or().whereNotLike(columnToString(column), value)
 	return this
 }
 
-func (this WhereRawBuilder) OrWhereBetween(column string, first, second interface{}) WhereRawBuilder {
-	this.wheres.or().whereBetween(column, first, second)
+func (this WhereRawBuilder) OrWhereBetween(column any, first, second interface{}) WhereRawBuilder {
+	this.wheres.or().whereBetween(columnToString(column), first, second)
 	return this
 }
 

@@ -111,12 +111,12 @@ func (this InsertBuilder) values(values ...interface{}) InsertBuilder {
 	return this
 }
 
-func (this InsertBuilder) Column(column string, value interface{}) InsertBuilder {
-	return this.Set(column, value)
+func (this InsertBuilder) Column(column any, value interface{}) InsertBuilder {
+	return this.Set(columnToString(column), value)
 }
 
-func (this InsertBuilder) Set(column string, value interface{}) InsertBuilder {
-	this.setColumns.add(column)
+func (this InsertBuilder) Set(column any, value interface{}) InsertBuilder {
+	this.setColumns.add(columnToString(column))
 	if len(this.setValues) > 0 {
 		this.setValues[0].value(value)
 	} else {

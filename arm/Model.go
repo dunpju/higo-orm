@@ -25,21 +25,16 @@ func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
 	return him.NewRawBuilder(this.db, pred, args)
 }
 
-func (this *Model) Set(column string, value interface{}) *Model {
-	this.db.Set(column, value)
-	return this
+func (this *Model) Insert() him.InsertBuilder {
+	return this.db.Insert().Into(this.table.String())
 }
 
-func (this *Model) Insert() (*gorm.DB, int64) {
-	return this.db.Insert().Into(this.table.String()).LastInsertId()
+func (this *Model) Update() him.UpdateBuilder {
+	return this.db.Update().Table(this.table.String())
 }
 
-func (this *Model) Update() (*gorm.DB, int64) {
-	return this.db.Update().Table(this.table.String()).Exec()
-}
-
-func (this *Model) Delete() (*gorm.DB, int64) {
-	return this.db.Delete().From(this.table.String()).Exec()
+func (this *Model) Delete() him.DeleteBuilder {
+	return this.db.Delete().From(this.table.String())
 }
 
 func (this *Model) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
