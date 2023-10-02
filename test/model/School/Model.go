@@ -21,7 +21,6 @@ const (
 )
 
 type Model struct {
-	*arm.Model
 	*model.BaseModel
 	SchoolId   int64     `gorm:"column:schoolId" json:"schoolId" comment:"主键"`
 	SchoolName string    `gorm:"column:schoolName" json:"schoolName" comment:"学校名称"`
@@ -43,7 +42,7 @@ func Select(columns ...string) him.SelectBuilder {
 	return New().Model.Select(columns...)
 }
 
-func Raw(pred string, args ...interface{}) him.SelectRaw {
+func Raw(pred string, args ...interface{}) him.RawBuilder {
 	return New().Model.Raw(pred, args...)
 }
 

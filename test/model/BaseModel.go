@@ -1,8 +1,12 @@
 package model
 
-import "github.com/dunpju/higo-orm/him"
+import (
+	"github.com/dunpju/higo-orm/arm"
+	"github.com/dunpju/higo-orm/him"
+)
 
 type BaseModel struct {
+	*arm.Model
 }
 
 func (this *BaseModel) DB() *him.DB {
