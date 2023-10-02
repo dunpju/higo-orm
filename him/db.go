@@ -34,7 +34,11 @@ func (this *DB) TX(tx *gorm.DB) *Transaction {
 }
 
 func (this *DB) Set(column string, value interface{}) *DB {
-	this.db.Builder = this.db.Builder.(UpdateBuilder).Set(column, value)
+	if updateBuilder, ok := this.db.Builder.(UpdateBuilder); ok {
+		this.db.Builder = updateBuilder.Set(column, value)
+	} else if insertBuilder, ok := this.db.Builder.(InsertBuilder); ok {
+		this.db.Builder = insertBuilder.Column(column, value)
+	}
 	return this
 }
 

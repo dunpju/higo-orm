@@ -17,11 +17,11 @@ func NewBaseDao(connect string) (*BaseDao, error) {
 }
 
 func newBaseDao(connect string) (*BaseDao, error) {
-	conn, err := him.DBConnect(connect)
+	db, err := him.DBConnect(connect)
 	if err != nil {
 		return nil, err
 	}
-	return &BaseDao{db: conn}, nil
+	return &BaseDao{db: db}, nil
 }
 
 func (this *BaseDao) DB() *him.DB {
