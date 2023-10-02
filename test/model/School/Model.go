@@ -1,6 +1,7 @@
 package School
 
 import (
+	"database/sql"
 	"github.com/dunpju/higo-orm/arm"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/model"
@@ -56,6 +57,10 @@ func Delete() him.DeleteBuilder {
 
 func Raw(pred string, args ...interface{}) him.RawBuilder {
 	return New().Model.Raw(pred, args...)
+}
+
+func Begin(opts ...*sql.TxOptions) *him.TX {
+	return New().Model.Begin(opts...)
 }
 
 func DB() *him.DB {

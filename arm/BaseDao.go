@@ -2,7 +2,6 @@ package arm
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/dunpju/higo-orm/him"
 	"gorm.io/gorm"
 )
@@ -45,29 +44,6 @@ func (this *BaseDao) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
 	return baseDao.db.GormDB().Begin(opts...)
 }
 
-func (this *BaseDao) Begin(opts ...*sql.TxOptions) *TX {
-	return newTX(this.BeginTX(opts...))
-}
-
-type TX struct {
-	tx *gorm.DB
-}
-
-func newTX(tx *gorm.DB) *TX {
-	return &TX{tx: tx}
-}
-
-func (this *TX) Transaction(fn func(tx *gorm.DB) error) error {
-	return this.tx.Transaction(func(tx *gorm.DB) (err error) {
-		defer func() {
-			if r := recover(); r != nil {
-				err = fmt.Errorf("%s", r)
-			}
-		}()
-		err = fn(tx)
-		if err == nil {
-			return tx.Commit().Error
-		}
-		return
-	})
+func (this *BaseDao) Begin(opts ...*sql.TxOptions) *him.TX {
+	return him.NewTX(this.BeginTX(opts...))
 }

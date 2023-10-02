@@ -46,8 +46,8 @@ func (this *Model) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
 	return db.GormDB().Begin(opts...)
 }
 
-func (this *Model) Begin(opts ...*sql.TxOptions) *TX {
-	return newTX(this.BeginTX(opts...))
+func (this *Model) Begin(opts ...*sql.TxOptions) *him.TX {
+	return him.NewTX(this.BeginTX(opts...))
 }
 
 func (this *Model) TX(tx *gorm.DB) *Model {

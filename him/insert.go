@@ -39,6 +39,11 @@ func (this InsertBuilder) DB() *gorm.DB {
 	return this.db.GormDB()
 }
 
+func (this InsertBuilder) TX(tx *gorm.DB) InsertBuilder {
+	this.begin(tx)
+	return this
+}
+
 func (this InsertBuilder) begin(db *gorm.DB) InsertBuilder {
 	this.db.gormDB = db
 	return this

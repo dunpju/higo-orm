@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/model/School"
+	"gorm.io/gorm"
 	"math/rand"
 	"time"
 )
@@ -45,20 +46,26 @@ func main() {
 	res = make(map[string]interface{})
 	School.Raw("select * from ts_user").Get(&res)
 	fmt.Println(res)
-	_, rowsAffected := School.Update().
-		Set(School.UserName.String(), "33").
-		Where(School.SchoolId.String(), "=", 1).
-		Exec()
-	fmt.Println(rowsAffected)
-	_, lastInsertId := School.Insert().
-		Column(School.SchoolName.String(), rand.Intn(6)).
-		Column(School.Ip.String(), rand.Intn(6)).
-		Column(School.Port.String(), rand.Intn(6)).
-		Column(School.UserName.String(), rand.Intn(6)).
-		Column(School.Password.String(), rand.Intn(6)).
-		Column(School.CreateTime.String(), time.Now()).
-		Column(School.UpdateTime.String(), time.Now()).
-		LastInsertId()
-	fmt.Println(lastInsertId)
-	School.Delete().Where(School.SchoolId, "=", lastInsertId).Exec()
+	err = School.Begin().Transaction(func(tx *gorm.DB) error {
+		_, rowsAffected := School.Update().
+			TX(tx).
+			Set(School.UserName, "33").
+			Where(School.SchoolId, "=", 1).
+			Exec()
+		fmt.Println(rowsAffected)
+		_, lastInsertId := School.Insert().
+			TX(tx).
+			Column(School.SchoolName, rand.Intn(6)).
+			Column(School.Ip, rand.Intn(6)).
+			Column(School.Port, rand.Intn(6)).
+			Column(School.UserName, rand.Intn(6)).
+			Column(School.Password, rand.Intn(6)).
+			Column(School.CreateTime, time.Now()).
+			Column(School.UpdateTime, time.Now()).
+			LastInsertId()
+		fmt.Println(lastInsertId)
+		School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
+		return fmt.Errorf("测试事务")
+	})
+	fmt.Println(err)
 }

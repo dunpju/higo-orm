@@ -38,6 +38,11 @@ func (this UpdateBuilder) DB() *gorm.DB {
 	return this.db
 }
 
+func (this UpdateBuilder) TX(tx *gorm.DB) UpdateBuilder {
+	this.begin(tx)
+	return this
+}
+
 func (this UpdateBuilder) begin(db *gorm.DB) UpdateBuilder {
 	this.db = db
 	return this

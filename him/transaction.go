@@ -1,6 +1,7 @@
 package him
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -45,4 +46,27 @@ func (this *Transaction) Raw(pred string, args ...interface{}) ExecRaw {
 
 func (this *Transaction) GormDB() *gorm.DB {
 	return this.gormDB
+}
+
+type TX struct {
+	tx *gorm.DB
+}
+
+func NewTX(tx *gorm.DB) *TX {
+	return &TX{tx: tx}
+}
+
+func (this *TX) Transaction(fn func(tx *gorm.DB) error) error {
+	return this.tx.Transaction(func(tx *gorm.DB) (err error) {
+		defer func() {
+			if r := recover(); r != nil {
+				err = fmt.Errorf("%s", r)
+			}
+		}()
+		err = fn(tx)
+		if err == nil {
+			return tx.Commit().Error
+		}
+		return
+	})
 }
