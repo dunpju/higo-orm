@@ -1,9 +1,7 @@
 package School
 
 import (
-	"database/sql"
 	"github.com/dunpju/higo-orm/arm"
-	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/model"
 	"time"
 )
@@ -35,43 +33,15 @@ type Model struct {
 	DeleteTime time.Time `gorm:"column:deleteTime" json:"deleteTime" comment:"删除时间"`
 }
 
-func New(properties ...arm.Property) *Model {
+func New(properties ...arm.IProperty) *Model {
 	return (&Model{BaseModel: model.NewBaseModel()}).New(properties...)
-}
-
-func Select(columns ...string) him.SelectBuilder {
-	return New().Model.Select(columns...)
-}
-
-func Insert() him.InsertBuilder {
-	return New().Model.Insert()
-}
-
-func Update() him.UpdateBuilder {
-	return New().Model.Update()
-}
-
-func Delete() him.DeleteBuilder {
-	return New().Model.Delete()
-}
-
-func Raw(pred string, args ...interface{}) him.RawBuilder {
-	return New().Model.Raw(pred, args...)
-}
-
-func Begin(opts ...*sql.TxOptions) *him.TX {
-	return New().Model.Begin(opts...)
-}
-
-func DB() *him.DB {
-	return New().DB()
 }
 
 func TableName() *arm.TableName {
 	return arm.NewTableName("school")
 }
 
-func (this *Model) New(properties ...arm.Property) *Model {
+func (this *Model) New(properties ...arm.IProperty) *Model {
 	arm.Properties(properties).Apply(this)
 	this.Model = arm.NewModel(this.DB(), this.TableName())
 	return this
@@ -85,8 +55,8 @@ func (this *Model) Exist() bool {
 	return this.SchoolId > 0
 }
 
-func WithSchoolId(schoolId int64) arm.Property {
-	return func(model arm.IModel) {
+func WithSchoolId(schoolId int64) arm.IProperty {
+	return arm.SetProperty(func(model arm.IModel) {
 		model.(*Model).SchoolId = schoolId
-	}
+	})
 }

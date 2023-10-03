@@ -41,35 +41,40 @@ func main() {
 	fmt.Println(School.SchoolName.AS("j"))
 	fmt.Println(&YY{})
 	res := make(map[string]interface{})
-	School.Select().Where("schoolId", "=", 1).First(&res)
+	School.New().Select().Where("schoolId", "=", 1).First(&res)
 	fmt.Println(res)
 	res = make(map[string]interface{})
-	School.Raw("select * from ts_user").Get(&res)
+	School.New().Raw("select * from ts_user").Get(&res)
 	fmt.Println(res)
-	err = School.Begin().Transaction(func(tx *gorm.DB) error {
-		fmt.Printf("11 %p\n", tx)
-		_, rowsAffected := School.Update().
+	school := School.New(School.WithSchoolId(130))
+	fmt.Println(school)
+	err = School.New().Begin().Transaction(func(tx *gorm.DB) error {
+		_, rowsAffected := School.New().
 			TX(tx).
+			Update().
 			Set(School.UserName, "33").
 			Where(School.SchoolId, "=", 1).
 			Exec()
 		fmt.Println(rowsAffected)
-		school := School.Insert().
+		school := School.New().
 			TX(tx).
+			Insert().
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime)
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
 		_, lastInsertId := school.Save()
 		fmt.Println(lastInsertId)
-		_, lastInsertId = School.Insert().
+		_, lastInsertId = School.New().
 			TX(tx).
+			Insert().
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Save()
 		fmt.Println(lastInsertId)
-		_, lastInsertId = School.Insert().
+		_, lastInsertId = School.New().
 			TX(tx).
+			Insert().
 			Column(School.SchoolName, rand.Intn(6)).
 			Column(School.Ip, rand.Intn(6)).
 			Column(School.Port, rand.Intn(6)).
@@ -79,6 +84,7 @@ func main() {
 			Column(School.UpdateTime, time.Now()).
 			LastInsertId()
 		fmt.Println(lastInsertId)
+		School.New().TX(tx).Raw("UPDATE school SET userName = '33ff' WHERE (schoolId = ?)", lastInsertId).Exec()
 		//School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
 		return fmt.Errorf("测试事务")
 		//return nil

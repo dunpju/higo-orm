@@ -5,12 +5,27 @@ import (
 	"github.com/dunpju/higo-orm/him"
 )
 
-type Property func(model IModel)
-type Properties []Property
+type IProperty interface {
+	Set(model IModel)
+}
+
+type Property struct {
+	fn func(model IModel)
+}
+
+func SetProperty(fn func(model IModel)) *Property {
+	return &Property{fn: fn}
+}
+
+func (this *Property) Set(model IModel) {
+	this.fn(model)
+}
+
+type Properties []IProperty
 
 func (this Properties) Apply(model IModel) {
 	for _, property := range this {
-		property(model)
+		property.Set(model)
 	}
 }
 
@@ -21,7 +36,7 @@ type IModel interface {
 }
 
 type IConstructor[T any] interface {
-	New(properties ...Property) T
+	New(properties ...IProperty) T
 }
 
 type TableName struct {
