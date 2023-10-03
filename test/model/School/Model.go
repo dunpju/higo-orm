@@ -64,3 +64,9 @@ func WithSchoolId(schoolId int64) arm.IProperty {
 		model.(*Model).SchoolId = schoolId
 	})
 }
+
+func WithSchoolName(schoolName string) arm.IProperty {
+	return arm.SetProperty(func(model arm.IModel) {
+		model.(*Model).SchoolName = schoolName
+	})
+}

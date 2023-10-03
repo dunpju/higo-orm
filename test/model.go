@@ -46,7 +46,7 @@ func main() {
 	res = make(map[string]interface{})
 	School.New().Raw("select * from ts_user").Get(&res)
 	fmt.Println(res)
-	school := School.New(School.WithSchoolId(130))
+	school := School.New(School.WithSchoolId(130), School.WithSchoolName("小学"))
 	fmt.Println(school)
 	err = School.New().Begin().Transaction(func(tx *gorm.DB) error {
 		_, rowsAffected := School.New().
@@ -86,8 +86,8 @@ func main() {
 		fmt.Println(lastInsertId)
 		School.New().TX(tx).Raw("UPDATE school SET userName = '33ff' WHERE (schoolId = ?)", lastInsertId).Exec()
 		//School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
-		return fmt.Errorf("测试事务")
-		//return nil
+		//return fmt.Errorf("测试事务")
+		return nil
 	})
 	fmt.Println(err)
 }
