@@ -43,12 +43,16 @@ func TableName() *arm.TableName {
 
 func (this *Model) New(properties ...arm.IProperty) *Model {
 	arm.Properties(properties).Apply(this)
-	this.Model = arm.NewModel(this.DB(), this.TableName())
+	arm.ApplyModel(this)
 	return this
 }
 
 func (this *Model) TableName() *arm.TableName {
 	return TableName()
+}
+
+func (this *Model) Apply(model *arm.Model) {
+	this.Model = model
 }
 
 func (this *Model) Exist() bool {

@@ -32,6 +32,7 @@ func (this Properties) Apply(model IModel) {
 type IModel interface {
 	DB() *him.DB
 	TableName() *TableName
+	Apply(model *Model)
 	Exist() bool
 }
 

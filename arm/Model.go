@@ -13,7 +13,11 @@ type Model struct {
 	err     error
 }
 
-func NewModel(db *him.DB, table *TableName) *Model {
+func ApplyModel(model IModel) {
+	model.Apply(newModel(model.DB(), model.TableName()))
+}
+
+func newModel(db *him.DB, table *TableName) *Model {
 	return &Model{db: db, table: table}
 }
 
