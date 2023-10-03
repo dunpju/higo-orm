@@ -54,7 +54,14 @@ func main() {
 			Where(School.SchoolId, "=", 1).
 			Exec()
 		fmt.Println(rowsAffected)
-		_, lastInsertId := School.Insert().
+		school := School.Insert().
+			TX(tx).
+			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime)
+		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
+		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
+		_, lastInsertId := school.Save()
+		fmt.Println(lastInsertId)
+		_, lastInsertId = School.Insert().
 			TX(tx).
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).

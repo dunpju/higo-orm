@@ -44,7 +44,7 @@ func main() {
 		Into("users").
 		Columns("user_name", "day", "is_delete", "create_time").
 		Values("ghgh19", time.Now().Format(time.DateOnly), 1, time.Now().Format(time.DateTime)).
-		LastInsertId()
+		Save()
 	fmt.Println("db19: ", id, db19.Error)
 
 	// 事务 https://learnku.com/docs/gorm/v2/transactions/9745
@@ -57,7 +57,7 @@ func main() {
 		Into("users").
 		Columns("user_name", "day", "create_time").
 		Values("ghgh21", time.Now().Format(time.DateOnly), time.Now().Format(time.DateTime)).
-		LastInsertId()
+		Save()
 	fmt.Println("db21: ", id, db21.Error)
 
 	db22, affected := connect.TX(db21).

@@ -78,7 +78,7 @@ func (this *insertColumn) len() int {
 	return len(this.columns)
 }
 
-func (this InsertBuilder) Columns(columns ...any) ValuesBuilder {
+func (this InsertBuilder) Columns(columns ...any) *ValuesBuilder {
 	this.setColumns.add(columnsToString(columns...)...)
 	return newValuesBuilder(this)
 }
@@ -86,6 +86,27 @@ func (this InsertBuilder) Columns(columns ...any) ValuesBuilder {
 func (this InsertBuilder) columns(columns ...string) InsertBuilder {
 	this.builder = this.builder.Columns(columns...)
 	return this
+}
+
+type ValuesBuilder struct {
+	insertBuilder InsertBuilder
+}
+
+func newValuesBuilder(insertBuilder InsertBuilder) *ValuesBuilder {
+	return &ValuesBuilder{insertBuilder: insertBuilder}
+}
+
+func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
+	this.insertBuilder.setValues = append(this.insertBuilder.setValues, newInsertValue(values...))
+	return this
+}
+
+func (this *ValuesBuilder) Save() (*gorm.DB, int64) {
+	return this.insertBuilder.Save()
+}
+
+func (this *ValuesBuilder) ToSql() (string, []interface{}, error) {
+	return this.insertBuilder.ToSql()
 }
 
 type insertValue struct {
@@ -104,35 +125,6 @@ func (this *insertValue) value(values ...interface{}) {
 
 func (this *insertValue) len() int {
 	return len(this.values)
-}
-
-type ValuesBuilder struct {
-	insertBuilder InsertBuilder
-}
-
-func newValuesBuilder(insertBuilder InsertBuilder) ValuesBuilder {
-	return ValuesBuilder{insertBuilder: insertBuilder}
-}
-
-func (this ValuesBuilder) Values(values ...interface{}) SaveBuilder {
-	return newSaveBuilder(this).Values(values...)
-}
-
-type SaveBuilder struct {
-	valuesBuilder ValuesBuilder
-}
-
-func newSaveBuilder(valuesBuilder ValuesBuilder) SaveBuilder {
-	return SaveBuilder{valuesBuilder: valuesBuilder}
-}
-
-func (this SaveBuilder) Values(values ...interface{}) SaveBuilder {
-	this.valuesBuilder.insertBuilder.setValues = append(this.valuesBuilder.insertBuilder.setValues, newInsertValue(values...))
-	return this
-}
-
-func (this SaveBuilder) Save() (*gorm.DB, int64) {
-	return this.valuesBuilder.insertBuilder.Save()
 }
 
 func (this InsertBuilder) values(values ...interface{}) InsertBuilder {
