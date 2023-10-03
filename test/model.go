@@ -67,14 +67,16 @@ func main() {
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Save()
-		//Column(School.SchoolName, rand.Intn(6)).
-		//Column(School.Ip, rand.Intn(6)).
-		//Column(School.Port, rand.Intn(6)).
-		//Column(School.UserName, rand.Intn(6)).
-		//Column(School.Password, rand.Intn(6)).
-		//Column(School.CreateTime, time.Now()).
-		//Column(School.UpdateTime, time.Now()).
-		//LastInsertId()
+		fmt.Println(lastInsertId)
+		_, lastInsertId = School.Insert().
+			Column(School.SchoolName, rand.Intn(6)).
+			Column(School.Ip, rand.Intn(6)).
+			Column(School.Port, rand.Intn(6)).
+			Column(School.UserName, rand.Intn(6)).
+			Column(School.Password, rand.Intn(6)).
+			Column(School.CreateTime, time.Now()).
+			Column(School.UpdateTime, time.Now()).
+			LastInsertId()
 		fmt.Println(lastInsertId)
 		//School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
 		return fmt.Errorf("测试事务")
