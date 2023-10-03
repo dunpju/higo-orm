@@ -78,9 +78,9 @@ func (this *insertColumn) len() int {
 	return len(this.columns)
 }
 
-func (this InsertBuilder) Columns(columns ...string) InsertBuilder {
-	this.setColumns.add(columns...)
-	return this
+func (this InsertBuilder) Columns(columns ...any) ValuesBuilder {
+	this.setColumns.add(columnsToString(columns...)...)
+	return newValuesBuilder(this)
 }
 
 func (this InsertBuilder) columns(columns ...string) InsertBuilder {
@@ -106,9 +106,33 @@ func (this *insertValue) len() int {
 	return len(this.values)
 }
 
-func (this InsertBuilder) Values(values ...interface{}) InsertBuilder {
-	this.setValues = append(this.setValues, newInsertValue(values...))
+type ValuesBuilder struct {
+	insertBuilder InsertBuilder
+}
+
+func newValuesBuilder(insertBuilder InsertBuilder) ValuesBuilder {
+	return ValuesBuilder{insertBuilder: insertBuilder}
+}
+
+func (this ValuesBuilder) Values(values ...interface{}) SaveBuilder {
+	return newSaveBuilder(this).Values(values...)
+}
+
+type SaveBuilder struct {
+	valuesBuilder ValuesBuilder
+}
+
+func newSaveBuilder(valuesBuilder ValuesBuilder) SaveBuilder {
+	return SaveBuilder{valuesBuilder: valuesBuilder}
+}
+
+func (this SaveBuilder) Values(values ...interface{}) SaveBuilder {
+	this.valuesBuilder.insertBuilder.setValues = append(this.valuesBuilder.insertBuilder.setValues, newInsertValue(values...))
 	return this
+}
+
+func (this SaveBuilder) Save() (*gorm.DB, int64) {
+	return this.valuesBuilder.insertBuilder.Save()
 }
 
 func (this InsertBuilder) values(values ...interface{}) InsertBuilder {

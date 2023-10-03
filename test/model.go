@@ -56,17 +56,22 @@ func main() {
 		fmt.Println(rowsAffected)
 		_, lastInsertId := School.Insert().
 			TX(tx).
-			Column(School.SchoolName, rand.Intn(6)).
-			Column(School.Ip, rand.Intn(6)).
-			Column(School.Port, rand.Intn(6)).
-			Column(School.UserName, rand.Intn(6)).
-			Column(School.Password, rand.Intn(6)).
-			Column(School.CreateTime, time.Now()).
-			Column(School.UpdateTime, time.Now()).
-			LastInsertId()
+			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime).
+			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			Save()
+		//Column(School.SchoolName, rand.Intn(6)).
+		//Column(School.Ip, rand.Intn(6)).
+		//Column(School.Port, rand.Intn(6)).
+		//Column(School.UserName, rand.Intn(6)).
+		//Column(School.Password, rand.Intn(6)).
+		//Column(School.CreateTime, time.Now()).
+		//Column(School.UpdateTime, time.Now()).
+		//LastInsertId()
 		fmt.Println(lastInsertId)
-		School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
+		//School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
 		return fmt.Errorf("测试事务")
+		//return nil
 	})
 	fmt.Println(err)
 }
