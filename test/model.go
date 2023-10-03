@@ -69,6 +69,7 @@ func main() {
 			Save()
 		fmt.Println(lastInsertId)
 		_, lastInsertId = School.Insert().
+			TX(tx).
 			Column(School.SchoolName, rand.Intn(6)).
 			Column(School.Ip, rand.Intn(6)).
 			Column(School.Port, rand.Intn(6)).
