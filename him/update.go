@@ -39,7 +39,7 @@ func (this UpdateBuilder) DB() *gorm.DB {
 }
 
 func (this UpdateBuilder) TX(tx *gorm.DB) UpdateBuilder {
-	this.begin(tx)
+	this = this.begin(tx)
 	return this
 }
 

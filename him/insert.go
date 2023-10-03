@@ -40,7 +40,7 @@ func (this InsertBuilder) DB() *gorm.DB {
 }
 
 func (this InsertBuilder) TX(tx *gorm.DB) InsertBuilder {
-	this.begin(tx)
+	this = this.begin(tx)
 	return this
 }
 

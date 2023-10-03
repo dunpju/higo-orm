@@ -47,6 +47,7 @@ func main() {
 	School.Raw("select * from ts_user").Get(&res)
 	fmt.Println(res)
 	err = School.Begin().Transaction(func(tx *gorm.DB) error {
+		fmt.Printf("11 %p\n", tx)
 		_, rowsAffected := School.Update().
 			TX(tx).
 			Set(School.UserName, "33").

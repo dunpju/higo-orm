@@ -39,7 +39,7 @@ func (this DeleteBuilder) DB() *gorm.DB {
 }
 
 func (this DeleteBuilder) TX(tx *gorm.DB) DeleteBuilder {
-	this.begin(tx)
+	this = this.begin(tx)
 	return this
 }
 
