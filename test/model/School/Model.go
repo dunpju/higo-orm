@@ -2,6 +2,7 @@ package School
 
 import (
 	"github.com/dunpju/higo-orm/arm"
+	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/model"
 	"time"
 )
@@ -33,7 +34,7 @@ type Model struct {
 	DeleteTime time.Time `gorm:"column:deleteTime" json:"deleteTime" comment:"删除时间"`
 }
 
-func New(properties ...arm.IProperty) *Model {
+func New(properties ...him.IProperty) *Model {
 	return (&Model{BaseModel: model.NewBaseModel()}).New(properties...)
 }
 
@@ -41,8 +42,8 @@ func TableName() *arm.TableName {
 	return arm.NewTableName("school")
 }
 
-func (this *Model) New(properties ...arm.IProperty) *Model {
-	arm.Properties(properties).Apply(this)
+func (this *Model) New(properties ...him.IProperty) *Model {
+	him.Properties(properties).Apply(this)
 	arm.ApplyModel(this)
 	return this
 }
@@ -59,14 +60,14 @@ func (this *Model) Exist() bool {
 	return this.SchoolId > 0
 }
 
-func WithSchoolId(schoolId int64) arm.IProperty {
-	return arm.SetProperty(func(model arm.IModel) {
-		model.(*Model).SchoolId = schoolId
+func WithSchoolId(schoolId int64) him.IProperty {
+	return him.SetProperty(func(obj any) {
+		obj.(*Model).SchoolId = schoolId
 	})
 }
 
-func WithSchoolName(schoolName string) arm.IProperty {
-	return arm.SetProperty(func(model arm.IModel) {
-		model.(*Model).SchoolName = schoolName
+func WithSchoolName(schoolName string) him.IProperty {
+	return him.SetProperty(func(obj any) {
+		obj.(*Model).SchoolName = schoolName
 	})
 }
