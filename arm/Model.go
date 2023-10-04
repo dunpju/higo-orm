@@ -6,18 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Property struct {
-	model IModel
-}
-
-func newProperty(model IModel) *Property {
-	return &Property{model: model}
-}
-
-func (this *Property) Property(properties ...him.IProperty) {
-	him.Properties(properties).Apply(this.model)
-}
-
 type Model struct {
 	db      *him.DB
 	table   *TableName
