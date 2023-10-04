@@ -43,8 +43,7 @@ func TableName() *arm.TableName {
 }
 
 func (this *Model) New(properties ...him.IProperty) *Model {
-	him.Properties(properties).Apply(this)
-	arm.ApplyModel(this)
+	arm.Apply(this).Property(properties...)
 	return this
 }
 
