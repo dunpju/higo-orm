@@ -50,10 +50,6 @@ func (this *Model) New(properties ...him.IProperty) *Model {
 	return this
 }
 
-func (this *Model) Connection() string {
-	return him.DefaultConnect
-}
-
 func (this *Model) TableName() *arm.TableName {
 	return TableName()
 }

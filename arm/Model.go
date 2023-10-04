@@ -35,6 +35,10 @@ func (this *Model) Property(properties ...him.IProperty) {
 	him.Properties(properties).Apply(this.model)
 }
 
+func (this *Model) Connection() string {
+	return him.DefaultConnect
+}
+
 func (this *Model) Select(columns ...string) him.SelectBuilder {
 	return this.db.Query().Select(columns...).From(this.table.String())
 }
