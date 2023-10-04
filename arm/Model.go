@@ -13,13 +13,21 @@ type Model struct {
 	err     error
 }
 
-func Apply(model IModel) *Property {
-	model.Apply(newModel(model.DB(), model.TableName()))
-	return newProperty(model)
+func Connect(model IModel) *Property {
+	db, err := him.DBConnect(model.Connection())
+	if err != nil {
+		return newProperty(model, err)
+	}
+	model.Apply(newModel(db, model.TableName()))
+	return newProperty(model, err)
 }
 
 func newModel(db *him.DB, table *TableName) *Model {
 	return &Model{db: db, table: table}
+}
+
+func (this *Model) DB() *him.DB {
+	return this.db
 }
 
 func (this *Model) Select(columns ...string) him.SelectBuilder {

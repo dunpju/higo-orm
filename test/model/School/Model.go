@@ -3,7 +3,6 @@ package School
 import (
 	"github.com/dunpju/higo-orm/arm"
 	"github.com/dunpju/higo-orm/him"
-	"github.com/dunpju/higo-orm/test/model"
 	"time"
 )
 
@@ -21,7 +20,7 @@ const (
 )
 
 type Model struct {
-	*model.BaseModel
+	*arm.Model
 	SchoolId   int64     `gorm:"column:schoolId" json:"schoolId" comment:"主键"`
 	SchoolName string    `gorm:"column:schoolName" json:"schoolName" comment:"学校名称"`
 	Ip         string    `gorm:"column:ip" json:"ip" comment:"海康存储ip地址"`
@@ -35,7 +34,7 @@ type Model struct {
 }
 
 func New(properties ...him.IProperty) *Model {
-	return (&Model{BaseModel: model.NewBaseModel()}).New(properties...)
+	return (&Model{}).New(properties...)
 }
 
 func TableName() *arm.TableName {
@@ -43,8 +42,15 @@ func TableName() *arm.TableName {
 }
 
 func (this *Model) New(properties ...him.IProperty) *Model {
-	arm.Apply(this).Property(properties...)
+	err := arm.Connect(this).Property(properties...)
+	if err != nil {
+		panic(err)
+	}
 	return this
+}
+
+func (this *Model) Connection() string {
+	return him.DefaultConnect
 }
 
 func (this *Model) TableName() *arm.TableName {

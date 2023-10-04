@@ -6,6 +6,7 @@ import (
 
 type IModel interface {
 	DB() *him.DB
+	Connection() string
 	TableName() *TableName
 	Apply(model *Model)
 	Exist() bool
