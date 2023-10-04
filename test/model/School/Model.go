@@ -42,10 +42,11 @@ func TableName() *arm.TableName {
 }
 
 func (this *Model) New(properties ...him.IProperty) *Model {
-	err := arm.Connect(this).Property(properties...)
+	err := arm.Connect(this)
 	if err != nil {
 		panic(err)
 	}
+	this.Property(properties...)
 	return this
 }
 

@@ -9,25 +9,30 @@ import (
 type Model struct {
 	db      *him.DB
 	table   *TableName
+	model   IModel
 	builder any
 	err     error
 }
 
-func Connect(model IModel) *Property {
+func Connect(model IModel) error {
 	db, err := him.DBConnect(model.Connection())
 	if err != nil {
-		return newProperty(model, err)
+		return err
 	}
-	model.Apply(newModel(db, model.TableName()))
-	return newProperty(model, err)
+	model.Apply(newModel(db, model))
+	return nil
 }
 
-func newModel(db *him.DB, table *TableName) *Model {
-	return &Model{db: db, table: table}
+func newModel(db *him.DB, model IModel) *Model {
+	return &Model{db: db, model: model, table: model.TableName()}
 }
 
 func (this *Model) DB() *him.DB {
 	return this.db
+}
+
+func (this *Model) Property(properties ...him.IProperty) {
+	him.Properties(properties).Apply(this.model)
 }
 
 func (this *Model) Select(columns ...string) him.SelectBuilder {

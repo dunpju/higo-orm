@@ -13,10 +13,6 @@ func NewBaseModel() *BaseModel {
 	return &BaseModel{}
 }
 
-func (this *BaseModel) DB() *him.DB {
-	db, err := him.DBConnect(him.DefaultConnect)
-	if err != nil {
-		panic(err)
-	}
-	return db
+func (this *BaseModel) Connection() string {
+	return him.DefaultConnect
 }
