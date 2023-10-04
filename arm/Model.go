@@ -6,6 +6,18 @@ import (
 	"gorm.io/gorm"
 )
 
+type Property struct {
+	model IModel
+}
+
+func newProperty(model IModel) *Property {
+	return &Property{model: model}
+}
+
+func (this *Property) Property(properties ...him.IProperty) {
+	him.Properties(properties).Apply(this.model)
+}
+
 type Model struct {
 	db      *him.DB
 	table   *TableName
@@ -13,8 +25,9 @@ type Model struct {
 	err     error
 }
 
-func ApplyModel(model IModel) {
+func Apply(model IModel) *Property {
 	model.Apply(newModel(model.DB(), model.TableName()))
+	return newProperty(model)
 }
 
 func newModel(db *him.DB, table *TableName) *Model {
