@@ -18,6 +18,7 @@ var (
 
 const (
 	modelStubFilename             = "model.stub"
+	modelFieldsStubFilename       = "modelFields.stub"
 	modelPropertyStubFilename     = "modelProperty.stub"
 	modelWithPropertyStubFilename = "modelWithProperty.stub"
 )
@@ -71,6 +72,46 @@ type Model struct {
 
 func newModel(db *him.DB) *Model {
 	return &Model{db: db, fields: make([]TableField, 0)}
+}
+
+func (this *Model) replacePackage() {
+
+}
+
+func (this *Model) replaceImport() {
+
+}
+
+func (this *Model) replaceFields() {
+
+}
+
+func (this *Model) replaceProperty() {
+
+}
+
+func (this *Model) replaceTableName() {
+
+}
+
+func (this *Model) replacePrimaryKey() {
+
+}
+
+func (this *Model) replaceWithProperty() {
+
+}
+
+func (this *Model) mergeFields() {
+
+}
+
+func (this *Model) mergeProperty() {
+
+}
+
+func (this *Model) mergeWithProperty() {
+
 }
 
 // GetTables 获取数据库表
