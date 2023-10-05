@@ -101,5 +101,5 @@ func (this Raw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
 }
 
 func (this Raw) Get(dest interface{}) *gorm.DB {
-	return newSelectRaw(this.db, this.gormDB).Get(dest)
+	return newSelectBuilder(this.db.connect).Raw(this.pred, this.args...).Get(dest)
 }

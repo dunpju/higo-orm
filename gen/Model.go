@@ -39,6 +39,11 @@ var model = &cobra.Command{
 		fmt.Println(conn)
 		fmt.Println(prefix)
 		fmt.Println(out)
+		db, err := him.DBConnect(conn)
+		if err != nil {
+			panic(err)
+		}
+		newModel(db).GetTableFields(table)
 	},
 }
 
