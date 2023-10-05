@@ -3,6 +3,7 @@ package gen
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var (
@@ -19,7 +20,7 @@ var model = &cobra.Command{
 	Long:    `模型构建工具`,
 	Example: "model",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(args)
+		fmt.Println(os.Getwd())
 		fmt.Println(table)
 		fmt.Println(conn)
 		fmt.Println(prefix)
