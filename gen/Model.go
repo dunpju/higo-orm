@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/spf13/cobra"
-	"gorm.io/gorm"
 	"os"
 	"strings"
 )
@@ -44,8 +43,12 @@ var model = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
-		db.D
-		newModel(db).GetTableFields(table)
+		if prefix == "" {
+			prefix = db.DBC().Prefix()
+		}
+		model := newModel(db)
+		model.GetTableFields(table)
+		model.GetTables(prefix)
 	},
 }
 
@@ -59,18 +62,11 @@ func newModel(db *him.DB) *Model {
 }
 
 // GetTables 获取数据库表
-func (this *Model) GetTables(db *gorm.DB, database string, tableNames ...string) []Table {
-	var (
-		tables []Table
-		d      *gorm.DB
-	)
-	if len(tableNames) == 0 {
-		d = db.Raw("SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='" + database + "';").Find(&tables)
-	} else {
-		d = db.Raw("SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE TABLE_NAME IN (" + strings.Join(tableNames, ",") + ") AND table_schema='" + database + "';").Find(&tables)
-	}
-	if d.Error != nil {
-		panic(d.Error.Error())
+func (this *Model) GetTables(prefix string) []Table {
+	var tables []Table
+	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME LIKE '%s%%'`, this.db.DBC().Database(), prefix)).Get(&tables)
+	if gormDB.Error != nil {
+		panic(gormDB.Error)
 	}
 	return tables
 }
@@ -79,7 +75,7 @@ func (this *Model) GetTables(db *gorm.DB, database string, tableNames ...string)
 func (this *Model) GetTableFields(tableName string) []TableField {
 	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&this.fields)
 	if gormDB.Error != nil {
-		panic(gormDB.Error.Error())
+		panic(gormDB.Error)
 	}
 	return this.fields
 }
