@@ -67,11 +67,12 @@ var model = &cobra.Command{
 
 type Model struct {
 	db     *him.DB
+	tables []Table
 	fields []TableField
 }
 
 func newModel(db *him.DB) *Model {
-	return &Model{db: db, fields: make([]TableField, 0)}
+	return &Model{db: db, tables: make([]Table, 0), fields: make([]TableField, 0)}
 }
 
 func (this *Model) replacePackage() {
@@ -115,22 +116,19 @@ func (this *Model) mergeWithProperty() {
 }
 
 // GetTables 获取数据库表
-func (this *Model) GetTables(prefix string) []Table {
-	var tables []Table
-	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME LIKE '%s%%'`, this.db.DBC().Database(), prefix)).Get(&tables)
+func (this *Model) GetTables(prefix string) {
+	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME LIKE '%s%%'`, this.db.DBC().Database(), prefix)).Get(&this.tables)
 	if gormDB.Error != nil {
 		panic(gormDB.Error)
 	}
-	return tables
 }
 
 // GetTableFields 获取表所有字段信息
-func (this *Model) GetTableFields(tableName string) []TableField {
+func (this *Model) GetTableFields(tableName string) {
 	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&this.fields)
 	if gormDB.Error != nil {
 		panic(gormDB.Error)
 	}
-	return this.fields
 }
 
 type Table struct {
