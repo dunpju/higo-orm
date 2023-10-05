@@ -16,6 +16,10 @@ func NewStub(filename string) *Stub {
 	return &Stub{filename: filename, context: context(filename)}
 }
 
+func (this *Stub) Context() string {
+	return this.context
+}
+
 func context(filename string) string {
 	_, file, _, _ := runtime.Caller(0)
 	file = path.Dir(file) + string(os.PathSeparator) + filename
@@ -29,8 +33,4 @@ func context(filename string) string {
 		panic(err)
 	}
 	return string(cxt)
-}
-
-func (this *Stub) Context() string {
-	return this.context
 }

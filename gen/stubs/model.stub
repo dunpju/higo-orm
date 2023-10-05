@@ -1,12 +1,13 @@
-package School
+package %PACKAGE%
 
 import (
 	"github.com/dunpju/higo-orm/arm"
 	"github.com/dunpju/higo-orm/him"
-	"time"
+	%IMPORT%
 )
 
 const (
+    %FIELDS%
 	SchoolId   arm.Fields = "schoolId"   //主键
 	SchoolName arm.Fields = "schoolName" //学校名称
 	Ip         arm.Fields = "ip"         //海康存储ip地址
@@ -21,6 +22,7 @@ const (
 
 type Model struct {
 	*arm.Model
+	%PROPERTY%
 	SchoolId   int64     `gorm:"column:schoolId" json:"schoolId" comment:"主键"`
 	SchoolName string    `gorm:"column:schoolName" json:"schoolName" comment:"学校名称"`
 	Ip         string    `gorm:"column:ip" json:"ip" comment:"海康存储ip地址"`
@@ -38,7 +40,7 @@ func New(properties ...him.IProperty) *Model {
 }
 
 func TableName() *arm.TableName {
-	return arm.NewTableName("school")
+	return arm.NewTableName("%TABLE_NAME%")
 }
 
 func (this *Model) New(properties ...him.IProperty) *Model {
@@ -63,8 +65,10 @@ func (this *Model) Apply(model *arm.Model) {
 }
 
 func (this *Model) Exist() bool {
-	return this.SchoolId > 0
+	return this.%PRIMARY_KEY% > 0
 }
+
+%WITH_PROPERTY%
 
 func WithSchoolId(schoolId int64) him.IProperty {
 	return him.SetProperty(func(obj any) {

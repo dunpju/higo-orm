@@ -2,6 +2,7 @@ package gen
 
 import (
 	"fmt"
+	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/spf13/cobra"
 	"os"
@@ -15,6 +16,12 @@ var (
 	out    string
 )
 
+const (
+	modelStubFilename             = "model.stub"
+	modelPropertyStubFilename     = "modelProperty.stub"
+	modelWithPropertyStubFilename = "modelWithProperty.stub"
+)
+
 func initModel() {
 	model.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
 	err := model.MarkFlagRequired("table")
@@ -24,10 +31,14 @@ func initModel() {
 	model.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接,默认值:Default")
 	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据库前缀,如:fm_")
 	model.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
+	err = model.MarkFlagRequired("out")
+	if err != nil {
+		panic(err)
+	}
 	generator.AddCommand(model)
 }
 
-// go run .\bin\generator.go model --table=all --conn=Default
+// go run .\bin\generator.go model --table=school --conn=Default --prefix=ts_ --out=app\models
 var model = &cobra.Command{
 	Use:     "model",
 	Short:   "模型构建工具",
@@ -49,6 +60,7 @@ var model = &cobra.Command{
 		model := newModel(db)
 		model.GetTableFields(table)
 		model.GetTables(prefix)
+		fmt.Println(stubs.NewStub(modelStubFilename).Context())
 	},
 }
 

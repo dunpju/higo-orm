@@ -1,0 +1,5 @@
+func With%UPPER_PROPERTY%(%LOWER_PROPERTY% %PROPERTY_TYPE%) him.IProperty {
+	return him.SetProperty(func(obj any) {
+		obj.(*Model).%UPPER_PROPERTY% = %LOWER_PROPERTY%
+	})
+}
