@@ -75,22 +75,22 @@ func (this *DB) Exec() (*gorm.DB, int64) {
 	return nil, 0
 }
 
-func (this *DB) Raw(pred string, args ...interface{}) ExecRaw {
+func (this *DB) Raw(pred string, args ...interface{}) Raw {
 	return newExecRaw(this, this.gormDB, pred, args)
 }
 
-type ExecRaw struct {
+type Raw struct {
 	db     *DB
 	gormDB *gorm.DB
 	pred   string
 	args   []interface{}
 }
 
-func newExecRaw(db *DB, gormDB *gorm.DB, pred string, args []interface{}) ExecRaw {
-	return ExecRaw{db: db, gormDB: gormDB, pred: pred, args: args}
+func newExecRaw(db *DB, gormDB *gorm.DB, pred string, args []interface{}) Raw {
+	return Raw{db: db, gormDB: gormDB, pred: pred, args: args}
 }
 
-func (this ExecRaw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
+func (this Raw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
 	if this.db.begin {
 		gormDB, insertID, rowsAffected = newExecer(newSelectBuilder(this.db.connect).begin(this.gormDB).Raw(this.pred, this.args...), this.gormDB).exec()
 	} else {
@@ -98,4 +98,8 @@ func (this ExecRaw) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64)
 	}
 	this.db.gormDB = gormDB
 	return
+}
+
+func (this Raw) Get(dest interface{}) *gorm.DB {
+	return newSelectRaw(this.db, this.gormDB).Get(dest)
 }

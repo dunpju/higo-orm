@@ -2,8 +2,10 @@ package gen
 
 import (
 	"fmt"
+	"github.com/dunpju/higo-orm/him"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var (
@@ -13,7 +15,7 @@ var (
 	out    string
 )
 
-// go run .\generator.go model --table=all --conn=Default
+// go run .\bin\generator.go model --table=all --conn=Default
 var model = &cobra.Command{
 	Use:     "model",
 	Short:   "模型构建工具",
@@ -38,4 +40,91 @@ func initModel() {
 	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据库前缀,如:fm_")
 	model.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
 	generator.AddCommand(model)
+}
+
+type Model struct {
+	db *him.DB
+}
+
+// GetTableFields 获取表所有字段信息
+func (this *Model) GetTableFields(tableName string) []TableField {
+	var fields []TableField
+	this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM ?;"), tableName).Get(&fields)
+
+	db := this.DB
+
+	d := db.Raw("show FULL COLUMNS from " + tableName + ";").Find(&fields)
+	if d.Error != nil {
+		panic(d.Error.Error())
+	}
+	return fields
+}
+
+type Table struct {
+	Name    string `gorm:"column:Name" json:"name"`
+	Comment string `gorm:"column:Comment" json:"comment"`
+}
+
+type StructField struct {
+	FieldName         string
+	FieldType         string
+	TableFieldName    string
+	TableFieldComment string
+}
+
+type TableField struct {
+	Field      string `gorm:"column:Field"`
+	Type       string `gorm:"column:Type"`
+	Null       string `gorm:"column:Null"` //非空 YES/NO
+	Key        string `gorm:"column:Key"`
+	Default    string `gorm:"column:Default"`
+	Extra      string `gorm:"column:Extra"`
+	Privileges string `gorm:"column:Privileges"`
+	Comment    string `gorm:"column:Comment"`
+}
+
+// 获取字段类型
+func getFiledType(field TableField) string {
+	if field.Null == "YES" {
+		return "interface{}"
+	}
+	types := strings.Split(field.Type, "(")
+	switch types[0] {
+	case "int":
+		return "int"
+	case "integer":
+		return "int"
+	case "mediumint":
+		return "int"
+	case "bit":
+		return "int"
+	case "year":
+		return "int"
+	case "smallint":
+		return "int"
+	case "tinyint":
+		return "int"
+	case "bigint":
+		return "int64"
+	case "decimal":
+		return "float32"
+	case "double":
+		return "float32"
+	case "float":
+		return "float32"
+	case "real":
+		return "float32"
+	case "numeric":
+		return "float32"
+	case "timestamp":
+		return "time.Time"
+	case "datetime":
+		return "time.Time"
+	case "time":
+		return "time.Time"
+	case "binary":
+		return "[]byte"
+	default:
+		return "string"
+	}
 }
