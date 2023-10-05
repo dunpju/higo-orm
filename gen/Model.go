@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 	"os"
 	"strings"
 )
@@ -43,27 +44,44 @@ var model = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
+		db.D
 		newModel(db).GetTableFields(table)
 	},
 }
 
 type Model struct {
-	db *him.DB
+	db     *him.DB
+	fields []TableField
 }
 
 func newModel(db *him.DB) *Model {
-	return &Model{db: db}
+	return &Model{db: db, fields: make([]TableField, 0)}
+}
+
+// GetTables 获取数据库表
+func (this *Model) GetTables(db *gorm.DB, database string, tableNames ...string) []Table {
+	var (
+		tables []Table
+		d      *gorm.DB
+	)
+	if len(tableNames) == 0 {
+		d = db.Raw("SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='" + database + "';").Find(&tables)
+	} else {
+		d = db.Raw("SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE TABLE_NAME IN (" + strings.Join(tableNames, ",") + ") AND table_schema='" + database + "';").Find(&tables)
+	}
+	if d.Error != nil {
+		panic(d.Error.Error())
+	}
+	return tables
 }
 
 // GetTableFields 获取表所有字段信息
 func (this *Model) GetTableFields(tableName string) []TableField {
-	var fields []TableField
-	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM ?"), tableName).Get(&fields)
+	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&this.fields)
 	if gormDB.Error != nil {
 		panic(gormDB.Error.Error())
 	}
-	fmt.Println(fields)
-	return fields
+	return this.fields
 }
 
 type Table struct {

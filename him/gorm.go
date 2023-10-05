@@ -73,7 +73,7 @@ func Init(dbc *DBConfig) (*gorm.DB, error) {
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Duration(dbc.maxLifetime) * time.Second)
 
-	_connect.Store(dbc.connect, newConnect(dbc, newDB(gormDB, dbc.connect, false)))
+	_connect.Store(dbc.connect, newConnect(dbc, newDB(gormDB, dbc.connect, dbc, false)))
 
 	return gormDB, nil
 }

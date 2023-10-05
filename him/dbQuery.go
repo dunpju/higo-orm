@@ -7,7 +7,7 @@ func (this *DB) Query() Select {
 	if err != nil {
 		this.Error = err
 	} else {
-		this.db = newDB(conn.DB().GormDB(), this.connect, this.begin)
+		this.db = newDB(conn.DB().GormDB(), this.connect, conn.dbc, this.begin)
 		return newSelect(this.db, this.gormDB)
 	}
 	return newSelect(this, nil)

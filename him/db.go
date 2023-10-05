@@ -7,18 +7,23 @@ import (
 type DB struct {
 	gormDB  *gorm.DB
 	connect string
+	dbc     *DBConfig
 	begin   bool
 	db      *DB
 	Builder interface{}
 	Error   error
 }
 
-func newDB(db *gorm.DB, connect string, begin bool) *DB {
-	return &DB{gormDB: db, connect: connect, begin: begin}
+func newDB(gormDB *gorm.DB, connect string, dbc *DBConfig, begin bool) *DB {
+	return &DB{gormDB: gormDB, connect: connect, dbc: dbc, begin: begin}
 }
 
 func (this *DB) Connect() string {
 	return this.connect
+}
+
+func (this *DB) DBC() *DBConfig {
+	return this.dbc
 }
 
 func (this *DB) Begin(tx ...*gorm.DB) *Transaction {

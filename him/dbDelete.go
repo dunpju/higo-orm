@@ -7,7 +7,7 @@ func (this *DB) Delete() DeleteFrom {
 	if err != nil {
 		this.Error = err
 	} else {
-		this.db = newDB(conn.DB().GormDB(), this.connect, this.begin)
+		this.db = newDB(conn.DB().GormDB(), this.connect, conn.dbc, this.begin)
 		return newDeleteFrom(this.db, this.gormDB)
 	}
 	return newDeleteFrom(this, nil)

@@ -27,7 +27,7 @@ func GetConnect(connection string) (*connect, error) {
 
 func getConnect(connection string) (*connect, error) {
 	if conn, ok := _connect.Load(connection); ok {
-		return newConnect(conn.(*connect).Dbc(), newDB(conn.(*connect).DB().GormDB(), conn.(*connect).dbc.connect, false)), nil
+		return newConnect(conn.(*connect).Dbc(), newDB(conn.(*connect).DB().GormDB(), conn.(*connect).dbc.connect, conn.(*connect).dbc, false)), nil
 	}
 	return nil, fmt.Errorf("connect nonexistent")
 }
