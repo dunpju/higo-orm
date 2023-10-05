@@ -15,6 +15,18 @@ var (
 	out    string
 )
 
+func initModel() {
+	model.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
+	err := model.MarkFlagRequired("table")
+	if err != nil {
+		panic(err)
+	}
+	model.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接,默认值:Default")
+	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据库前缀,如:fm_")
+	model.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
+	generator.AddCommand(model)
+}
+
 // go run .\bin\generator.go model --table=all --conn=Default
 var model = &cobra.Command{
 	Use:     "model",
@@ -30,33 +42,22 @@ var model = &cobra.Command{
 	},
 }
 
-func initModel() {
-	model.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
-	err := model.MarkFlagRequired("table")
-	if err != nil {
-		panic(err)
-	}
-	model.Flags().StringVarP(&conn, "conn", "c", "", "数据库连接,默认值:Default")
-	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据库前缀,如:fm_")
-	model.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
-	generator.AddCommand(model)
-}
-
 type Model struct {
 	db *him.DB
+}
+
+func newModel(db *him.DB) *Model {
+	return &Model{db: db}
 }
 
 // GetTableFields 获取表所有字段信息
 func (this *Model) GetTableFields(tableName string) []TableField {
 	var fields []TableField
-	this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM ?;"), tableName).Get(&fields)
-
-	db := this.DB
-
-	d := db.Raw("show FULL COLUMNS from " + tableName + ";").Find(&fields)
-	if d.Error != nil {
-		panic(d.Error.Error())
+	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM ?"), tableName).Get(&fields)
+	if gormDB.Error != nil {
+		panic(gormDB.Error.Error())
 	}
+	fmt.Println(fields)
 	return fields
 }
 

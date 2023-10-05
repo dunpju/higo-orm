@@ -76,7 +76,7 @@ func (this *DB) Exec() (*gorm.DB, int64) {
 }
 
 func (this *DB) Raw(pred string, args ...interface{}) Raw {
-	return newExecRaw(this, this.gormDB, pred, args)
+	return newRaw(this, this.gormDB, pred, args)
 }
 
 type Raw struct {
@@ -86,7 +86,7 @@ type Raw struct {
 	args   []interface{}
 }
 
-func newExecRaw(db *DB, gormDB *gorm.DB, pred string, args []interface{}) Raw {
+func newRaw(db *DB, gormDB *gorm.DB, pred string, args []interface{}) Raw {
 	return Raw{db: db, gormDB: gormDB, pred: pred, args: args}
 }
 
