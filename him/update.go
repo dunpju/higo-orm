@@ -198,8 +198,8 @@ func (this UpdateBuilder) ToSql() (string, []interface{}, error) {
 	return this.builder.ToSql()
 }
 
-func (this UpdateBuilder) Exec() (*gorm.DB, int64) {
-	gormDB, _, rowsAffected := newExecer(this, this.db).exec()
-	this.db = gormDB
+func (this UpdateBuilder) Exec() (gormDB *gorm.DB, affected int64) {
+	db, _, rowsAffected := newExecer(this, this.db).exec()
+	this.db = db
 	return this.db, rowsAffected
 }

@@ -20,8 +20,8 @@ func (this RawBuilder) Get(dest interface{}) *gorm.DB {
 	return this.db.Query().Raw(this.pred, this.args...).Get(dest)
 }
 
-func (this RawBuilder) Exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
-	gormDB, insertID, rowsAffected = newExecer(this, this.db.gormDB).exec()
+func (this RawBuilder) Exec() (gormDB *gorm.DB, insertID int64, affected int64) {
+	gormDB, insertID, affected = newExecer(this, this.db.gormDB).exec()
 	this.db.gormDB = gormDB
-	return
+	return this.db.gormDB, insertID, affected
 }

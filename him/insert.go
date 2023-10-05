@@ -101,7 +101,7 @@ func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
 	return this
 }
 
-func (this *ValuesBuilder) Save() (*gorm.DB, int64) {
+func (this *ValuesBuilder) Save() (gormDB *gorm.DB, affected int64) {
 	return this.insertBuilder.Save()
 }
 
@@ -160,7 +160,7 @@ func (this InsertBuilder) ToSql() (string, []interface{}, error) {
 	return this.builder.ToSql()
 }
 
-func (this InsertBuilder) Save() (*gorm.DB, int64) {
+func (this InsertBuilder) Save() (gormDB *gorm.DB, affected int64) {
 	builder, db, _ := this.save()
 	return db, builder.affected
 }
