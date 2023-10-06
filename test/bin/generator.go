@@ -14,7 +14,7 @@ func main() {
 		SetPassword("1qaz2wsx").
 		SetCharset("utf8mb4").
 		SetDriver("mysql").
-		SetPrefix("tl_").
+		SetPrefix("").
 		SetMaxIdle(5).
 		SetMaxOpen(10).
 		SetMaxLifetime(1000).

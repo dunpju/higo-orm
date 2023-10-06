@@ -1,28 +1,16 @@
 package %PACKAGE%
 
 import (
-	"github.com/dunpju/higo-orm/arm"
-	"github.com/dunpju/higo-orm/him"
-	%IMPORT%
+%IMPORT%
 )
 
 const (
-    %FIELDS%
-	SchoolId   arm.Fields = "schoolId"   //主键
-	SchoolName arm.Fields = "schoolName" //学校名称
-	Ip         arm.Fields = "ip"         //海康存储ip地址
-	Port       arm.Fields = "port"       //海康存储端口
-	UserName   arm.Fields = "userName"   //海康存储用户名
-	Password   arm.Fields = "password"   //海康存储用户密码
-	IsDelete   arm.Fields = "isDelete"   //是否删除:1-否,2-是
-	CreateTime arm.Fields = "createTime" //创建时间
-	UpdateTime arm.Fields = "updateTime" //更新时间
-	DeleteTime arm.Fields = "deleteTime" //删除时间
+%FIELDS%
 )
 
 type Model struct {
-	*arm.Model
-	%PROPERTY%
+    *arm.Model
+%PROPERTY%
 	SchoolId   int64     `gorm:"column:schoolId" json:"schoolId" comment:"主键"`
 	SchoolName string    `gorm:"column:schoolName" json:"schoolName" comment:"学校名称"`
 	Ip         string    `gorm:"column:ip" json:"ip" comment:"海康存储ip地址"`
@@ -36,48 +24,48 @@ type Model struct {
 }
 
 func New(properties ...him.IProperty) *Model {
-	return (&Model{}).New(properties...)
+    return (&Model{}).New(properties...)
 }
 
 func TableName() *arm.TableName {
-	return arm.NewTableName("%TABLE_NAME%")
+    return arm.NewTableName("%TABLE_NAME%")
 }
 
 func (this *Model) New(properties ...him.IProperty) *Model {
-	err := arm.Connect(this)
-	if err != nil {
-		panic(err)
-	}
-	this.Property(properties...)
-	return this
+    err := arm.Connect(this)
+    if err != nil {
+        panic(err)
+    }
+    this.Property(properties...)
+    return this
 }
 
 func (this *Model) Connection() string {
-	return him.DefaultConnect
+    return him.DefaultConnect
 }
 
 func (this *Model) TableName() *arm.TableName {
-	return TableName()
+    return TableName()
 }
 
 func (this *Model) Apply(model *arm.Model) {
-	this.Model = model
+    this.Model = model
 }
 
 func (this *Model) Exist() bool {
-	return this.%PRIMARY_KEY% > 0
+    return this.%PRIMARY_KEY% > 0
 }
 
 %WITH_PROPERTY%
 
 func WithSchoolId(schoolId int64) him.IProperty {
-	return him.SetProperty(func(obj any) {
-		obj.(*Model).SchoolId = schoolId
-	})
+    return him.SetProperty(func(obj any) {
+        obj.(*Model).SchoolId = schoolId
+    })
 }
 
 func WithSchoolName(schoolName string) him.IProperty {
-	return him.SetProperty(func(obj any) {
-		obj.(*Model).SchoolName = schoolName
-	})
+    return him.SetProperty(func(obj any) {
+        obj.(*Model).SchoolName = schoolName
+    })
 }

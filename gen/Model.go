@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-orm/him"
+	"github.com/dunpju/higo-utils/utils"
+	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -17,6 +19,7 @@ var (
 )
 
 const (
+	allTable                      = "all"
 	modelStubFilename             = "model.stub"
 	modelFieldsStubFilename       = "modelFields.stub"
 	modelPropertyStubFilename     = "modelProperty.stub"
@@ -58,33 +61,140 @@ var model = &cobra.Command{
 		if prefix == "" {
 			prefix = db.DBC().Prefix()
 		}
-		model := newModel(db)
-		model.GetTableFields(table)
-		model.GetTables(prefix)
-		fmt.Println(stubs.NewStub(modelStubFilename).Context())
+		model := newModel(db, prefix)
+		if allTable == table {
+			model.getTables()
+		} else {
+			model.getTable(table)
+		}
+		model.gen(out)
+		//fmt.Println(stubs.NewStub(modelStubFilename).Context())
 	},
 }
 
 type Model struct {
-	db     *him.DB
-	tables []Table
-	fields []TableField
+	db                  *him.DB
+	tables              []Table
+	prefix              string
+	originalStubContext string
+	stubContext         string
+	filename            string
+	imports             []string
+	fields              []string
 }
 
-func newModel(db *him.DB) *Model {
-	return &Model{db: db, tables: make([]Table, 0), fields: make([]TableField, 0)}
+func newModel(db *him.DB, prefix string) *Model {
+	return &Model{
+		db:                  db,
+		tables:              make([]Table, 0),
+		prefix:              prefix,
+		originalStubContext: stubs.NewStub(modelStubFilename).Context(),
+		filename:            "Model.go",
+		imports:             make([]string, 0),
+		fields:              make([]string, 0),
+	}
 }
 
-func (this *Model) replacePackage() {
+func (this *Model) gen(out string) {
+	for _, t := range this.tables {
+		tableFields := this.getTableFields(t.Name)
+		fmt.Println(tableFields)
+		fieldMaxLen := 0
+		isBreak := false
+	begin:
+		for _, field := range tableFields {
+			if fieldMaxLen < len(field.Field) {
+				fieldMaxLen = len(field.Field)
+			}
+			if !isBreak {
+				continue
+			}
+			if convertFiledType(field) == "time.Time" {
+				this.mergeImport(`"time"`)
+			}
+			upperProperty := CamelCase(field.Field)
+			rawField := this.replaceRawField(upperProperty,
+				LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " "), field.Field,
+				LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " "), field.Comment)
+			this.mergeFields(rawField)
+		}
+		if fieldMaxLen > 0 {
+			if !isBreak {
+				isBreak = true
+				goto begin
+			}
+		}
+		this.stubContext = this.originalStubContext
+		pkg := CamelCase(strings.Replace(t.Name, this.prefix, "", 1))
+		this.replacePackage(pkg)
+		this.replaceImport()
+		this.replaceFields()
+		fmt.Println(this.stubContext)
+		this.write(out + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.filename)
+	}
+}
 
+func (this *Model) write(file string) {
+	if _, err := os.Stat(file); os.IsNotExist(err) {
+		utils.Dir.Mkdir(file, os.ModePerm)
+	}
+}
+
+func (this *Model) mergeImport(ipt string) {
+	has := false
+	for _, s := range this.imports {
+		if s == ipt {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.imports = append(this.imports, LeftStrPad(ipt, 4, " "))
+	}
+}
+
+func (this *Model) mergeFields(rawField string) {
+	has := false
+	for _, s := range this.fields {
+		if s == rawField {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.fields = append(this.fields, LeftStrPad(rawField, 4, " "))
+	}
+}
+
+func (this *Model) mergeProperty() {
+
+}
+
+func (this *Model) mergeWithProperty() {
+
+}
+
+func (this *Model) replaceRawField(upperProperty, blankFirst, tableFields, blankSecond, tableFieldsComment string) string {
+	stub := stubs.NewStub(modelFieldsStubFilename).Context()
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 1)
+	stub = strings.Replace(stub, "%BLANK_SECOND%", blankSecond, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
+	return stub
+}
+
+func (this *Model) replacePackage(pkg string) {
+	this.stubContext = strings.Replace(this.stubContext, "%PACKAGE%", pkg, 1)
 }
 
 func (this *Model) replaceImport() {
-
+	imports := []string{LeftStrPad(`"github.com/dunpju/higo-orm/arm"`, 4, " "), LeftStrPad(`"github.com/dunpju/higo-orm/him"`, 4, " ")}
+	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
 
 func (this *Model) replaceFields() {
-
+	this.stubContext = strings.Replace(this.stubContext, "%FIELDS%", strings.Join(this.fields, "\n"), 1)
 }
 
 func (this *Model) replaceProperty() {
@@ -103,32 +213,30 @@ func (this *Model) replaceWithProperty() {
 
 }
 
-func (this *Model) mergeFields() {
-
+// GetTables 获取数据库所有表
+func (this *Model) getTables() {
+	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME LIKE '%s%%'`, this.db.DBC().Database(), this.prefix)).Get(&this.tables)
+	if gormDB.Error != nil {
+		panic(gormDB.Error)
+	}
 }
 
-func (this *Model) mergeProperty() {
-
-}
-
-func (this *Model) mergeWithProperty() {
-
-}
-
-// GetTables 获取数据库表
-func (this *Model) GetTables(prefix string) {
-	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME LIKE '%s%%'`, this.db.DBC().Database(), prefix)).Get(&this.tables)
+// GetTable 获取数据库表
+func (this *Model) getTable(table string) {
+	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME = '%s'`, this.db.DBC().Database(), table)).Get(&this.tables)
 	if gormDB.Error != nil {
 		panic(gormDB.Error)
 	}
 }
 
 // GetTableFields 获取表所有字段信息
-func (this *Model) GetTableFields(tableName string) {
-	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&this.fields)
+func (this *Model) getTableFields(tableName string) []TableField {
+	var fields []TableField
+	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&fields)
 	if gormDB.Error != nil {
 		panic(gormDB.Error)
 	}
+	return fields
 }
 
 type Table struct {
@@ -154,8 +262,8 @@ type TableField struct {
 	Comment    string `gorm:"column:Comment"`
 }
 
-// 获取字段类型
-func getFiledType(field TableField) string {
+// 转换字段类型
+func convertFiledType(field TableField) string {
 	if field.Null == "YES" {
 		return "interface{}"
 	}
@@ -198,4 +306,16 @@ func getFiledType(field TableField) string {
 	default:
 		return "string"
 	}
+}
+
+// LeftStrPad
+// input string 原字符串
+// padLength int 规定补齐后的字符串位数
+// padString string 自定义填充字符串
+func LeftStrPad(input string, padLength int, padString string) string {
+	output := ""
+	for i := 1; i <= padLength; i++ {
+		output += padString
+	}
+	return output + input
 }
