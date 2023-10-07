@@ -81,6 +81,8 @@ type Model struct {
 	filename            string
 	imports             []string
 	fields              []string
+	properties          []string
+	withProperty        []string
 }
 
 func newModel(db *him.DB, prefix string) *Model {
@@ -92,31 +94,51 @@ func newModel(db *him.DB, prefix string) *Model {
 		filename:            "Model.go",
 		imports:             make([]string, 0),
 		fields:              make([]string, 0),
+		properties:          make([]string, 0),
+		withProperty:        make([]string, 0),
 	}
 }
 
 func (this *Model) gen(out string) {
 	for _, t := range this.tables {
 		tableFields := this.getTableFields(t.Name)
-		fmt.Println(tableFields)
+		upperPropertyMaxLen := 0
 		fieldMaxLen := 0
+		propertyTypeMaxLen := 0
+		primaryKey := ""
 		isBreak := false
 	begin:
 		for _, field := range tableFields {
+			upperProperty := CamelCase(field.Field)
+			if upperPropertyMaxLen < len(upperProperty) {
+				upperPropertyMaxLen = len(upperProperty)
+			}
 			if fieldMaxLen < len(field.Field) {
 				fieldMaxLen = len(field.Field)
+			}
+			propertyType := convertFiledType(field)
+			if propertyTypeMaxLen < len(propertyType) {
+				propertyTypeMaxLen = len(propertyType)
 			}
 			if !isBreak {
 				continue
 			}
-			if convertFiledType(field) == "time.Time" {
+			if field.Key == "PRI" {
+				primaryKey = upperProperty
+			}
+			if propertyType == "time.Time" {
 				this.mergeImport(`"time"`)
 			}
-			upperProperty := CamelCase(field.Field)
-			rawField := this.replaceRawField(upperProperty,
-				LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " "), field.Field,
-				LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " "), field.Comment)
+			blankFirst := LeftStrPad(" ", upperPropertyMaxLen-len(upperProperty)+1, " ")
+			rawField := this.replaceRawField(upperProperty, blankFirst, field.Field, blankFirst, field.Comment)
 			this.mergeFields(rawField)
+			blankSecond := LeftStrPad(" ", propertyTypeMaxLen-len(propertyType)+1, " ")
+			blankThree := LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " ")
+			blankFour := LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " ")
+			rawProperty := this.replaceRawProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, field.Field, field.Comment)
+			this.mergeProperty(rawProperty)
+			rawWithProperty := this.replaceRawWithProperty(upperProperty, utils.String.Lcfirst(upperProperty), propertyType, field.Comment)
+			this.mergeWithProperty(rawWithProperty)
 		}
 		if fieldMaxLen > 0 {
 			if !isBreak {
@@ -129,6 +151,10 @@ func (this *Model) gen(out string) {
 		this.replacePackage(pkg)
 		this.replaceImport()
 		this.replaceFields()
+		this.replaceProperty()
+		this.replaceTableName(t.Name)
+		this.replacePrimaryKey(primaryKey)
+		this.replaceWithProperty()
 		fmt.Println(this.stubContext)
 		this.write(out + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.filename)
 	}
@@ -143,7 +169,7 @@ func (this *Model) write(file string) {
 func (this *Model) mergeImport(ipt string) {
 	has := false
 	for _, s := range this.imports {
-		if s == ipt {
+		if s == LeftStrPad(ipt, 4, " ") {
 			has = true
 			break
 		}
@@ -156,7 +182,7 @@ func (this *Model) mergeImport(ipt string) {
 func (this *Model) mergeFields(rawField string) {
 	has := false
 	for _, s := range this.fields {
-		if s == rawField {
+		if s == LeftStrPad(rawField, 4, " ") {
 			has = true
 			break
 		}
@@ -166,12 +192,30 @@ func (this *Model) mergeFields(rawField string) {
 	}
 }
 
-func (this *Model) mergeProperty() {
-
+func (this *Model) mergeProperty(rawProperty string) {
+	has := false
+	for _, s := range this.properties {
+		if s == LeftStrPad(rawProperty, 4, " ") {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.properties = append(this.properties, LeftStrPad(rawProperty, 4, " "))
+	}
 }
 
-func (this *Model) mergeWithProperty() {
-
+func (this *Model) mergeWithProperty(rawWithProperty string) {
+	has := false
+	for _, s := range this.withProperty {
+		if s == rawWithProperty {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.withProperty = append(this.withProperty, rawWithProperty)
+	}
 }
 
 func (this *Model) replaceRawField(upperProperty, blankFirst, tableFields, blankSecond, tableFieldsComment string) string {
@@ -180,6 +224,29 @@ func (this *Model) replaceRawField(upperProperty, blankFirst, tableFields, blank
 	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
 	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 1)
 	stub = strings.Replace(stub, "%BLANK_SECOND%", blankSecond, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
+	return stub
+}
+
+func (this *Model) replaceRawProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, tableFields, tableFieldsComment string) string {
+	stub := stubs.NewStub(modelPropertyStubFilename).Context()
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
+	stub = strings.Replace(stub, "%PROPERTY_TYPE%", propertyType, 1)
+	stub = strings.Replace(stub, "%BLANK_SECOND%", blankSecond, 1)
+	stub = strings.Replace(stub, "%BLANK_THREE%", blankThree, 1)
+	stub = strings.Replace(stub, "%BLANK_FOUR%", blankFour, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
+	return stub
+}
+
+func (this *Model) replaceRawWithProperty(upperProperty, lowerProperty, propertyType, tableFieldsComment string) string {
+	stub := stubs.NewStub(modelWithPropertyStubFilename).Context()
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 3)
+	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 2)
+	stub = strings.Replace(stub, "%PROPERTY_TYPE%", propertyType, 1)
 	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
 	return stub
 }
@@ -198,19 +265,19 @@ func (this *Model) replaceFields() {
 }
 
 func (this *Model) replaceProperty() {
-
+	this.stubContext = strings.Replace(this.stubContext, "%PROPERTY%", strings.Join(this.properties, "\n"), 1)
 }
 
-func (this *Model) replaceTableName() {
-
+func (this *Model) replaceTableName(tableName string) {
+	this.stubContext = strings.Replace(this.stubContext, "%TABLE_NAME%", tableName, 1)
 }
 
-func (this *Model) replacePrimaryKey() {
-
+func (this *Model) replacePrimaryKey(primaryKey string) {
+	this.stubContext = strings.Replace(this.stubContext, "%PRIMARY_KEY%", primaryKey, 1)
 }
 
 func (this *Model) replaceWithProperty() {
-
+	this.stubContext = strings.Replace(this.stubContext, "%WITH_PROPERTY%", strings.Join(this.withProperty, "\n\n"), 1)
 }
 
 // GetTables 获取数据库所有表
@@ -264,9 +331,6 @@ type TableField struct {
 
 // 转换字段类型
 func convertFiledType(field TableField) string {
-	if field.Null == "YES" {
-		return "interface{}"
-	}
 	types := strings.Split(field.Type, "(")
 	switch types[0] {
 	case "int":
@@ -303,8 +367,10 @@ func convertFiledType(field TableField) string {
 		return "time.Time"
 	case "binary":
 		return "[]byte"
-	default:
+	case "varchar":
 		return "string"
+	default:
+		return "interface{}"
 	}
 }
 

@@ -21,13 +21,13 @@ const (
 
 type Model struct {
 	*arm.Model
-	SchoolId   int64     `gorm:"column:schoolId" json:"schoolId" comment:"主键"`
+	SchoolId   int64     `gorm:"column:schoolId"   json:"schoolId"   comment:"主键"`
 	SchoolName string    `gorm:"column:schoolName" json:"schoolName" comment:"学校名称"`
-	Ip         string    `gorm:"column:ip" json:"ip" comment:"海康存储ip地址"`
-	Port       string    `gorm:"column:port" json:"port" comment:"海康存储端口"`
-	UserName   string    `gorm:"column:userName" json:"userName" comment:"海康存储用户名"`
-	Password   string    `gorm:"column:password" json:"password" comment:"海康存储用户密码"`
-	IsDelete   int       `gorm:"column:isDelete" json:"isDelete" comment:"是否删除:1-否,2-是"`
+	Ip         string    `gorm:"column:ip"         json:"ip"         comment:"海康存储ip地址"`
+	Port       string    `gorm:"column:port"       json:"port"       comment:"海康存储端口"`
+	UserName   string    `gorm:"column:userName"   json:"userName"   comment:"海康存储用户名"`
+	Password   string    `gorm:"column:password"   json:"password"   comment:"海康存储用户密码"`
+	IsDelete   int       `gorm:"column:isDelete"   json:"isDelete"   comment:"是否删除:1-否,2-是"`
 	CreateTime time.Time `gorm:"column:createTime" json:"createTime" comment:"创建时间"`
 	UpdateTime time.Time `gorm:"column:updateTime" json:"updateTime" comment:"更新时间"`
 	DeleteTime time.Time `gorm:"column:deleteTime" json:"deleteTime" comment:"删除时间"`
