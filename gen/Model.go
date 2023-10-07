@@ -129,12 +129,12 @@ func (this *Model) gen(out string) {
 			if propertyType == "time.Time" {
 				this.mergeImport(`"time"`)
 			}
-			blankFirst := LeftStrPad(" ", upperPropertyMaxLen-len(upperProperty)+1, " ")
+			blankFirst := LeftStrPad(" ", upperPropertyMaxLen-len(upperProperty), " ")
 			rawField := this.replaceRawField(upperProperty, blankFirst, field.Field, blankFirst, field.Comment)
 			this.mergeFields(rawField)
-			blankSecond := LeftStrPad(" ", propertyTypeMaxLen-len(propertyType)+1, " ")
-			blankThree := LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " ")
-			blankFour := LeftStrPad(" ", fieldMaxLen-len(field.Field)+1, " ")
+			blankSecond := LeftStrPad(" ", propertyTypeMaxLen-len(propertyType), " ")
+			blankThree := LeftStrPad(" ", fieldMaxLen-len(field.Field), " ")
+			blankFour := LeftStrPad(" ", fieldMaxLen-len(field.Field), " ")
 			rawProperty := this.replaceRawProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, field.Field, field.Comment)
 			this.mergeProperty(rawProperty)
 			rawWithProperty := this.replaceRawWithProperty(upperProperty, utils.String.Lcfirst(upperProperty), propertyType, field.Comment)
@@ -155,7 +155,6 @@ func (this *Model) gen(out string) {
 		this.replaceTableName(t.Name)
 		this.replacePrimaryKey(primaryKey)
 		this.replaceWithProperty()
-		fmt.Println(this.stubContext)
 		this.write(out + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.filename)
 	}
 }
@@ -163,6 +162,15 @@ func (this *Model) gen(out string) {
 func (this *Model) write(file string) {
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		utils.Dir.Mkdir(file, os.ModePerm)
+	}
+	f, err := os.Create(file)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	_, err = f.Write([]byte(this.stubContext))
+	if err != nil {
+		panic(err)
 	}
 }
 
