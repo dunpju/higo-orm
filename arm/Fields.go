@@ -4,6 +4,11 @@ import "fmt"
 
 type Fields string
 
+func (this Fields) Pre(pre string) Fields {
+	this = Fields(fmt.Sprintf("%s.%s", pre, this))
+	return this
+}
+
 func (this Fields) AS(as string) string {
 	return fmt.Sprintf("%s AS %s", this, as)
 }
