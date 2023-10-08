@@ -49,11 +49,6 @@ var model = &cobra.Command{
 	Long:    `模型构建工具`,
 	Example: "model",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(os.Getwd())
-		fmt.Println(table)
-		fmt.Println(conn)
-		fmt.Println(prefix)
-		fmt.Println(out)
 		db, err := him.DBConnect(conn)
 		if err != nil {
 			panic(err)
@@ -68,7 +63,6 @@ var model = &cobra.Command{
 			model.getTable(table)
 		}
 		model.gen(out)
-		//fmt.Println(stubs.NewStub(modelStubFilename).Context())
 	},
 }
 
@@ -189,27 +183,29 @@ func (this *Model) mergeImport(ipt string) {
 
 func (this *Model) mergeFields(rawField string) {
 	has := false
+	leftStrPad := LeftStrPad(rawField, 4, " ")
 	for _, s := range this.fields {
-		if s == LeftStrPad(rawField, 4, " ") {
+		if s == leftStrPad {
 			has = true
 			break
 		}
 	}
 	if !has {
-		this.fields = append(this.fields, LeftStrPad(rawField, 4, " "))
+		this.fields = append(this.fields, leftStrPad)
 	}
 }
 
 func (this *Model) mergeProperty(rawProperty string) {
 	has := false
+	leftStrPad := LeftStrPad(rawProperty, 4, " ")
 	for _, s := range this.properties {
-		if s == LeftStrPad(rawProperty, 4, " ") {
+		if s == leftStrPad {
 			has = true
 			break
 		}
 	}
 	if !has {
-		this.properties = append(this.properties, LeftStrPad(rawProperty, 4, " "))
+		this.properties = append(this.properties, leftStrPad)
 	}
 }
 
@@ -264,7 +260,10 @@ func (this *Model) replacePackage(pkg string) {
 }
 
 func (this *Model) replaceImport() {
-	imports := []string{LeftStrPad(`"github.com/dunpju/higo-orm/arm"`, 4, " "), LeftStrPad(`"github.com/dunpju/higo-orm/him"`, 4, " ")}
+	imports := []string{
+		LeftStrPad(`"github.com/dunpju/higo-orm/arm"`, 4, " "),
+		LeftStrPad(`"github.com/dunpju/higo-orm/him"`, 4, " "),
+	}
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
 
