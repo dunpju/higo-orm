@@ -5,8 +5,7 @@ import "fmt"
 type Fields string
 
 func (this Fields) Pre(pre string) Fields {
-	this = Fields(fmt.Sprintf("%s.%s", pre, this))
-	return this
+	return Fields(fmt.Sprintf("%s.%s", pre, this))
 }
 
 func (this Fields) AS(as string) string {
@@ -21,12 +20,12 @@ func (this Fields) DESC() string {
 	return fmt.Sprintf("%s DESC", this)
 }
 
-func (this Fields) COUNT() string {
-	return fmt.Sprintf("COUNT(%s)", this)
+func (this Fields) COUNT() Fields {
+	return Fields(fmt.Sprintf("COUNT(%s)", this))
 }
 
-func (this Fields) SUM() string {
-	return fmt.Sprintf("SUM(%s)", this)
+func (this Fields) SUM() Fields {
+	return Fields(fmt.Sprintf("SUM(%s)", this))
 }
 
 func (this Fields) String() string {
