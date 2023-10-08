@@ -240,8 +240,7 @@ func (this *Model) replaceRawProperty(upperProperty, blankFirst, propertyType, b
 	stub = strings.Replace(stub, "%BLANK_SECOND%", blankSecond, 1)
 	stub = strings.Replace(stub, "%BLANK_THREE%", blankThree, 1)
 	stub = strings.Replace(stub, "%BLANK_FOUR%", blankFour, 1)
-	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 1)
-	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS%", tableFields, 2)
 	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
 	return stub
 }
