@@ -56,6 +56,7 @@ func main() {
 	fmt.Println(res)
 	school := School.New(School.WithSchoolId(130), School.WithSchoolName("小学"))
 	fmt.Println(school)
+	School.New().Alias("A").Select().Where(School.SchoolId, "=", 1).Get(&res)
 	err = School.New().Begin().Transaction(func(tx *gorm.DB) error {
 		_, rowsAffected := School.New().
 			TX(tx).

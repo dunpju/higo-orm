@@ -72,7 +72,20 @@ func newSelectFrom(db *DB, gormDB *gorm.DB) SelectFrom {
 	return SelectFrom{db: db, gormDB: gormDB}
 }
 
-func (this SelectFrom) From(from string) SelectBuilder {
-	this.db.Builder = this.db.Builder.(SelectBuilder)._from(from)
+func (this SelectFrom) From(from any) SelectBuilder {
+	if f, ok := from.(IAlias); ok {
+		if f.GetAlias() != "" {
+			this.db.Builder = this.db.Builder.(SelectBuilder)._from(f.String())._alias(f.GetAlias())
+		} else {
+			this.db.Builder = this.db.Builder.(SelectBuilder)._from(f.String())
+		}
+	} else if f, ok := from.(string); ok {
+		this.db.Builder = this.db.Builder.(SelectBuilder)._from(f)
+	}
 	return this.db.Builder.(SelectBuilder)
+}
+
+type IAlias interface {
+	GetAlias() string
+	String() string
 }

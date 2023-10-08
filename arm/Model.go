@@ -39,8 +39,13 @@ func (this *Model) Connection() string {
 	return him.DefaultConnect
 }
 
+func (this *Model) Alias(alias string) *Model {
+	this.table.Alias(alias)
+	return this
+}
+
 func (this *Model) Select(columns ...string) him.SelectBuilder {
-	return this.db.Query().Select(columns...).From(this.table.String())
+	return this.db.Query().Select(columns...).From(this.table)
 }
 
 func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
