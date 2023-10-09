@@ -7,6 +7,9 @@ import (
 	"github.com/dunpju/higo-utils/utils"
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"os"
 	"strings"
 )
@@ -73,6 +76,7 @@ type Model struct {
 	originalStubContext string
 	stubContext         string
 	filename            string
+	outfile             string
 	imports             []string
 	fields              []string
 	properties          []string
@@ -149,11 +153,13 @@ func (this *Model) gen(out string) {
 		this.replaceTableName(t.Name)
 		this.replacePrimaryKey(primaryKey)
 		this.replaceWithProperty()
+		this.astFindStructNode()
 		this.write(out + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.filename)
 	}
 }
 
 func (this *Model) write(file string) {
+	this.outfile = file
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		utils.Dir.Mkdir(file, os.ModePerm)
 	}
@@ -310,6 +316,30 @@ func (this *Model) getTableFields(tableName string) []TableField {
 		panic(gormDB.Error)
 	}
 	return fields
+}
+
+// astFindStructNode 找到Struct Node
+func (this *Model) astFindStructNode() {
+	fileSet := token.NewFileSet()
+	file, err := parser.ParseFile(fileSet, this.outfile, this.stubContext, parser.ParseComments)
+	if err != nil {
+		panic(err)
+	}
+	var bufferNode *ast.TypeSpec
+	ast.Inspect(file, func(node ast.Node) bool {
+		switch n := node.(type) {
+		case *ast.GenDecl:
+			if n.Doc != nil && len(n.Doc.List) > 0 {
+				fmt.Println(n.Doc.List[0].Text) // 模型
+			}
+			/*if n.Name.Name == "Model" {
+				bufferNode = n //找到struct node
+			}*/
+		}
+		return true
+	})
+	fmt.Println(bufferNode)
+	//ast.Print(fileSet, file)
 }
 
 type Table struct {

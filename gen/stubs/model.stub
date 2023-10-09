@@ -8,6 +8,7 @@ const (
 %FIELDS%
 )
 
+// 模型
 type Model struct {
     *arm.Model
 %PROPERTY%
