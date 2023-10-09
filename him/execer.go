@@ -39,6 +39,10 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 	stmt.Vars = args
 
 	result, err := gormDB.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
+	if err != nil {
+		gormDB.Error = err
+		return
+	}
 
 	gormDB.Logger.Trace(stmt.Context, curTime, func() (string, int64) {
 		sqlStr, vars := stmt.SQL.String(), stmt.Vars
@@ -52,10 +56,6 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 		return gormDB.Dialector.Explain(sqlStr, vars...), affected
 	}, gormDB.Error)
 
-	if err != nil {
-		gormDB.Error = err
-		return
-	}
 	id, err := result.LastInsertId()
 	if err != nil {
 		gormDB.Error = err

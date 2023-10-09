@@ -73,14 +73,15 @@ func main() {
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
 		_, affected := school.Save()
 		fmt.Println(affected)
-		_, affected = School.New().
+		_, affected1 := School.New().
 			TX(tx).
 			Insert().
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Save()
-		fmt.Println(affected)
+		fmt.Println(affected1)
 		_, lastInsertId := School.New().
 			TX(tx).
 			Insert().
