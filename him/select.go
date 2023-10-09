@@ -17,7 +17,6 @@ type SelectBuilder struct {
 	isWhereRaw  bool
 	columns     []string
 	from        string
-	alias       string
 	joins       []join
 	wheres      *wheres
 	hasOffset   bool
@@ -86,11 +85,6 @@ func (this SelectBuilder) _select(columns ...string) SelectBuilder {
 
 func (this SelectBuilder) _from(from string) SelectBuilder {
 	this.from = from
-	return this
-}
-
-func (this SelectBuilder) _alias(alias string) SelectBuilder {
-	this.alias = alias
 	return this
 }
 

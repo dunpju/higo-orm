@@ -45,7 +45,7 @@ func (this *Model) Alias(alias string) *Model {
 }
 
 func (this *Model) Select(columns ...string) him.SelectBuilder {
-	return this.db.Query().Select(columns...).From(this.table)
+	return this.db.Query().Select(columns...).From(this.table.String())
 }
 
 func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
