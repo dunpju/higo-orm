@@ -333,14 +333,29 @@ func (this *Model) astFindStructNode() {
 		panic(err)
 	}
 	var structNode *ast.GenDecl
+	starExprs := make([]*ast.StarExpr, 0)
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
 			if n.Specs != nil && len(n.Specs) > 0 {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
-					if typeSpec.Name.String() == "Model" {
-						fmt.Println(typeSpec.Doc)
+					StructType, ok := typeSpec.Type.(*ast.StructType)
+					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == "Model" {
 						structNode = n //找到struct node
+						fieldsList := StructType.Fields.List
+						if fieldsList != nil && len(fieldsList) > 0 {
+							for _, field := range fieldsList {
+								//找到 StarExpr
+								starExpr, ok := field.Type.(*ast.StarExpr)
+								fmt.Println(len(field.Names))
+								fmt.Println(starExpr)
+								fmt.Printf("%T\n", field.Type)
+								if ok && len(field.Names) == 0 {
+									starExprs = append(starExprs, starExpr)
+									fmt.Println(starExprs)
+								}
+							}
+						}
 					}
 				}
 			}
