@@ -79,6 +79,7 @@ type Model struct {
 	outfile             string
 	imports             []string
 	fields              []string
+	tableComment        string
 	properties          []string
 	withProperty        []string
 }
@@ -99,6 +100,7 @@ func newModel(db *him.DB, prefix string) *Model {
 
 func (this *Model) gen(out string) {
 	for _, t := range this.tables {
+		this.tableComment = t.Comment
 		tableFields := this.getTableFields(t.Name)
 		upperPropertyMaxLen := 0
 		fieldMaxLen := 0
@@ -149,6 +151,7 @@ func (this *Model) gen(out string) {
 		this.replacePackage(pkg)
 		this.replaceImport()
 		this.replaceFields()
+		this.replaceTableComment()
 		this.replaceProperty()
 		this.replaceTableName(t.Name)
 		this.replacePrimaryKey(primaryKey)
@@ -276,6 +279,10 @@ func (this *Model) replaceFields() {
 	this.stubContext = strings.Replace(this.stubContext, "%FIELDS%", strings.Join(this.fields, "\n"), 1)
 }
 
+func (this *Model) replaceTableComment() {
+	this.stubContext = strings.Replace(this.stubContext, "%TABLE_COMMENT%", this.tableComment, 1)
+}
+
 func (this *Model) replaceProperty() {
 	this.stubContext = strings.Replace(this.stubContext, "%PROPERTY%", strings.Join(this.properties, "\n"), 1)
 }
@@ -325,20 +332,22 @@ func (this *Model) astFindStructNode() {
 	if err != nil {
 		panic(err)
 	}
-	var bufferNode *ast.TypeSpec
+	var structNode *ast.GenDecl
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
-			if n.Doc != nil && len(n.Doc.List) > 0 {
-				fmt.Println(n.Doc.List[0].Text) // 模型
+			if n.Specs != nil && len(n.Specs) > 0 {
+				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
+					if typeSpec.Name.String() == "Model" {
+						fmt.Println(typeSpec.Doc)
+						structNode = n //找到struct node
+					}
+				}
 			}
-			/*if n.Name.Name == "Model" {
-				bufferNode = n //找到struct node
-			}*/
 		}
 		return true
 	})
-	fmt.Println(bufferNode)
+	fmt.Println(structNode)
 	//ast.Print(fileSet, file)
 }
 

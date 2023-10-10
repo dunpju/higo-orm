@@ -8,7 +8,7 @@ const (
 %FIELDS%
 )
 
-// 模型
+// Model %TABLE_COMMENT%结构体
 type Model struct {
     *arm.Model
 %PROPERTY%
