@@ -1,0 +1,1 @@
+go run .\bin\generator.go model --table=school --conn=Default --prefix=ts_ --out=app\models

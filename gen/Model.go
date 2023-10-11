@@ -347,9 +347,6 @@ func (this *Model) astFindStructNode() {
 							for _, field := range fieldsList {
 								//找到 StarExpr
 								starExpr, ok := field.Type.(*ast.StarExpr)
-								fmt.Println(len(field.Names))
-								fmt.Println(starExpr)
-								fmt.Printf("%T\n", field.Type)
 								if ok && len(field.Names) == 0 {
 									starExprs = append(starExprs, starExpr)
 									fmt.Println(starExprs)

@@ -1,0 +1,3207 @@
+&{0xc0002952a8 765 type 0 [0xc00029b340] 0}
+     0  *ast.File {
+     1  .  Package: 1:1
+     2  .  Name: *ast.Ident {
+     3  .  .  NamePos: 1:9
+     4  .  .  Name: "School"
+     5  .  }
+     6  .  Decls: []ast.Decl (len = 20) {
+     7  .  .  0: *ast.GenDecl {
+     8  .  .  .  TokPos: 3:1
+     9  .  .  .  Tok: import
+    10  .  .  .  Lparen: 3:8
+    11  .  .  .  Specs: []ast.Spec (len = 3) {
+    12  .  .  .  .  0: *ast.ImportSpec {
+    13  .  .  .  .  .  Path: *ast.BasicLit {
+    14  .  .  .  .  .  .  ValuePos: 4:5
+    15  .  .  .  .  .  .  Kind: STRING
+    16  .  .  .  .  .  .  Value: "\"github.com/dunpju/higo-orm/arm\""
+    17  .  .  .  .  .  }
+    18  .  .  .  .  .  EndPos: -
+    19  .  .  .  .  }
+    20  .  .  .  .  1: *ast.ImportSpec {
+    21  .  .  .  .  .  Path: *ast.BasicLit {
+    22  .  .  .  .  .  .  ValuePos: 5:5
+    23  .  .  .  .  .  .  Kind: STRING
+    24  .  .  .  .  .  .  Value: "\"github.com/dunpju/higo-orm/him\""
+    25  .  .  .  .  .  }
+    26  .  .  .  .  .  EndPos: -
+    27  .  .  .  .  }
+    28  .  .  .  .  2: *ast.ImportSpec {
+    29  .  .  .  .  .  Path: *ast.BasicLit {
+    30  .  .  .  .  .  .  ValuePos: 6:5
+    31  .  .  .  .  .  .  Kind: STRING
+    32  .  .  .  .  .  .  Value: "\"time\""
+    33  .  .  .  .  .  }
+    34  .  .  .  .  .  EndPos: -
+    35  .  .  .  .  }
+    36  .  .  .  }
+    37  .  .  .  Rparen: 7:1
+    38  .  .  }
+    39  .  .  1: *ast.GenDecl {
+    40  .  .  .  TokPos: 9:1
+    41  .  .  .  Tok: const
+    42  .  .  .  Lparen: 9:7
+    43  .  .  .  Specs: []ast.Spec (len = 10) {
+    44  .  .  .  .  0: *ast.ValueSpec {
+    45  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    46  .  .  .  .  .  .  0: *ast.Ident {
+    47  .  .  .  .  .  .  .  NamePos: 10:5
+    48  .  .  .  .  .  .  .  Name: "SchoolId"
+    49  .  .  .  .  .  .  .  Obj: *ast.Object {
+    50  .  .  .  .  .  .  .  .  Kind: const
+    51  .  .  .  .  .  .  .  .  Name: "SchoolId"
+    52  .  .  .  .  .  .  .  .  Decl: *(obj @ 44)
+    53  .  .  .  .  .  .  .  .  Data: 0
+    54  .  .  .  .  .  .  .  }
+    55  .  .  .  .  .  .  }
+    56  .  .  .  .  .  }
+    57  .  .  .  .  .  Type: *ast.SelectorExpr {
+    58  .  .  .  .  .  .  X: *ast.Ident {
+    59  .  .  .  .  .  .  .  NamePos: 10:16
+    60  .  .  .  .  .  .  .  Name: "arm"
+    61  .  .  .  .  .  .  }
+    62  .  .  .  .  .  .  Sel: *ast.Ident {
+    63  .  .  .  .  .  .  .  NamePos: 10:20
+    64  .  .  .  .  .  .  .  Name: "Fields"
+    65  .  .  .  .  .  .  }
+    66  .  .  .  .  .  }
+    67  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+    68  .  .  .  .  .  .  0: *ast.BasicLit {
+    69  .  .  .  .  .  .  .  ValuePos: 10:29
+    70  .  .  .  .  .  .  .  Kind: STRING
+    71  .  .  .  .  .  .  .  Value: "\"schoolId\""
+    72  .  .  .  .  .  .  }
+    73  .  .  .  .  .  }
+    74  .  .  .  .  .  Comment: *ast.CommentGroup {
+    75  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+    76  .  .  .  .  .  .  .  0: *ast.Comment {
+    77  .  .  .  .  .  .  .  .  Slash: 10:42
+    78  .  .  .  .  .  .  .  .  Text: "//主键"
+    79  .  .  .  .  .  .  .  }
+    80  .  .  .  .  .  .  }
+    81  .  .  .  .  .  }
+    82  .  .  .  .  }
+    83  .  .  .  .  1: *ast.ValueSpec {
+    84  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    85  .  .  .  .  .  .  0: *ast.Ident {
+    86  .  .  .  .  .  .  .  NamePos: 11:5
+    87  .  .  .  .  .  .  .  Name: "SchoolName"
+    88  .  .  .  .  .  .  .  Obj: *ast.Object {
+    89  .  .  .  .  .  .  .  .  Kind: const
+    90  .  .  .  .  .  .  .  .  Name: "SchoolName"
+    91  .  .  .  .  .  .  .  .  Decl: *(obj @ 83)
+    92  .  .  .  .  .  .  .  .  Data: 1
+    93  .  .  .  .  .  .  .  }
+    94  .  .  .  .  .  .  }
+    95  .  .  .  .  .  }
+    96  .  .  .  .  .  Type: *ast.SelectorExpr {
+    97  .  .  .  .  .  .  X: *ast.Ident {
+    98  .  .  .  .  .  .  .  NamePos: 11:16
+    99  .  .  .  .  .  .  .  Name: "arm"
+   100  .  .  .  .  .  .  }
+   101  .  .  .  .  .  .  Sel: *ast.Ident {
+   102  .  .  .  .  .  .  .  NamePos: 11:20
+   103  .  .  .  .  .  .  .  Name: "Fields"
+   104  .  .  .  .  .  .  }
+   105  .  .  .  .  .  }
+   106  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   107  .  .  .  .  .  .  0: *ast.BasicLit {
+   108  .  .  .  .  .  .  .  ValuePos: 11:29
+   109  .  .  .  .  .  .  .  Kind: STRING
+   110  .  .  .  .  .  .  .  Value: "\"schoolName\""
+   111  .  .  .  .  .  .  }
+   112  .  .  .  .  .  }
+   113  .  .  .  .  .  Comment: *ast.CommentGroup {
+   114  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   115  .  .  .  .  .  .  .  0: *ast.Comment {
+   116  .  .  .  .  .  .  .  .  Slash: 11:42
+   117  .  .  .  .  .  .  .  .  Text: "//学校名称"
+   118  .  .  .  .  .  .  .  }
+   119  .  .  .  .  .  .  }
+   120  .  .  .  .  .  }
+   121  .  .  .  .  }
+   122  .  .  .  .  2: *ast.ValueSpec {
+   123  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   124  .  .  .  .  .  .  0: *ast.Ident {
+   125  .  .  .  .  .  .  .  NamePos: 12:5
+   126  .  .  .  .  .  .  .  Name: "Ip"
+   127  .  .  .  .  .  .  .  Obj: *ast.Object {
+   128  .  .  .  .  .  .  .  .  Kind: const
+   129  .  .  .  .  .  .  .  .  Name: "Ip"
+   130  .  .  .  .  .  .  .  .  Decl: *(obj @ 122)
+   131  .  .  .  .  .  .  .  .  Data: 2
+   132  .  .  .  .  .  .  .  }
+   133  .  .  .  .  .  .  }
+   134  .  .  .  .  .  }
+   135  .  .  .  .  .  Type: *ast.SelectorExpr {
+   136  .  .  .  .  .  .  X: *ast.Ident {
+   137  .  .  .  .  .  .  .  NamePos: 12:16
+   138  .  .  .  .  .  .  .  Name: "arm"
+   139  .  .  .  .  .  .  }
+   140  .  .  .  .  .  .  Sel: *ast.Ident {
+   141  .  .  .  .  .  .  .  NamePos: 12:20
+   142  .  .  .  .  .  .  .  Name: "Fields"
+   143  .  .  .  .  .  .  }
+   144  .  .  .  .  .  }
+   145  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   146  .  .  .  .  .  .  0: *ast.BasicLit {
+   147  .  .  .  .  .  .  .  ValuePos: 12:29
+   148  .  .  .  .  .  .  .  Kind: STRING
+   149  .  .  .  .  .  .  .  Value: "\"ip\""
+   150  .  .  .  .  .  .  }
+   151  .  .  .  .  .  }
+   152  .  .  .  .  .  Comment: *ast.CommentGroup {
+   153  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   154  .  .  .  .  .  .  .  0: *ast.Comment {
+   155  .  .  .  .  .  .  .  .  Slash: 12:42
+   156  .  .  .  .  .  .  .  .  Text: "//海康存储ip地址"
+   157  .  .  .  .  .  .  .  }
+   158  .  .  .  .  .  .  }
+   159  .  .  .  .  .  }
+   160  .  .  .  .  }
+   161  .  .  .  .  3: *ast.ValueSpec {
+   162  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   163  .  .  .  .  .  .  0: *ast.Ident {
+   164  .  .  .  .  .  .  .  NamePos: 13:5
+   165  .  .  .  .  .  .  .  Name: "Port"
+   166  .  .  .  .  .  .  .  Obj: *ast.Object {
+   167  .  .  .  .  .  .  .  .  Kind: const
+   168  .  .  .  .  .  .  .  .  Name: "Port"
+   169  .  .  .  .  .  .  .  .  Decl: *(obj @ 161)
+   170  .  .  .  .  .  .  .  .  Data: 3
+   171  .  .  .  .  .  .  .  }
+   172  .  .  .  .  .  .  }
+   173  .  .  .  .  .  }
+   174  .  .  .  .  .  Type: *ast.SelectorExpr {
+   175  .  .  .  .  .  .  X: *ast.Ident {
+   176  .  .  .  .  .  .  .  NamePos: 13:16
+   177  .  .  .  .  .  .  .  Name: "arm"
+   178  .  .  .  .  .  .  }
+   179  .  .  .  .  .  .  Sel: *ast.Ident {
+   180  .  .  .  .  .  .  .  NamePos: 13:20
+   181  .  .  .  .  .  .  .  Name: "Fields"
+   182  .  .  .  .  .  .  }
+   183  .  .  .  .  .  }
+   184  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   185  .  .  .  .  .  .  0: *ast.BasicLit {
+   186  .  .  .  .  .  .  .  ValuePos: 13:29
+   187  .  .  .  .  .  .  .  Kind: STRING
+   188  .  .  .  .  .  .  .  Value: "\"port\""
+   189  .  .  .  .  .  .  }
+   190  .  .  .  .  .  }
+   191  .  .  .  .  .  Comment: *ast.CommentGroup {
+   192  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   193  .  .  .  .  .  .  .  0: *ast.Comment {
+   194  .  .  .  .  .  .  .  .  Slash: 13:42
+   195  .  .  .  .  .  .  .  .  Text: "//海康存储端口"
+   196  .  .  .  .  .  .  .  }
+   197  .  .  .  .  .  .  }
+   198  .  .  .  .  .  }
+   199  .  .  .  .  }
+   200  .  .  .  .  4: *ast.ValueSpec {
+   201  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   202  .  .  .  .  .  .  0: *ast.Ident {
+   203  .  .  .  .  .  .  .  NamePos: 14:5
+   204  .  .  .  .  .  .  .  Name: "UserName"
+   205  .  .  .  .  .  .  .  Obj: *ast.Object {
+   206  .  .  .  .  .  .  .  .  Kind: const
+   207  .  .  .  .  .  .  .  .  Name: "UserName"
+   208  .  .  .  .  .  .  .  .  Decl: *(obj @ 200)
+   209  .  .  .  .  .  .  .  .  Data: 4
+   210  .  .  .  .  .  .  .  }
+   211  .  .  .  .  .  .  }
+   212  .  .  .  .  .  }
+   213  .  .  .  .  .  Type: *ast.SelectorExpr {
+   214  .  .  .  .  .  .  X: *ast.Ident {
+   215  .  .  .  .  .  .  .  NamePos: 14:16
+   216  .  .  .  .  .  .  .  Name: "arm"
+   217  .  .  .  .  .  .  }
+   218  .  .  .  .  .  .  Sel: *ast.Ident {
+   219  .  .  .  .  .  .  .  NamePos: 14:20
+   220  .  .  .  .  .  .  .  Name: "Fields"
+   221  .  .  .  .  .  .  }
+   222  .  .  .  .  .  }
+   223  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   224  .  .  .  .  .  .  0: *ast.BasicLit {
+   225  .  .  .  .  .  .  .  ValuePos: 14:29
+   226  .  .  .  .  .  .  .  Kind: STRING
+   227  .  .  .  .  .  .  .  Value: "\"userName\""
+   228  .  .  .  .  .  .  }
+   229  .  .  .  .  .  }
+   230  .  .  .  .  .  Comment: *ast.CommentGroup {
+   231  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   232  .  .  .  .  .  .  .  0: *ast.Comment {
+   233  .  .  .  .  .  .  .  .  Slash: 14:42
+   234  .  .  .  .  .  .  .  .  Text: "//海康存储用户名"
+   235  .  .  .  .  .  .  .  }
+   236  .  .  .  .  .  .  }
+   237  .  .  .  .  .  }
+   238  .  .  .  .  }
+   239  .  .  .  .  5: *ast.ValueSpec {
+   240  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   241  .  .  .  .  .  .  0: *ast.Ident {
+   242  .  .  .  .  .  .  .  NamePos: 15:5
+   243  .  .  .  .  .  .  .  Name: "Password"
+   244  .  .  .  .  .  .  .  Obj: *ast.Object {
+   245  .  .  .  .  .  .  .  .  Kind: const
+   246  .  .  .  .  .  .  .  .  Name: "Password"
+   247  .  .  .  .  .  .  .  .  Decl: *(obj @ 239)
+   248  .  .  .  .  .  .  .  .  Data: 5
+   249  .  .  .  .  .  .  .  }
+   250  .  .  .  .  .  .  }
+   251  .  .  .  .  .  }
+   252  .  .  .  .  .  Type: *ast.SelectorExpr {
+   253  .  .  .  .  .  .  X: *ast.Ident {
+   254  .  .  .  .  .  .  .  NamePos: 15:16
+   255  .  .  .  .  .  .  .  Name: "arm"
+   256  .  .  .  .  .  .  }
+   257  .  .  .  .  .  .  Sel: *ast.Ident {
+   258  .  .  .  .  .  .  .  NamePos: 15:20
+   259  .  .  .  .  .  .  .  Name: "Fields"
+   260  .  .  .  .  .  .  }
+   261  .  .  .  .  .  }
+   262  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   263  .  .  .  .  .  .  0: *ast.BasicLit {
+   264  .  .  .  .  .  .  .  ValuePos: 15:29
+   265  .  .  .  .  .  .  .  Kind: STRING
+   266  .  .  .  .  .  .  .  Value: "\"password\""
+   267  .  .  .  .  .  .  }
+   268  .  .  .  .  .  }
+   269  .  .  .  .  .  Comment: *ast.CommentGroup {
+   270  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   271  .  .  .  .  .  .  .  0: *ast.Comment {
+   272  .  .  .  .  .  .  .  .  Slash: 15:42
+   273  .  .  .  .  .  .  .  .  Text: "//海康存储用户密码"
+   274  .  .  .  .  .  .  .  }
+   275  .  .  .  .  .  .  }
+   276  .  .  .  .  .  }
+   277  .  .  .  .  }
+   278  .  .  .  .  6: *ast.ValueSpec {
+   279  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   280  .  .  .  .  .  .  0: *ast.Ident {
+   281  .  .  .  .  .  .  .  NamePos: 16:5
+   282  .  .  .  .  .  .  .  Name: "IsDelete"
+   283  .  .  .  .  .  .  .  Obj: *ast.Object {
+   284  .  .  .  .  .  .  .  .  Kind: const
+   285  .  .  .  .  .  .  .  .  Name: "IsDelete"
+   286  .  .  .  .  .  .  .  .  Decl: *(obj @ 278)
+   287  .  .  .  .  .  .  .  .  Data: 6
+   288  .  .  .  .  .  .  .  }
+   289  .  .  .  .  .  .  }
+   290  .  .  .  .  .  }
+   291  .  .  .  .  .  Type: *ast.SelectorExpr {
+   292  .  .  .  .  .  .  X: *ast.Ident {
+   293  .  .  .  .  .  .  .  NamePos: 16:16
+   294  .  .  .  .  .  .  .  Name: "arm"
+   295  .  .  .  .  .  .  }
+   296  .  .  .  .  .  .  Sel: *ast.Ident {
+   297  .  .  .  .  .  .  .  NamePos: 16:20
+   298  .  .  .  .  .  .  .  Name: "Fields"
+   299  .  .  .  .  .  .  }
+   300  .  .  .  .  .  }
+   301  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   302  .  .  .  .  .  .  0: *ast.BasicLit {
+   303  .  .  .  .  .  .  .  ValuePos: 16:29
+   304  .  .  .  .  .  .  .  Kind: STRING
+   305  .  .  .  .  .  .  .  Value: "\"isDelete\""
+   306  .  .  .  .  .  .  }
+   307  .  .  .  .  .  }
+   308  .  .  .  .  .  Comment: *ast.CommentGroup {
+   309  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   310  .  .  .  .  .  .  .  0: *ast.Comment {
+   311  .  .  .  .  .  .  .  .  Slash: 16:42
+   312  .  .  .  .  .  .  .  .  Text: "//是否删除:1-否,2-是"
+   313  .  .  .  .  .  .  .  }
+   314  .  .  .  .  .  .  }
+   315  .  .  .  .  .  }
+   316  .  .  .  .  }
+   317  .  .  .  .  7: *ast.ValueSpec {
+   318  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   319  .  .  .  .  .  .  0: *ast.Ident {
+   320  .  .  .  .  .  .  .  NamePos: 17:5
+   321  .  .  .  .  .  .  .  Name: "CreateTime"
+   322  .  .  .  .  .  .  .  Obj: *ast.Object {
+   323  .  .  .  .  .  .  .  .  Kind: const
+   324  .  .  .  .  .  .  .  .  Name: "CreateTime"
+   325  .  .  .  .  .  .  .  .  Decl: *(obj @ 317)
+   326  .  .  .  .  .  .  .  .  Data: 7
+   327  .  .  .  .  .  .  .  }
+   328  .  .  .  .  .  .  }
+   329  .  .  .  .  .  }
+   330  .  .  .  .  .  Type: *ast.SelectorExpr {
+   331  .  .  .  .  .  .  X: *ast.Ident {
+   332  .  .  .  .  .  .  .  NamePos: 17:16
+   333  .  .  .  .  .  .  .  Name: "arm"
+   334  .  .  .  .  .  .  }
+   335  .  .  .  .  .  .  Sel: *ast.Ident {
+   336  .  .  .  .  .  .  .  NamePos: 17:20
+   337  .  .  .  .  .  .  .  Name: "Fields"
+   338  .  .  .  .  .  .  }
+   339  .  .  .  .  .  }
+   340  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   341  .  .  .  .  .  .  0: *ast.BasicLit {
+   342  .  .  .  .  .  .  .  ValuePos: 17:29
+   343  .  .  .  .  .  .  .  Kind: STRING
+   344  .  .  .  .  .  .  .  Value: "\"createTime\""
+   345  .  .  .  .  .  .  }
+   346  .  .  .  .  .  }
+   347  .  .  .  .  .  Comment: *ast.CommentGroup {
+   348  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   349  .  .  .  .  .  .  .  0: *ast.Comment {
+   350  .  .  .  .  .  .  .  .  Slash: 17:42
+   351  .  .  .  .  .  .  .  .  Text: "//创建时间"
+   352  .  .  .  .  .  .  .  }
+   353  .  .  .  .  .  .  }
+   354  .  .  .  .  .  }
+   355  .  .  .  .  }
+   356  .  .  .  .  8: *ast.ValueSpec {
+   357  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   358  .  .  .  .  .  .  0: *ast.Ident {
+   359  .  .  .  .  .  .  .  NamePos: 18:5
+   360  .  .  .  .  .  .  .  Name: "UpdateTime"
+   361  .  .  .  .  .  .  .  Obj: *ast.Object {
+   362  .  .  .  .  .  .  .  .  Kind: const
+   363  .  .  .  .  .  .  .  .  Name: "UpdateTime"
+   364  .  .  .  .  .  .  .  .  Decl: *(obj @ 356)
+   365  .  .  .  .  .  .  .  .  Data: 8
+   366  .  .  .  .  .  .  .  }
+   367  .  .  .  .  .  .  }
+   368  .  .  .  .  .  }
+   369  .  .  .  .  .  Type: *ast.SelectorExpr {
+   370  .  .  .  .  .  .  X: *ast.Ident {
+   371  .  .  .  .  .  .  .  NamePos: 18:16
+   372  .  .  .  .  .  .  .  Name: "arm"
+   373  .  .  .  .  .  .  }
+   374  .  .  .  .  .  .  Sel: *ast.Ident {
+   375  .  .  .  .  .  .  .  NamePos: 18:20
+   376  .  .  .  .  .  .  .  Name: "Fields"
+   377  .  .  .  .  .  .  }
+   378  .  .  .  .  .  }
+   379  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   380  .  .  .  .  .  .  0: *ast.BasicLit {
+   381  .  .  .  .  .  .  .  ValuePos: 18:29
+   382  .  .  .  .  .  .  .  Kind: STRING
+   383  .  .  .  .  .  .  .  Value: "\"updateTime\""
+   384  .  .  .  .  .  .  }
+   385  .  .  .  .  .  }
+   386  .  .  .  .  .  Comment: *ast.CommentGroup {
+   387  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   388  .  .  .  .  .  .  .  0: *ast.Comment {
+   389  .  .  .  .  .  .  .  .  Slash: 18:42
+   390  .  .  .  .  .  .  .  .  Text: "//更新时间"
+   391  .  .  .  .  .  .  .  }
+   392  .  .  .  .  .  .  }
+   393  .  .  .  .  .  }
+   394  .  .  .  .  }
+   395  .  .  .  .  9: *ast.ValueSpec {
+   396  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   397  .  .  .  .  .  .  0: *ast.Ident {
+   398  .  .  .  .  .  .  .  NamePos: 19:5
+   399  .  .  .  .  .  .  .  Name: "DeleteTime"
+   400  .  .  .  .  .  .  .  Obj: *ast.Object {
+   401  .  .  .  .  .  .  .  .  Kind: const
+   402  .  .  .  .  .  .  .  .  Name: "DeleteTime"
+   403  .  .  .  .  .  .  .  .  Decl: *(obj @ 395)
+   404  .  .  .  .  .  .  .  .  Data: 9
+   405  .  .  .  .  .  .  .  }
+   406  .  .  .  .  .  .  }
+   407  .  .  .  .  .  }
+   408  .  .  .  .  .  Type: *ast.SelectorExpr {
+   409  .  .  .  .  .  .  X: *ast.Ident {
+   410  .  .  .  .  .  .  .  NamePos: 19:16
+   411  .  .  .  .  .  .  .  Name: "arm"
+   412  .  .  .  .  .  .  }
+   413  .  .  .  .  .  .  Sel: *ast.Ident {
+   414  .  .  .  .  .  .  .  NamePos: 19:20
+   415  .  .  .  .  .  .  .  Name: "Fields"
+   416  .  .  .  .  .  .  }
+   417  .  .  .  .  .  }
+   418  .  .  .  .  .  Values: []ast.Expr (len = 1) {
+   419  .  .  .  .  .  .  0: *ast.BasicLit {
+   420  .  .  .  .  .  .  .  ValuePos: 19:29
+   421  .  .  .  .  .  .  .  Kind: STRING
+   422  .  .  .  .  .  .  .  Value: "\"deleteTime\""
+   423  .  .  .  .  .  .  }
+   424  .  .  .  .  .  }
+   425  .  .  .  .  .  Comment: *ast.CommentGroup {
+   426  .  .  .  .  .  .  List: []*ast.Comment (len = 1) {
+   427  .  .  .  .  .  .  .  0: *ast.Comment {
+   428  .  .  .  .  .  .  .  .  Slash: 19:42
+   429  .  .  .  .  .  .  .  .  Text: "//删除时间"
+   430  .  .  .  .  .  .  .  }
+   431  .  .  .  .  .  .  }
+   432  .  .  .  .  .  }
+   433  .  .  .  .  }
+   434  .  .  .  }
+   435  .  .  .  Rparen: 20:1
+   436  .  .  }
+   437  .  .  2: *ast.GenDecl {
+   438  .  .  .  Doc: *ast.CommentGroup {
+   439  .  .  .  .  List: []*ast.Comment (len = 1) {
+   440  .  .  .  .  .  0: *ast.Comment {
+   441  .  .  .  .  .  .  Slash: 22:1
+   442  .  .  .  .  .  .  Text: "// Model 学校表结构体"
+   443  .  .  .  .  .  }
+   444  .  .  .  .  }
+   445  .  .  .  }
+   446  .  .  .  TokPos: 23:1
+   447  .  .  .  Tok: type
+   448  .  .  .  Lparen: -
+   449  .  .  .  Specs: []ast.Spec (len = 1) {
+   450  .  .  .  .  0: *ast.TypeSpec {
+   451  .  .  .  .  .  Name: *ast.Ident {
+   452  .  .  .  .  .  .  NamePos: 23:6
+   453  .  .  .  .  .  .  Name: "Model"
+   454  .  .  .  .  .  .  Obj: *ast.Object {
+   455  .  .  .  .  .  .  .  Kind: type
+   456  .  .  .  .  .  .  .  Name: "Model"
+   457  .  .  .  .  .  .  .  Decl: *(obj @ 450)
+   458  .  .  .  .  .  .  }
+   459  .  .  .  .  .  }
+   460  .  .  .  .  .  Assign: -
+   461  .  .  .  .  .  Type: *ast.StructType {
+   462  .  .  .  .  .  .  Struct: 23:12
+   463  .  .  .  .  .  .  Fields: *ast.FieldList {
+   464  .  .  .  .  .  .  .  Opening: 23:19
+   465  .  .  .  .  .  .  .  List: []*ast.Field (len = 11) {
+   466  .  .  .  .  .  .  .  .  0: *ast.Field {
+   467  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+   468  .  .  .  .  .  .  .  .  .  .  Star: 24:5
+   469  .  .  .  .  .  .  .  .  .  .  X: *ast.SelectorExpr {
+   470  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   471  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 24:6
+   472  .  .  .  .  .  .  .  .  .  .  .  .  Name: "arm"
+   473  .  .  .  .  .  .  .  .  .  .  .  }
+   474  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   475  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 24:10
+   476  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+   477  .  .  .  .  .  .  .  .  .  .  .  }
+   478  .  .  .  .  .  .  .  .  .  .  }
+   479  .  .  .  .  .  .  .  .  .  }
+   480  .  .  .  .  .  .  .  .  }
+   481  .  .  .  .  .  .  .  .  1: *ast.Field {
+   482  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   483  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   484  .  .  .  .  .  .  .  .  .  .  .  NamePos: 25:5
+   485  .  .  .  .  .  .  .  .  .  .  .  Name: "SchoolId"
+   486  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   487  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   488  .  .  .  .  .  .  .  .  .  .  .  .  Name: "SchoolId"
+   489  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 481)
+   490  .  .  .  .  .  .  .  .  .  .  .  }
+   491  .  .  .  .  .  .  .  .  .  .  }
+   492  .  .  .  .  .  .  .  .  .  }
+   493  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   494  .  .  .  .  .  .  .  .  .  .  NamePos: 25:16
+   495  .  .  .  .  .  .  .  .  .  .  Name: "int64"
+   496  .  .  .  .  .  .  .  .  .  }
+   497  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   498  .  .  .  .  .  .  .  .  .  .  ValuePos: 25:26
+   499  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   500  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:schoolId\"   json:\"schoolId\"   comment:\"主键\"`"
+   501  .  .  .  .  .  .  .  .  .  }
+   502  .  .  .  .  .  .  .  .  }
+   503  .  .  .  .  .  .  .  .  2: *ast.Field {
+   504  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   505  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   506  .  .  .  .  .  .  .  .  .  .  .  NamePos: 26:5
+   507  .  .  .  .  .  .  .  .  .  .  .  Name: "SchoolName"
+   508  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   509  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   510  .  .  .  .  .  .  .  .  .  .  .  .  Name: "SchoolName"
+   511  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 503)
+   512  .  .  .  .  .  .  .  .  .  .  .  }
+   513  .  .  .  .  .  .  .  .  .  .  }
+   514  .  .  .  .  .  .  .  .  .  }
+   515  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   516  .  .  .  .  .  .  .  .  .  .  NamePos: 26:16
+   517  .  .  .  .  .  .  .  .  .  .  Name: "string"
+   518  .  .  .  .  .  .  .  .  .  }
+   519  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   520  .  .  .  .  .  .  .  .  .  .  ValuePos: 26:26
+   521  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   522  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:schoolName\" json:\"schoolName\" comment:\"学校名称\"`"
+   523  .  .  .  .  .  .  .  .  .  }
+   524  .  .  .  .  .  .  .  .  }
+   525  .  .  .  .  .  .  .  .  3: *ast.Field {
+   526  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   527  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   528  .  .  .  .  .  .  .  .  .  .  .  NamePos: 27:5
+   529  .  .  .  .  .  .  .  .  .  .  .  Name: "Ip"
+   530  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   531  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   532  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Ip"
+   533  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 525)
+   534  .  .  .  .  .  .  .  .  .  .  .  }
+   535  .  .  .  .  .  .  .  .  .  .  }
+   536  .  .  .  .  .  .  .  .  .  }
+   537  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   538  .  .  .  .  .  .  .  .  .  .  NamePos: 27:16
+   539  .  .  .  .  .  .  .  .  .  .  Name: "string"
+   540  .  .  .  .  .  .  .  .  .  }
+   541  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   542  .  .  .  .  .  .  .  .  .  .  ValuePos: 27:26
+   543  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   544  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:ip\"         json:\"ip\"         comment:\"海康存储ip地址\"`"
+   545  .  .  .  .  .  .  .  .  .  }
+   546  .  .  .  .  .  .  .  .  }
+   547  .  .  .  .  .  .  .  .  4: *ast.Field {
+   548  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   549  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   550  .  .  .  .  .  .  .  .  .  .  .  NamePos: 28:5
+   551  .  .  .  .  .  .  .  .  .  .  .  Name: "Port"
+   552  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   553  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   554  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Port"
+   555  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 547)
+   556  .  .  .  .  .  .  .  .  .  .  .  }
+   557  .  .  .  .  .  .  .  .  .  .  }
+   558  .  .  .  .  .  .  .  .  .  }
+   559  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   560  .  .  .  .  .  .  .  .  .  .  NamePos: 28:16
+   561  .  .  .  .  .  .  .  .  .  .  Name: "string"
+   562  .  .  .  .  .  .  .  .  .  }
+   563  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   564  .  .  .  .  .  .  .  .  .  .  ValuePos: 28:26
+   565  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   566  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:port\"       json:\"port\"       comment:\"海康存储端口\"`"
+   567  .  .  .  .  .  .  .  .  .  }
+   568  .  .  .  .  .  .  .  .  }
+   569  .  .  .  .  .  .  .  .  5: *ast.Field {
+   570  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   571  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   572  .  .  .  .  .  .  .  .  .  .  .  NamePos: 29:5
+   573  .  .  .  .  .  .  .  .  .  .  .  Name: "UserName"
+   574  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   575  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   576  .  .  .  .  .  .  .  .  .  .  .  .  Name: "UserName"
+   577  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 569)
+   578  .  .  .  .  .  .  .  .  .  .  .  }
+   579  .  .  .  .  .  .  .  .  .  .  }
+   580  .  .  .  .  .  .  .  .  .  }
+   581  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   582  .  .  .  .  .  .  .  .  .  .  NamePos: 29:16
+   583  .  .  .  .  .  .  .  .  .  .  Name: "string"
+   584  .  .  .  .  .  .  .  .  .  }
+   585  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   586  .  .  .  .  .  .  .  .  .  .  ValuePos: 29:26
+   587  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   588  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:userName\"   json:\"userName\"   comment:\"海康存储用户名\"`"
+   589  .  .  .  .  .  .  .  .  .  }
+   590  .  .  .  .  .  .  .  .  }
+   591  .  .  .  .  .  .  .  .  6: *ast.Field {
+   592  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   593  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   594  .  .  .  .  .  .  .  .  .  .  .  NamePos: 30:5
+   595  .  .  .  .  .  .  .  .  .  .  .  Name: "Password"
+   596  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   597  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   598  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Password"
+   599  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 591)
+   600  .  .  .  .  .  .  .  .  .  .  .  }
+   601  .  .  .  .  .  .  .  .  .  .  }
+   602  .  .  .  .  .  .  .  .  .  }
+   603  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   604  .  .  .  .  .  .  .  .  .  .  NamePos: 30:16
+   605  .  .  .  .  .  .  .  .  .  .  Name: "string"
+   606  .  .  .  .  .  .  .  .  .  }
+   607  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   608  .  .  .  .  .  .  .  .  .  .  ValuePos: 30:26
+   609  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   610  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:password\"   json:\"password\"   comment:\"海康存储用户密码\"`"
+   611  .  .  .  .  .  .  .  .  .  }
+   612  .  .  .  .  .  .  .  .  }
+   613  .  .  .  .  .  .  .  .  7: *ast.Field {
+   614  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   615  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   616  .  .  .  .  .  .  .  .  .  .  .  NamePos: 31:5
+   617  .  .  .  .  .  .  .  .  .  .  .  Name: "IsDelete"
+   618  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   619  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   620  .  .  .  .  .  .  .  .  .  .  .  .  Name: "IsDelete"
+   621  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 613)
+   622  .  .  .  .  .  .  .  .  .  .  .  }
+   623  .  .  .  .  .  .  .  .  .  .  }
+   624  .  .  .  .  .  .  .  .  .  }
+   625  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   626  .  .  .  .  .  .  .  .  .  .  NamePos: 31:16
+   627  .  .  .  .  .  .  .  .  .  .  Name: "int"
+   628  .  .  .  .  .  .  .  .  .  }
+   629  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   630  .  .  .  .  .  .  .  .  .  .  ValuePos: 31:26
+   631  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   632  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:isDelete\"   json:\"isDelete\"   comment:\"是否删除:1-否,2-是\"`"
+   633  .  .  .  .  .  .  .  .  .  }
+   634  .  .  .  .  .  .  .  .  }
+   635  .  .  .  .  .  .  .  .  8: *ast.Field {
+   636  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   637  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   638  .  .  .  .  .  .  .  .  .  .  .  NamePos: 32:5
+   639  .  .  .  .  .  .  .  .  .  .  .  Name: "CreateTime"
+   640  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   641  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   642  .  .  .  .  .  .  .  .  .  .  .  .  Name: "CreateTime"
+   643  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 635)
+   644  .  .  .  .  .  .  .  .  .  .  .  }
+   645  .  .  .  .  .  .  .  .  .  .  }
+   646  .  .  .  .  .  .  .  .  .  }
+   647  .  .  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+   648  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   649  .  .  .  .  .  .  .  .  .  .  .  NamePos: 32:16
+   650  .  .  .  .  .  .  .  .  .  .  .  Name: "time"
+   651  .  .  .  .  .  .  .  .  .  .  }
+   652  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   653  .  .  .  .  .  .  .  .  .  .  .  NamePos: 32:21
+   654  .  .  .  .  .  .  .  .  .  .  .  Name: "Time"
+   655  .  .  .  .  .  .  .  .  .  .  }
+   656  .  .  .  .  .  .  .  .  .  }
+   657  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   658  .  .  .  .  .  .  .  .  .  .  ValuePos: 32:26
+   659  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   660  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:createTime\" json:\"createTime\" comment:\"创建时间\"`"
+   661  .  .  .  .  .  .  .  .  .  }
+   662  .  .  .  .  .  .  .  .  }
+   663  .  .  .  .  .  .  .  .  9: *ast.Field {
+   664  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   665  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   666  .  .  .  .  .  .  .  .  .  .  .  NamePos: 33:5
+   667  .  .  .  .  .  .  .  .  .  .  .  Name: "UpdateTime"
+   668  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   669  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   670  .  .  .  .  .  .  .  .  .  .  .  .  Name: "UpdateTime"
+   671  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 663)
+   672  .  .  .  .  .  .  .  .  .  .  .  }
+   673  .  .  .  .  .  .  .  .  .  .  }
+   674  .  .  .  .  .  .  .  .  .  }
+   675  .  .  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+   676  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   677  .  .  .  .  .  .  .  .  .  .  .  NamePos: 33:16
+   678  .  .  .  .  .  .  .  .  .  .  .  Name: "time"
+   679  .  .  .  .  .  .  .  .  .  .  }
+   680  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   681  .  .  .  .  .  .  .  .  .  .  .  NamePos: 33:21
+   682  .  .  .  .  .  .  .  .  .  .  .  Name: "Time"
+   683  .  .  .  .  .  .  .  .  .  .  }
+   684  .  .  .  .  .  .  .  .  .  }
+   685  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   686  .  .  .  .  .  .  .  .  .  .  ValuePos: 33:26
+   687  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   688  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:updateTime\" json:\"updateTime\" comment:\"更新时间\"`"
+   689  .  .  .  .  .  .  .  .  .  }
+   690  .  .  .  .  .  .  .  .  }
+   691  .  .  .  .  .  .  .  .  10: *ast.Field {
+   692  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   693  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   694  .  .  .  .  .  .  .  .  .  .  .  NamePos: 34:5
+   695  .  .  .  .  .  .  .  .  .  .  .  Name: "DeleteTime"
+   696  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   697  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+   698  .  .  .  .  .  .  .  .  .  .  .  .  Name: "DeleteTime"
+   699  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 691)
+   700  .  .  .  .  .  .  .  .  .  .  .  }
+   701  .  .  .  .  .  .  .  .  .  .  }
+   702  .  .  .  .  .  .  .  .  .  }
+   703  .  .  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+   704  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   705  .  .  .  .  .  .  .  .  .  .  .  NamePos: 34:16
+   706  .  .  .  .  .  .  .  .  .  .  .  Name: "time"
+   707  .  .  .  .  .  .  .  .  .  .  }
+   708  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   709  .  .  .  .  .  .  .  .  .  .  .  NamePos: 34:21
+   710  .  .  .  .  .  .  .  .  .  .  .  Name: "Time"
+   711  .  .  .  .  .  .  .  .  .  .  }
+   712  .  .  .  .  .  .  .  .  .  }
+   713  .  .  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   714  .  .  .  .  .  .  .  .  .  .  ValuePos: 34:26
+   715  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   716  .  .  .  .  .  .  .  .  .  .  Value: "`gorm:\"column:deleteTime\" json:\"deleteTime\" comment:\"删除时间\"`"
+   717  .  .  .  .  .  .  .  .  .  }
+   718  .  .  .  .  .  .  .  .  }
+   719  .  .  .  .  .  .  .  }
+   720  .  .  .  .  .  .  .  Closing: 35:1
+   721  .  .  .  .  .  .  }
+   722  .  .  .  .  .  .  Incomplete: false
+   723  .  .  .  .  .  }
+   724  .  .  .  .  }
+   725  .  .  .  }
+   726  .  .  .  Rparen: -
+   727  .  .  }
+   728  .  .  3: *ast.FuncDecl {
+   729  .  .  .  Name: *ast.Ident {
+   730  .  .  .  .  NamePos: 37:6
+   731  .  .  .  .  Name: "New"
+   732  .  .  .  .  Obj: *ast.Object {
+   733  .  .  .  .  .  Kind: func
+   734  .  .  .  .  .  Name: "New"
+   735  .  .  .  .  .  Decl: *(obj @ 728)
+   736  .  .  .  .  }
+   737  .  .  .  }
+   738  .  .  .  Type: *ast.FuncType {
+   739  .  .  .  .  Func: 37:1
+   740  .  .  .  .  Params: *ast.FieldList {
+   741  .  .  .  .  .  Opening: 37:9
+   742  .  .  .  .  .  List: []*ast.Field (len = 1) {
+   743  .  .  .  .  .  .  0: *ast.Field {
+   744  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   745  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   746  .  .  .  .  .  .  .  .  .  NamePos: 37:10
+   747  .  .  .  .  .  .  .  .  .  Name: "properties"
+   748  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   749  .  .  .  .  .  .  .  .  .  .  Kind: var
+   750  .  .  .  .  .  .  .  .  .  .  Name: "properties"
+   751  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 743)
+   752  .  .  .  .  .  .  .  .  .  }
+   753  .  .  .  .  .  .  .  .  }
+   754  .  .  .  .  .  .  .  }
+   755  .  .  .  .  .  .  .  Type: *ast.Ellipsis {
+   756  .  .  .  .  .  .  .  .  Ellipsis: 37:21
+   757  .  .  .  .  .  .  .  .  Elt: *ast.SelectorExpr {
+   758  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   759  .  .  .  .  .  .  .  .  .  .  NamePos: 37:24
+   760  .  .  .  .  .  .  .  .  .  .  Name: "him"
+   761  .  .  .  .  .  .  .  .  .  }
+   762  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   763  .  .  .  .  .  .  .  .  .  .  NamePos: 37:28
+   764  .  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+   765  .  .  .  .  .  .  .  .  .  }
+   766  .  .  .  .  .  .  .  .  }
+   767  .  .  .  .  .  .  .  }
+   768  .  .  .  .  .  .  }
+   769  .  .  .  .  .  }
+   770  .  .  .  .  .  Closing: 37:37
+   771  .  .  .  .  }
+   772  .  .  .  .  Results: *ast.FieldList {
+   773  .  .  .  .  .  Opening: -
+   774  .  .  .  .  .  List: []*ast.Field (len = 1) {
+   775  .  .  .  .  .  .  0: *ast.Field {
+   776  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+   777  .  .  .  .  .  .  .  .  Star: 37:39
+   778  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   779  .  .  .  .  .  .  .  .  .  NamePos: 37:40
+   780  .  .  .  .  .  .  .  .  .  Name: "Model"
+   781  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+   782  .  .  .  .  .  .  .  .  }
+   783  .  .  .  .  .  .  .  }
+   784  .  .  .  .  .  .  }
+   785  .  .  .  .  .  }
+   786  .  .  .  .  .  Closing: -
+   787  .  .  .  .  }
+   788  .  .  .  }
+   789  .  .  .  Body: *ast.BlockStmt {
+   790  .  .  .  .  Lbrace: 37:46
+   791  .  .  .  .  List: []ast.Stmt (len = 1) {
+   792  .  .  .  .  .  0: *ast.ReturnStmt {
+   793  .  .  .  .  .  .  Return: 38:5
+   794  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+   795  .  .  .  .  .  .  .  0: *ast.CallExpr {
+   796  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+   797  .  .  .  .  .  .  .  .  .  X: *ast.ParenExpr {
+   798  .  .  .  .  .  .  .  .  .  .  Lparen: 38:12
+   799  .  .  .  .  .  .  .  .  .  .  X: *ast.UnaryExpr {
+   800  .  .  .  .  .  .  .  .  .  .  .  OpPos: 38:13
+   801  .  .  .  .  .  .  .  .  .  .  .  Op: &
+   802  .  .  .  .  .  .  .  .  .  .  .  X: *ast.CompositeLit {
+   803  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+   804  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 38:14
+   805  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+   806  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+   807  .  .  .  .  .  .  .  .  .  .  .  .  }
+   808  .  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 38:19
+   809  .  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 38:20
+   810  .  .  .  .  .  .  .  .  .  .  .  .  Incomplete: false
+   811  .  .  .  .  .  .  .  .  .  .  .  }
+   812  .  .  .  .  .  .  .  .  .  .  }
+   813  .  .  .  .  .  .  .  .  .  .  Rparen: 38:21
+   814  .  .  .  .  .  .  .  .  .  }
+   815  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   816  .  .  .  .  .  .  .  .  .  .  NamePos: 38:23
+   817  .  .  .  .  .  .  .  .  .  .  Name: "New"
+   818  .  .  .  .  .  .  .  .  .  }
+   819  .  .  .  .  .  .  .  .  }
+   820  .  .  .  .  .  .  .  .  Lparen: 38:26
+   821  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+   822  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   823  .  .  .  .  .  .  .  .  .  .  NamePos: 38:27
+   824  .  .  .  .  .  .  .  .  .  .  Name: "properties"
+   825  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 748)
+   826  .  .  .  .  .  .  .  .  .  }
+   827  .  .  .  .  .  .  .  .  }
+   828  .  .  .  .  .  .  .  .  Ellipsis: 38:37
+   829  .  .  .  .  .  .  .  .  Rparen: 38:40
+   830  .  .  .  .  .  .  .  }
+   831  .  .  .  .  .  .  }
+   832  .  .  .  .  .  }
+   833  .  .  .  .  }
+   834  .  .  .  .  Rbrace: 39:1
+   835  .  .  .  }
+   836  .  .  }
+   837  .  .  4: *ast.FuncDecl {
+   838  .  .  .  Name: *ast.Ident {
+   839  .  .  .  .  NamePos: 41:6
+   840  .  .  .  .  Name: "TableName"
+   841  .  .  .  .  Obj: *ast.Object {
+   842  .  .  .  .  .  Kind: func
+   843  .  .  .  .  .  Name: "TableName"
+   844  .  .  .  .  .  Decl: *(obj @ 837)
+   845  .  .  .  .  }
+   846  .  .  .  }
+   847  .  .  .  Type: *ast.FuncType {
+   848  .  .  .  .  Func: 41:1
+   849  .  .  .  .  Params: *ast.FieldList {
+   850  .  .  .  .  .  Opening: 41:15
+   851  .  .  .  .  .  Closing: 41:16
+   852  .  .  .  .  }
+   853  .  .  .  .  Results: *ast.FieldList {
+   854  .  .  .  .  .  Opening: -
+   855  .  .  .  .  .  List: []*ast.Field (len = 1) {
+   856  .  .  .  .  .  .  0: *ast.Field {
+   857  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+   858  .  .  .  .  .  .  .  .  Star: 41:18
+   859  .  .  .  .  .  .  .  .  X: *ast.SelectorExpr {
+   860  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   861  .  .  .  .  .  .  .  .  .  .  NamePos: 41:19
+   862  .  .  .  .  .  .  .  .  .  .  Name: "arm"
+   863  .  .  .  .  .  .  .  .  .  }
+   864  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   865  .  .  .  .  .  .  .  .  .  .  NamePos: 41:23
+   866  .  .  .  .  .  .  .  .  .  .  Name: "TableName"
+   867  .  .  .  .  .  .  .  .  .  }
+   868  .  .  .  .  .  .  .  .  }
+   869  .  .  .  .  .  .  .  }
+   870  .  .  .  .  .  .  }
+   871  .  .  .  .  .  }
+   872  .  .  .  .  .  Closing: -
+   873  .  .  .  .  }
+   874  .  .  .  }
+   875  .  .  .  Body: *ast.BlockStmt {
+   876  .  .  .  .  Lbrace: 41:33
+   877  .  .  .  .  List: []ast.Stmt (len = 1) {
+   878  .  .  .  .  .  0: *ast.ReturnStmt {
+   879  .  .  .  .  .  .  Return: 42:5
+   880  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+   881  .  .  .  .  .  .  .  0: *ast.CallExpr {
+   882  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+   883  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   884  .  .  .  .  .  .  .  .  .  .  NamePos: 42:12
+   885  .  .  .  .  .  .  .  .  .  .  Name: "arm"
+   886  .  .  .  .  .  .  .  .  .  }
+   887  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   888  .  .  .  .  .  .  .  .  .  .  NamePos: 42:16
+   889  .  .  .  .  .  .  .  .  .  .  Name: "NewTableName"
+   890  .  .  .  .  .  .  .  .  .  }
+   891  .  .  .  .  .  .  .  .  }
+   892  .  .  .  .  .  .  .  .  Lparen: 42:28
+   893  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+   894  .  .  .  .  .  .  .  .  .  0: *ast.BasicLit {
+   895  .  .  .  .  .  .  .  .  .  .  ValuePos: 42:29
+   896  .  .  .  .  .  .  .  .  .  .  Kind: STRING
+   897  .  .  .  .  .  .  .  .  .  .  Value: "\"school\""
+   898  .  .  .  .  .  .  .  .  .  }
+   899  .  .  .  .  .  .  .  .  }
+   900  .  .  .  .  .  .  .  .  Ellipsis: -
+   901  .  .  .  .  .  .  .  .  Rparen: 42:37
+   902  .  .  .  .  .  .  .  }
+   903  .  .  .  .  .  .  }
+   904  .  .  .  .  .  }
+   905  .  .  .  .  }
+   906  .  .  .  .  Rbrace: 43:1
+   907  .  .  .  }
+   908  .  .  }
+   909  .  .  5: *ast.FuncDecl {
+   910  .  .  .  Recv: *ast.FieldList {
+   911  .  .  .  .  Opening: 45:6
+   912  .  .  .  .  List: []*ast.Field (len = 1) {
+   913  .  .  .  .  .  0: *ast.Field {
+   914  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   915  .  .  .  .  .  .  .  0: *ast.Ident {
+   916  .  .  .  .  .  .  .  .  NamePos: 45:7
+   917  .  .  .  .  .  .  .  .  Name: "this"
+   918  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   919  .  .  .  .  .  .  .  .  .  Kind: var
+   920  .  .  .  .  .  .  .  .  .  Name: "this"
+   921  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 913)
+   922  .  .  .  .  .  .  .  .  }
+   923  .  .  .  .  .  .  .  }
+   924  .  .  .  .  .  .  }
+   925  .  .  .  .  .  .  Type: *ast.StarExpr {
+   926  .  .  .  .  .  .  .  Star: 45:12
+   927  .  .  .  .  .  .  .  X: *ast.Ident {
+   928  .  .  .  .  .  .  .  .  NamePos: 45:13
+   929  .  .  .  .  .  .  .  .  Name: "Model"
+   930  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+   931  .  .  .  .  .  .  .  }
+   932  .  .  .  .  .  .  }
+   933  .  .  .  .  .  }
+   934  .  .  .  .  }
+   935  .  .  .  .  Closing: 45:18
+   936  .  .  .  }
+   937  .  .  .  Name: *ast.Ident {
+   938  .  .  .  .  NamePos: 45:20
+   939  .  .  .  .  Name: "New"
+   940  .  .  .  }
+   941  .  .  .  Type: *ast.FuncType {
+   942  .  .  .  .  Func: 45:1
+   943  .  .  .  .  Params: *ast.FieldList {
+   944  .  .  .  .  .  Opening: 45:23
+   945  .  .  .  .  .  List: []*ast.Field (len = 1) {
+   946  .  .  .  .  .  .  0: *ast.Field {
+   947  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   948  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   949  .  .  .  .  .  .  .  .  .  NamePos: 45:24
+   950  .  .  .  .  .  .  .  .  .  Name: "properties"
+   951  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   952  .  .  .  .  .  .  .  .  .  .  Kind: var
+   953  .  .  .  .  .  .  .  .  .  .  Name: "properties"
+   954  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 946)
+   955  .  .  .  .  .  .  .  .  .  }
+   956  .  .  .  .  .  .  .  .  }
+   957  .  .  .  .  .  .  .  }
+   958  .  .  .  .  .  .  .  Type: *ast.Ellipsis {
+   959  .  .  .  .  .  .  .  .  Ellipsis: 45:35
+   960  .  .  .  .  .  .  .  .  Elt: *ast.SelectorExpr {
+   961  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   962  .  .  .  .  .  .  .  .  .  .  NamePos: 45:38
+   963  .  .  .  .  .  .  .  .  .  .  Name: "him"
+   964  .  .  .  .  .  .  .  .  .  }
+   965  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   966  .  .  .  .  .  .  .  .  .  .  NamePos: 45:42
+   967  .  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+   968  .  .  .  .  .  .  .  .  .  }
+   969  .  .  .  .  .  .  .  .  }
+   970  .  .  .  .  .  .  .  }
+   971  .  .  .  .  .  .  }
+   972  .  .  .  .  .  }
+   973  .  .  .  .  .  Closing: 45:51
+   974  .  .  .  .  }
+   975  .  .  .  .  Results: *ast.FieldList {
+   976  .  .  .  .  .  Opening: -
+   977  .  .  .  .  .  List: []*ast.Field (len = 1) {
+   978  .  .  .  .  .  .  0: *ast.Field {
+   979  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+   980  .  .  .  .  .  .  .  .  Star: 45:53
+   981  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   982  .  .  .  .  .  .  .  .  .  NamePos: 45:54
+   983  .  .  .  .  .  .  .  .  .  Name: "Model"
+   984  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+   985  .  .  .  .  .  .  .  .  }
+   986  .  .  .  .  .  .  .  }
+   987  .  .  .  .  .  .  }
+   988  .  .  .  .  .  }
+   989  .  .  .  .  .  Closing: -
+   990  .  .  .  .  }
+   991  .  .  .  }
+   992  .  .  .  Body: *ast.BlockStmt {
+   993  .  .  .  .  Lbrace: 45:60
+   994  .  .  .  .  List: []ast.Stmt (len = 4) {
+   995  .  .  .  .  .  0: *ast.AssignStmt {
+   996  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+   997  .  .  .  .  .  .  .  0: *ast.Ident {
+   998  .  .  .  .  .  .  .  .  NamePos: 46:5
+   999  .  .  .  .  .  .  .  .  Name: "err"
+  1000  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1001  .  .  .  .  .  .  .  .  .  Kind: var
+  1002  .  .  .  .  .  .  .  .  .  Name: "err"
+  1003  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 995)
+  1004  .  .  .  .  .  .  .  .  }
+  1005  .  .  .  .  .  .  .  }
+  1006  .  .  .  .  .  .  }
+  1007  .  .  .  .  .  .  TokPos: 46:9
+  1008  .  .  .  .  .  .  Tok: :=
+  1009  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  1010  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  1011  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  1012  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1013  .  .  .  .  .  .  .  .  .  .  NamePos: 46:12
+  1014  .  .  .  .  .  .  .  .  .  .  Name: "arm"
+  1015  .  .  .  .  .  .  .  .  .  }
+  1016  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1017  .  .  .  .  .  .  .  .  .  .  NamePos: 46:16
+  1018  .  .  .  .  .  .  .  .  .  .  Name: "Connect"
+  1019  .  .  .  .  .  .  .  .  .  }
+  1020  .  .  .  .  .  .  .  .  }
+  1021  .  .  .  .  .  .  .  .  Lparen: 46:23
+  1022  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  1023  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1024  .  .  .  .  .  .  .  .  .  .  NamePos: 46:24
+  1025  .  .  .  .  .  .  .  .  .  .  Name: "this"
+  1026  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 918)
+  1027  .  .  .  .  .  .  .  .  .  }
+  1028  .  .  .  .  .  .  .  .  }
+  1029  .  .  .  .  .  .  .  .  Ellipsis: -
+  1030  .  .  .  .  .  .  .  .  Rparen: 46:28
+  1031  .  .  .  .  .  .  .  }
+  1032  .  .  .  .  .  .  }
+  1033  .  .  .  .  .  }
+  1034  .  .  .  .  .  1: *ast.IfStmt {
+  1035  .  .  .  .  .  .  If: 47:5
+  1036  .  .  .  .  .  .  Cond: *ast.BinaryExpr {
+  1037  .  .  .  .  .  .  .  X: *ast.Ident {
+  1038  .  .  .  .  .  .  .  .  NamePos: 47:8
+  1039  .  .  .  .  .  .  .  .  Name: "err"
+  1040  .  .  .  .  .  .  .  .  Obj: *(obj @ 1000)
+  1041  .  .  .  .  .  .  .  }
+  1042  .  .  .  .  .  .  .  OpPos: 47:12
+  1043  .  .  .  .  .  .  .  Op: !=
+  1044  .  .  .  .  .  .  .  Y: *ast.Ident {
+  1045  .  .  .  .  .  .  .  .  NamePos: 47:15
+  1046  .  .  .  .  .  .  .  .  Name: "nil"
+  1047  .  .  .  .  .  .  .  }
+  1048  .  .  .  .  .  .  }
+  1049  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  1050  .  .  .  .  .  .  .  Lbrace: 47:19
+  1051  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1052  .  .  .  .  .  .  .  .  0: *ast.ExprStmt {
+  1053  .  .  .  .  .  .  .  .  .  X: *ast.CallExpr {
+  1054  .  .  .  .  .  .  .  .  .  .  Fun: *ast.Ident {
+  1055  .  .  .  .  .  .  .  .  .  .  .  NamePos: 48:9
+  1056  .  .  .  .  .  .  .  .  .  .  .  Name: "panic"
+  1057  .  .  .  .  .  .  .  .  .  .  }
+  1058  .  .  .  .  .  .  .  .  .  .  Lparen: 48:14
+  1059  .  .  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  1060  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1061  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 48:15
+  1062  .  .  .  .  .  .  .  .  .  .  .  .  Name: "err"
+  1063  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1000)
+  1064  .  .  .  .  .  .  .  .  .  .  .  }
+  1065  .  .  .  .  .  .  .  .  .  .  }
+  1066  .  .  .  .  .  .  .  .  .  .  Ellipsis: -
+  1067  .  .  .  .  .  .  .  .  .  .  Rparen: 48:18
+  1068  .  .  .  .  .  .  .  .  .  }
+  1069  .  .  .  .  .  .  .  .  }
+  1070  .  .  .  .  .  .  .  }
+  1071  .  .  .  .  .  .  .  Rbrace: 49:5
+  1072  .  .  .  .  .  .  }
+  1073  .  .  .  .  .  }
+  1074  .  .  .  .  .  2: *ast.ExprStmt {
+  1075  .  .  .  .  .  .  X: *ast.CallExpr {
+  1076  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  1077  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1078  .  .  .  .  .  .  .  .  .  NamePos: 50:5
+  1079  .  .  .  .  .  .  .  .  .  Name: "this"
+  1080  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 918)
+  1081  .  .  .  .  .  .  .  .  }
+  1082  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1083  .  .  .  .  .  .  .  .  .  NamePos: 50:10
+  1084  .  .  .  .  .  .  .  .  .  Name: "Property"
+  1085  .  .  .  .  .  .  .  .  }
+  1086  .  .  .  .  .  .  .  }
+  1087  .  .  .  .  .  .  .  Lparen: 50:18
+  1088  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  1089  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1090  .  .  .  .  .  .  .  .  .  NamePos: 50:19
+  1091  .  .  .  .  .  .  .  .  .  Name: "properties"
+  1092  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 951)
+  1093  .  .  .  .  .  .  .  .  }
+  1094  .  .  .  .  .  .  .  }
+  1095  .  .  .  .  .  .  .  Ellipsis: 50:29
+  1096  .  .  .  .  .  .  .  Rparen: 50:32
+  1097  .  .  .  .  .  .  }
+  1098  .  .  .  .  .  }
+  1099  .  .  .  .  .  3: *ast.ReturnStmt {
+  1100  .  .  .  .  .  .  Return: 51:5
+  1101  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1102  .  .  .  .  .  .  .  0: *ast.Ident {
+  1103  .  .  .  .  .  .  .  .  NamePos: 51:12
+  1104  .  .  .  .  .  .  .  .  Name: "this"
+  1105  .  .  .  .  .  .  .  .  Obj: *(obj @ 918)
+  1106  .  .  .  .  .  .  .  }
+  1107  .  .  .  .  .  .  }
+  1108  .  .  .  .  .  }
+  1109  .  .  .  .  }
+  1110  .  .  .  .  Rbrace: 52:1
+  1111  .  .  .  }
+  1112  .  .  }
+  1113  .  .  6: *ast.FuncDecl {
+  1114  .  .  .  Recv: *ast.FieldList {
+  1115  .  .  .  .  Opening: 54:6
+  1116  .  .  .  .  List: []*ast.Field (len = 1) {
+  1117  .  .  .  .  .  0: *ast.Field {
+  1118  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1119  .  .  .  .  .  .  .  0: *ast.Ident {
+  1120  .  .  .  .  .  .  .  .  NamePos: 54:7
+  1121  .  .  .  .  .  .  .  .  Name: "this"
+  1122  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1123  .  .  .  .  .  .  .  .  .  Kind: var
+  1124  .  .  .  .  .  .  .  .  .  Name: "this"
+  1125  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1117)
+  1126  .  .  .  .  .  .  .  .  }
+  1127  .  .  .  .  .  .  .  }
+  1128  .  .  .  .  .  .  }
+  1129  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1130  .  .  .  .  .  .  .  Star: 54:12
+  1131  .  .  .  .  .  .  .  X: *ast.Ident {
+  1132  .  .  .  .  .  .  .  .  NamePos: 54:13
+  1133  .  .  .  .  .  .  .  .  Name: "Model"
+  1134  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1135  .  .  .  .  .  .  .  }
+  1136  .  .  .  .  .  .  }
+  1137  .  .  .  .  .  }
+  1138  .  .  .  .  }
+  1139  .  .  .  .  Closing: 54:18
+  1140  .  .  .  }
+  1141  .  .  .  Name: *ast.Ident {
+  1142  .  .  .  .  NamePos: 54:20
+  1143  .  .  .  .  Name: "Connection"
+  1144  .  .  .  }
+  1145  .  .  .  Type: *ast.FuncType {
+  1146  .  .  .  .  Func: 54:1
+  1147  .  .  .  .  Params: *ast.FieldList {
+  1148  .  .  .  .  .  Opening: 54:30
+  1149  .  .  .  .  .  Closing: 54:31
+  1150  .  .  .  .  }
+  1151  .  .  .  .  Results: *ast.FieldList {
+  1152  .  .  .  .  .  Opening: -
+  1153  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1154  .  .  .  .  .  .  0: *ast.Field {
+  1155  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1156  .  .  .  .  .  .  .  .  NamePos: 54:33
+  1157  .  .  .  .  .  .  .  .  Name: "string"
+  1158  .  .  .  .  .  .  .  }
+  1159  .  .  .  .  .  .  }
+  1160  .  .  .  .  .  }
+  1161  .  .  .  .  .  Closing: -
+  1162  .  .  .  .  }
+  1163  .  .  .  }
+  1164  .  .  .  Body: *ast.BlockStmt {
+  1165  .  .  .  .  Lbrace: 54:40
+  1166  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1167  .  .  .  .  .  0: *ast.ReturnStmt {
+  1168  .  .  .  .  .  .  Return: 55:5
+  1169  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1170  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  1171  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1172  .  .  .  .  .  .  .  .  .  NamePos: 55:12
+  1173  .  .  .  .  .  .  .  .  .  Name: "him"
+  1174  .  .  .  .  .  .  .  .  }
+  1175  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1176  .  .  .  .  .  .  .  .  .  NamePos: 55:16
+  1177  .  .  .  .  .  .  .  .  .  Name: "DefaultConnect"
+  1178  .  .  .  .  .  .  .  .  }
+  1179  .  .  .  .  .  .  .  }
+  1180  .  .  .  .  .  .  }
+  1181  .  .  .  .  .  }
+  1182  .  .  .  .  }
+  1183  .  .  .  .  Rbrace: 56:1
+  1184  .  .  .  }
+  1185  .  .  }
+  1186  .  .  7: *ast.FuncDecl {
+  1187  .  .  .  Recv: *ast.FieldList {
+  1188  .  .  .  .  Opening: 58:6
+  1189  .  .  .  .  List: []*ast.Field (len = 1) {
+  1190  .  .  .  .  .  0: *ast.Field {
+  1191  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1192  .  .  .  .  .  .  .  0: *ast.Ident {
+  1193  .  .  .  .  .  .  .  .  NamePos: 58:7
+  1194  .  .  .  .  .  .  .  .  Name: "this"
+  1195  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1196  .  .  .  .  .  .  .  .  .  Kind: var
+  1197  .  .  .  .  .  .  .  .  .  Name: "this"
+  1198  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1190)
+  1199  .  .  .  .  .  .  .  .  }
+  1200  .  .  .  .  .  .  .  }
+  1201  .  .  .  .  .  .  }
+  1202  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1203  .  .  .  .  .  .  .  Star: 58:12
+  1204  .  .  .  .  .  .  .  X: *ast.Ident {
+  1205  .  .  .  .  .  .  .  .  NamePos: 58:13
+  1206  .  .  .  .  .  .  .  .  Name: "Model"
+  1207  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1208  .  .  .  .  .  .  .  }
+  1209  .  .  .  .  .  .  }
+  1210  .  .  .  .  .  }
+  1211  .  .  .  .  }
+  1212  .  .  .  .  Closing: 58:18
+  1213  .  .  .  }
+  1214  .  .  .  Name: *ast.Ident {
+  1215  .  .  .  .  NamePos: 58:20
+  1216  .  .  .  .  Name: "TableName"
+  1217  .  .  .  }
+  1218  .  .  .  Type: *ast.FuncType {
+  1219  .  .  .  .  Func: 58:1
+  1220  .  .  .  .  Params: *ast.FieldList {
+  1221  .  .  .  .  .  Opening: 58:29
+  1222  .  .  .  .  .  Closing: 58:30
+  1223  .  .  .  .  }
+  1224  .  .  .  .  Results: *ast.FieldList {
+  1225  .  .  .  .  .  Opening: -
+  1226  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1227  .  .  .  .  .  .  0: *ast.Field {
+  1228  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1229  .  .  .  .  .  .  .  .  Star: 58:32
+  1230  .  .  .  .  .  .  .  .  X: *ast.SelectorExpr {
+  1231  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1232  .  .  .  .  .  .  .  .  .  .  NamePos: 58:33
+  1233  .  .  .  .  .  .  .  .  .  .  Name: "arm"
+  1234  .  .  .  .  .  .  .  .  .  }
+  1235  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1236  .  .  .  .  .  .  .  .  .  .  NamePos: 58:37
+  1237  .  .  .  .  .  .  .  .  .  .  Name: "TableName"
+  1238  .  .  .  .  .  .  .  .  .  }
+  1239  .  .  .  .  .  .  .  .  }
+  1240  .  .  .  .  .  .  .  }
+  1241  .  .  .  .  .  .  }
+  1242  .  .  .  .  .  }
+  1243  .  .  .  .  .  Closing: -
+  1244  .  .  .  .  }
+  1245  .  .  .  }
+  1246  .  .  .  Body: *ast.BlockStmt {
+  1247  .  .  .  .  Lbrace: 58:47
+  1248  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1249  .  .  .  .  .  0: *ast.ReturnStmt {
+  1250  .  .  .  .  .  .  Return: 59:5
+  1251  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1252  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  1253  .  .  .  .  .  .  .  .  Fun: *ast.Ident {
+  1254  .  .  .  .  .  .  .  .  .  NamePos: 59:12
+  1255  .  .  .  .  .  .  .  .  .  Name: "TableName"
+  1256  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 841)
+  1257  .  .  .  .  .  .  .  .  }
+  1258  .  .  .  .  .  .  .  .  Lparen: 59:21
+  1259  .  .  .  .  .  .  .  .  Ellipsis: -
+  1260  .  .  .  .  .  .  .  .  Rparen: 59:22
+  1261  .  .  .  .  .  .  .  }
+  1262  .  .  .  .  .  .  }
+  1263  .  .  .  .  .  }
+  1264  .  .  .  .  }
+  1265  .  .  .  .  Rbrace: 60:1
+  1266  .  .  .  }
+  1267  .  .  }
+  1268  .  .  8: *ast.FuncDecl {
+  1269  .  .  .  Recv: *ast.FieldList {
+  1270  .  .  .  .  Opening: 62:6
+  1271  .  .  .  .  List: []*ast.Field (len = 1) {
+  1272  .  .  .  .  .  0: *ast.Field {
+  1273  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1274  .  .  .  .  .  .  .  0: *ast.Ident {
+  1275  .  .  .  .  .  .  .  .  NamePos: 62:7
+  1276  .  .  .  .  .  .  .  .  Name: "this"
+  1277  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1278  .  .  .  .  .  .  .  .  .  Kind: var
+  1279  .  .  .  .  .  .  .  .  .  Name: "this"
+  1280  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1272)
+  1281  .  .  .  .  .  .  .  .  }
+  1282  .  .  .  .  .  .  .  }
+  1283  .  .  .  .  .  .  }
+  1284  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1285  .  .  .  .  .  .  .  Star: 62:12
+  1286  .  .  .  .  .  .  .  X: *ast.Ident {
+  1287  .  .  .  .  .  .  .  .  NamePos: 62:13
+  1288  .  .  .  .  .  .  .  .  Name: "Model"
+  1289  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1290  .  .  .  .  .  .  .  }
+  1291  .  .  .  .  .  .  }
+  1292  .  .  .  .  .  }
+  1293  .  .  .  .  }
+  1294  .  .  .  .  Closing: 62:18
+  1295  .  .  .  }
+  1296  .  .  .  Name: *ast.Ident {
+  1297  .  .  .  .  NamePos: 62:20
+  1298  .  .  .  .  Name: "Apply"
+  1299  .  .  .  }
+  1300  .  .  .  Type: *ast.FuncType {
+  1301  .  .  .  .  Func: 62:1
+  1302  .  .  .  .  Params: *ast.FieldList {
+  1303  .  .  .  .  .  Opening: 62:25
+  1304  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1305  .  .  .  .  .  .  0: *ast.Field {
+  1306  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1307  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1308  .  .  .  .  .  .  .  .  .  NamePos: 62:26
+  1309  .  .  .  .  .  .  .  .  .  Name: "model"
+  1310  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1311  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1312  .  .  .  .  .  .  .  .  .  .  Name: "model"
+  1313  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1305)
+  1314  .  .  .  .  .  .  .  .  .  }
+  1315  .  .  .  .  .  .  .  .  }
+  1316  .  .  .  .  .  .  .  }
+  1317  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1318  .  .  .  .  .  .  .  .  Star: 62:32
+  1319  .  .  .  .  .  .  .  .  X: *ast.SelectorExpr {
+  1320  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1321  .  .  .  .  .  .  .  .  .  .  NamePos: 62:33
+  1322  .  .  .  .  .  .  .  .  .  .  Name: "arm"
+  1323  .  .  .  .  .  .  .  .  .  }
+  1324  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1325  .  .  .  .  .  .  .  .  .  .  NamePos: 62:37
+  1326  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  1327  .  .  .  .  .  .  .  .  .  }
+  1328  .  .  .  .  .  .  .  .  }
+  1329  .  .  .  .  .  .  .  }
+  1330  .  .  .  .  .  .  }
+  1331  .  .  .  .  .  }
+  1332  .  .  .  .  .  Closing: 62:42
+  1333  .  .  .  .  }
+  1334  .  .  .  }
+  1335  .  .  .  Body: *ast.BlockStmt {
+  1336  .  .  .  .  Lbrace: 62:44
+  1337  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1338  .  .  .  .  .  0: *ast.AssignStmt {
+  1339  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  1340  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  1341  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1342  .  .  .  .  .  .  .  .  .  NamePos: 63:5
+  1343  .  .  .  .  .  .  .  .  .  Name: "this"
+  1344  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1277)
+  1345  .  .  .  .  .  .  .  .  }
+  1346  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1347  .  .  .  .  .  .  .  .  .  NamePos: 63:10
+  1348  .  .  .  .  .  .  .  .  .  Name: "Model"
+  1349  .  .  .  .  .  .  .  .  }
+  1350  .  .  .  .  .  .  .  }
+  1351  .  .  .  .  .  .  }
+  1352  .  .  .  .  .  .  TokPos: 63:16
+  1353  .  .  .  .  .  .  Tok: =
+  1354  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  1355  .  .  .  .  .  .  .  0: *ast.Ident {
+  1356  .  .  .  .  .  .  .  .  NamePos: 63:18
+  1357  .  .  .  .  .  .  .  .  Name: "model"
+  1358  .  .  .  .  .  .  .  .  Obj: *(obj @ 1310)
+  1359  .  .  .  .  .  .  .  }
+  1360  .  .  .  .  .  .  }
+  1361  .  .  .  .  .  }
+  1362  .  .  .  .  }
+  1363  .  .  .  .  Rbrace: 64:1
+  1364  .  .  .  }
+  1365  .  .  }
+  1366  .  .  9: *ast.FuncDecl {
+  1367  .  .  .  Recv: *ast.FieldList {
+  1368  .  .  .  .  Opening: 66:6
+  1369  .  .  .  .  List: []*ast.Field (len = 1) {
+  1370  .  .  .  .  .  0: *ast.Field {
+  1371  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1372  .  .  .  .  .  .  .  0: *ast.Ident {
+  1373  .  .  .  .  .  .  .  .  NamePos: 66:7
+  1374  .  .  .  .  .  .  .  .  Name: "this"
+  1375  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1376  .  .  .  .  .  .  .  .  .  Kind: var
+  1377  .  .  .  .  .  .  .  .  .  Name: "this"
+  1378  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1370)
+  1379  .  .  .  .  .  .  .  .  }
+  1380  .  .  .  .  .  .  .  }
+  1381  .  .  .  .  .  .  }
+  1382  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1383  .  .  .  .  .  .  .  Star: 66:12
+  1384  .  .  .  .  .  .  .  X: *ast.Ident {
+  1385  .  .  .  .  .  .  .  .  NamePos: 66:13
+  1386  .  .  .  .  .  .  .  .  Name: "Model"
+  1387  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1388  .  .  .  .  .  .  .  }
+  1389  .  .  .  .  .  .  }
+  1390  .  .  .  .  .  }
+  1391  .  .  .  .  }
+  1392  .  .  .  .  Closing: 66:18
+  1393  .  .  .  }
+  1394  .  .  .  Name: *ast.Ident {
+  1395  .  .  .  .  NamePos: 66:20
+  1396  .  .  .  .  Name: "Exist"
+  1397  .  .  .  }
+  1398  .  .  .  Type: *ast.FuncType {
+  1399  .  .  .  .  Func: 66:1
+  1400  .  .  .  .  Params: *ast.FieldList {
+  1401  .  .  .  .  .  Opening: 66:25
+  1402  .  .  .  .  .  Closing: 66:26
+  1403  .  .  .  .  }
+  1404  .  .  .  .  Results: *ast.FieldList {
+  1405  .  .  .  .  .  Opening: -
+  1406  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1407  .  .  .  .  .  .  0: *ast.Field {
+  1408  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1409  .  .  .  .  .  .  .  .  NamePos: 66:28
+  1410  .  .  .  .  .  .  .  .  Name: "bool"
+  1411  .  .  .  .  .  .  .  }
+  1412  .  .  .  .  .  .  }
+  1413  .  .  .  .  .  }
+  1414  .  .  .  .  .  Closing: -
+  1415  .  .  .  .  }
+  1416  .  .  .  }
+  1417  .  .  .  Body: *ast.BlockStmt {
+  1418  .  .  .  .  Lbrace: 66:33
+  1419  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1420  .  .  .  .  .  0: *ast.ReturnStmt {
+  1421  .  .  .  .  .  .  Return: 67:5
+  1422  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1423  .  .  .  .  .  .  .  0: *ast.BinaryExpr {
+  1424  .  .  .  .  .  .  .  .  X: *ast.SelectorExpr {
+  1425  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1426  .  .  .  .  .  .  .  .  .  .  NamePos: 67:12
+  1427  .  .  .  .  .  .  .  .  .  .  Name: "this"
+  1428  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1375)
+  1429  .  .  .  .  .  .  .  .  .  }
+  1430  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1431  .  .  .  .  .  .  .  .  .  .  NamePos: 67:17
+  1432  .  .  .  .  .  .  .  .  .  .  Name: "SchoolId"
+  1433  .  .  .  .  .  .  .  .  .  }
+  1434  .  .  .  .  .  .  .  .  }
+  1435  .  .  .  .  .  .  .  .  OpPos: 67:26
+  1436  .  .  .  .  .  .  .  .  Op: >
+  1437  .  .  .  .  .  .  .  .  Y: *ast.BasicLit {
+  1438  .  .  .  .  .  .  .  .  .  ValuePos: 67:28
+  1439  .  .  .  .  .  .  .  .  .  Kind: INT
+  1440  .  .  .  .  .  .  .  .  .  Value: "0"
+  1441  .  .  .  .  .  .  .  .  }
+  1442  .  .  .  .  .  .  .  }
+  1443  .  .  .  .  .  .  }
+  1444  .  .  .  .  .  }
+  1445  .  .  .  .  }
+  1446  .  .  .  .  Rbrace: 68:1
+  1447  .  .  .  }
+  1448  .  .  }
+  1449  .  .  10: *ast.FuncDecl {
+  1450  .  .  .  Doc: *ast.CommentGroup {
+  1451  .  .  .  .  List: []*ast.Comment (len = 1) {
+  1452  .  .  .  .  .  0: *ast.Comment {
+  1453  .  .  .  .  .  .  Slash: 70:1
+  1454  .  .  .  .  .  .  Text: "// WithSchoolId 设置主键"
+  1455  .  .  .  .  .  }
+  1456  .  .  .  .  }
+  1457  .  .  .  }
+  1458  .  .  .  Name: *ast.Ident {
+  1459  .  .  .  .  NamePos: 71:6
+  1460  .  .  .  .  Name: "WithSchoolId"
+  1461  .  .  .  .  Obj: *ast.Object {
+  1462  .  .  .  .  .  Kind: func
+  1463  .  .  .  .  .  Name: "WithSchoolId"
+  1464  .  .  .  .  .  Decl: *(obj @ 1449)
+  1465  .  .  .  .  }
+  1466  .  .  .  }
+  1467  .  .  .  Type: *ast.FuncType {
+  1468  .  .  .  .  Func: 71:1
+  1469  .  .  .  .  Params: *ast.FieldList {
+  1470  .  .  .  .  .  Opening: 71:18
+  1471  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1472  .  .  .  .  .  .  0: *ast.Field {
+  1473  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1474  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1475  .  .  .  .  .  .  .  .  .  NamePos: 71:19
+  1476  .  .  .  .  .  .  .  .  .  Name: "schoolId"
+  1477  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1478  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1479  .  .  .  .  .  .  .  .  .  .  Name: "schoolId"
+  1480  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1472)
+  1481  .  .  .  .  .  .  .  .  .  }
+  1482  .  .  .  .  .  .  .  .  }
+  1483  .  .  .  .  .  .  .  }
+  1484  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1485  .  .  .  .  .  .  .  .  NamePos: 71:28
+  1486  .  .  .  .  .  .  .  .  Name: "int64"
+  1487  .  .  .  .  .  .  .  }
+  1488  .  .  .  .  .  .  }
+  1489  .  .  .  .  .  }
+  1490  .  .  .  .  .  Closing: 71:33
+  1491  .  .  .  .  }
+  1492  .  .  .  .  Results: *ast.FieldList {
+  1493  .  .  .  .  .  Opening: -
+  1494  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1495  .  .  .  .  .  .  0: *ast.Field {
+  1496  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  1497  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1498  .  .  .  .  .  .  .  .  .  NamePos: 71:35
+  1499  .  .  .  .  .  .  .  .  .  Name: "him"
+  1500  .  .  .  .  .  .  .  .  }
+  1501  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1502  .  .  .  .  .  .  .  .  .  NamePos: 71:39
+  1503  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  1504  .  .  .  .  .  .  .  .  }
+  1505  .  .  .  .  .  .  .  }
+  1506  .  .  .  .  .  .  }
+  1507  .  .  .  .  .  }
+  1508  .  .  .  .  .  Closing: -
+  1509  .  .  .  .  }
+  1510  .  .  .  }
+  1511  .  .  .  Body: *ast.BlockStmt {
+  1512  .  .  .  .  Lbrace: 71:49
+  1513  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1514  .  .  .  .  .  0: *ast.ReturnStmt {
+  1515  .  .  .  .  .  .  Return: 72:5
+  1516  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1517  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  1518  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  1519  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1520  .  .  .  .  .  .  .  .  .  .  NamePos: 72:12
+  1521  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  1522  .  .  .  .  .  .  .  .  .  }
+  1523  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1524  .  .  .  .  .  .  .  .  .  .  NamePos: 72:16
+  1525  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  1526  .  .  .  .  .  .  .  .  .  }
+  1527  .  .  .  .  .  .  .  .  }
+  1528  .  .  .  .  .  .  .  .  Lparen: 72:27
+  1529  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  1530  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  1531  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  1532  .  .  .  .  .  .  .  .  .  .  .  Func: 72:28
+  1533  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  1534  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 72:32
+  1535  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1536  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  1537  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1538  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1539  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 72:33
+  1540  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1541  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1542  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1543  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1544  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1536)
+  1545  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1546  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1547  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1548  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1549  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 72:37
+  1550  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  1551  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1552  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1553  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1554  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 72:40
+  1555  .  .  .  .  .  .  .  .  .  .  .  }
+  1556  .  .  .  .  .  .  .  .  .  .  }
+  1557  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  1558  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 72:42
+  1559  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1560  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  1561  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  1562  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  1563  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  1564  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1565  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 73:9
+  1566  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1567  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1541)
+  1568  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1569  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 73:13
+  1570  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1571  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 73:14
+  1572  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1573  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 73:15
+  1574  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  1575  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1576  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1577  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1578  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 73:20
+  1579  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1580  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1581  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 73:22
+  1582  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "SchoolId"
+  1583  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1584  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1585  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1586  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 73:31
+  1587  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  1588  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  1589  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1590  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 73:33
+  1591  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "schoolId"
+  1592  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1477)
+  1593  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1594  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1595  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1596  .  .  .  .  .  .  .  .  .  .  .  }
+  1597  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 74:5
+  1598  .  .  .  .  .  .  .  .  .  .  }
+  1599  .  .  .  .  .  .  .  .  .  }
+  1600  .  .  .  .  .  .  .  .  }
+  1601  .  .  .  .  .  .  .  .  Ellipsis: -
+  1602  .  .  .  .  .  .  .  .  Rparen: 74:6
+  1603  .  .  .  .  .  .  .  }
+  1604  .  .  .  .  .  .  }
+  1605  .  .  .  .  .  }
+  1606  .  .  .  .  }
+  1607  .  .  .  .  Rbrace: 75:1
+  1608  .  .  .  }
+  1609  .  .  }
+  1610  .  .  11: *ast.FuncDecl {
+  1611  .  .  .  Doc: *ast.CommentGroup {
+  1612  .  .  .  .  List: []*ast.Comment (len = 1) {
+  1613  .  .  .  .  .  0: *ast.Comment {
+  1614  .  .  .  .  .  .  Slash: 77:1
+  1615  .  .  .  .  .  .  Text: "// WithSchoolName 设置学校名称"
+  1616  .  .  .  .  .  }
+  1617  .  .  .  .  }
+  1618  .  .  .  }
+  1619  .  .  .  Name: *ast.Ident {
+  1620  .  .  .  .  NamePos: 78:6
+  1621  .  .  .  .  Name: "WithSchoolName"
+  1622  .  .  .  .  Obj: *ast.Object {
+  1623  .  .  .  .  .  Kind: func
+  1624  .  .  .  .  .  Name: "WithSchoolName"
+  1625  .  .  .  .  .  Decl: *(obj @ 1610)
+  1626  .  .  .  .  }
+  1627  .  .  .  }
+  1628  .  .  .  Type: *ast.FuncType {
+  1629  .  .  .  .  Func: 78:1
+  1630  .  .  .  .  Params: *ast.FieldList {
+  1631  .  .  .  .  .  Opening: 78:20
+  1632  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1633  .  .  .  .  .  .  0: *ast.Field {
+  1634  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1635  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1636  .  .  .  .  .  .  .  .  .  NamePos: 78:21
+  1637  .  .  .  .  .  .  .  .  .  Name: "schoolName"
+  1638  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1639  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1640  .  .  .  .  .  .  .  .  .  .  Name: "schoolName"
+  1641  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1633)
+  1642  .  .  .  .  .  .  .  .  .  }
+  1643  .  .  .  .  .  .  .  .  }
+  1644  .  .  .  .  .  .  .  }
+  1645  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1646  .  .  .  .  .  .  .  .  NamePos: 78:32
+  1647  .  .  .  .  .  .  .  .  Name: "string"
+  1648  .  .  .  .  .  .  .  }
+  1649  .  .  .  .  .  .  }
+  1650  .  .  .  .  .  }
+  1651  .  .  .  .  .  Closing: 78:38
+  1652  .  .  .  .  }
+  1653  .  .  .  .  Results: *ast.FieldList {
+  1654  .  .  .  .  .  Opening: -
+  1655  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1656  .  .  .  .  .  .  0: *ast.Field {
+  1657  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  1658  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1659  .  .  .  .  .  .  .  .  .  NamePos: 78:40
+  1660  .  .  .  .  .  .  .  .  .  Name: "him"
+  1661  .  .  .  .  .  .  .  .  }
+  1662  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1663  .  .  .  .  .  .  .  .  .  NamePos: 78:44
+  1664  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  1665  .  .  .  .  .  .  .  .  }
+  1666  .  .  .  .  .  .  .  }
+  1667  .  .  .  .  .  .  }
+  1668  .  .  .  .  .  }
+  1669  .  .  .  .  .  Closing: -
+  1670  .  .  .  .  }
+  1671  .  .  .  }
+  1672  .  .  .  Body: *ast.BlockStmt {
+  1673  .  .  .  .  Lbrace: 78:54
+  1674  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1675  .  .  .  .  .  0: *ast.ReturnStmt {
+  1676  .  .  .  .  .  .  Return: 79:5
+  1677  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1678  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  1679  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  1680  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1681  .  .  .  .  .  .  .  .  .  .  NamePos: 79:12
+  1682  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  1683  .  .  .  .  .  .  .  .  .  }
+  1684  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1685  .  .  .  .  .  .  .  .  .  .  NamePos: 79:16
+  1686  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  1687  .  .  .  .  .  .  .  .  .  }
+  1688  .  .  .  .  .  .  .  .  }
+  1689  .  .  .  .  .  .  .  .  Lparen: 79:27
+  1690  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  1691  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  1692  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  1693  .  .  .  .  .  .  .  .  .  .  .  Func: 79:28
+  1694  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  1695  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 79:32
+  1696  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1697  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  1698  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1699  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1700  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 79:33
+  1701  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1702  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1703  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1704  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1705  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1697)
+  1706  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1707  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1708  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1709  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1710  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 79:37
+  1711  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  1712  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1713  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1714  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1715  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 79:40
+  1716  .  .  .  .  .  .  .  .  .  .  .  }
+  1717  .  .  .  .  .  .  .  .  .  .  }
+  1718  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  1719  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 79:42
+  1720  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1721  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  1722  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  1723  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  1724  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  1725  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1726  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 80:9
+  1727  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1728  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1702)
+  1729  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1730  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 80:13
+  1731  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1732  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 80:14
+  1733  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1734  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 80:15
+  1735  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  1736  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1737  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1738  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1739  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 80:20
+  1740  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1741  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1742  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 80:22
+  1743  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "SchoolName"
+  1744  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1745  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1746  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1747  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 80:33
+  1748  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  1749  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  1750  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1751  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 80:35
+  1752  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "schoolName"
+  1753  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1638)
+  1754  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1755  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1756  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1757  .  .  .  .  .  .  .  .  .  .  .  }
+  1758  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 81:5
+  1759  .  .  .  .  .  .  .  .  .  .  }
+  1760  .  .  .  .  .  .  .  .  .  }
+  1761  .  .  .  .  .  .  .  .  }
+  1762  .  .  .  .  .  .  .  .  Ellipsis: -
+  1763  .  .  .  .  .  .  .  .  Rparen: 81:6
+  1764  .  .  .  .  .  .  .  }
+  1765  .  .  .  .  .  .  }
+  1766  .  .  .  .  .  }
+  1767  .  .  .  .  }
+  1768  .  .  .  .  Rbrace: 82:1
+  1769  .  .  .  }
+  1770  .  .  }
+  1771  .  .  12: *ast.FuncDecl {
+  1772  .  .  .  Doc: *ast.CommentGroup {
+  1773  .  .  .  .  List: []*ast.Comment (len = 1) {
+  1774  .  .  .  .  .  0: *ast.Comment {
+  1775  .  .  .  .  .  .  Slash: 84:1
+  1776  .  .  .  .  .  .  Text: "// WithIp 设置海康存储ip地址"
+  1777  .  .  .  .  .  }
+  1778  .  .  .  .  }
+  1779  .  .  .  }
+  1780  .  .  .  Name: *ast.Ident {
+  1781  .  .  .  .  NamePos: 85:6
+  1782  .  .  .  .  Name: "WithIp"
+  1783  .  .  .  .  Obj: *ast.Object {
+  1784  .  .  .  .  .  Kind: func
+  1785  .  .  .  .  .  Name: "WithIp"
+  1786  .  .  .  .  .  Decl: *(obj @ 1771)
+  1787  .  .  .  .  }
+  1788  .  .  .  }
+  1789  .  .  .  Type: *ast.FuncType {
+  1790  .  .  .  .  Func: 85:1
+  1791  .  .  .  .  Params: *ast.FieldList {
+  1792  .  .  .  .  .  Opening: 85:12
+  1793  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1794  .  .  .  .  .  .  0: *ast.Field {
+  1795  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1796  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1797  .  .  .  .  .  .  .  .  .  NamePos: 85:13
+  1798  .  .  .  .  .  .  .  .  .  Name: "ip"
+  1799  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1800  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1801  .  .  .  .  .  .  .  .  .  .  Name: "ip"
+  1802  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1794)
+  1803  .  .  .  .  .  .  .  .  .  }
+  1804  .  .  .  .  .  .  .  .  }
+  1805  .  .  .  .  .  .  .  }
+  1806  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1807  .  .  .  .  .  .  .  .  NamePos: 85:16
+  1808  .  .  .  .  .  .  .  .  Name: "string"
+  1809  .  .  .  .  .  .  .  }
+  1810  .  .  .  .  .  .  }
+  1811  .  .  .  .  .  }
+  1812  .  .  .  .  .  Closing: 85:22
+  1813  .  .  .  .  }
+  1814  .  .  .  .  Results: *ast.FieldList {
+  1815  .  .  .  .  .  Opening: -
+  1816  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1817  .  .  .  .  .  .  0: *ast.Field {
+  1818  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  1819  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1820  .  .  .  .  .  .  .  .  .  NamePos: 85:24
+  1821  .  .  .  .  .  .  .  .  .  Name: "him"
+  1822  .  .  .  .  .  .  .  .  }
+  1823  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1824  .  .  .  .  .  .  .  .  .  NamePos: 85:28
+  1825  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  1826  .  .  .  .  .  .  .  .  }
+  1827  .  .  .  .  .  .  .  }
+  1828  .  .  .  .  .  .  }
+  1829  .  .  .  .  .  }
+  1830  .  .  .  .  .  Closing: -
+  1831  .  .  .  .  }
+  1832  .  .  .  }
+  1833  .  .  .  Body: *ast.BlockStmt {
+  1834  .  .  .  .  Lbrace: 85:38
+  1835  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1836  .  .  .  .  .  0: *ast.ReturnStmt {
+  1837  .  .  .  .  .  .  Return: 86:5
+  1838  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  1839  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  1840  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  1841  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1842  .  .  .  .  .  .  .  .  .  .  NamePos: 86:12
+  1843  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  1844  .  .  .  .  .  .  .  .  .  }
+  1845  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1846  .  .  .  .  .  .  .  .  .  .  NamePos: 86:16
+  1847  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  1848  .  .  .  .  .  .  .  .  .  }
+  1849  .  .  .  .  .  .  .  .  }
+  1850  .  .  .  .  .  .  .  .  Lparen: 86:27
+  1851  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  1852  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  1853  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  1854  .  .  .  .  .  .  .  .  .  .  .  Func: 86:28
+  1855  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  1856  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 86:32
+  1857  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1858  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  1859  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1860  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1861  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 86:33
+  1862  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1863  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1864  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1865  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1866  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1858)
+  1867  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1868  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1869  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1870  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1871  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 86:37
+  1872  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  1873  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1874  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1875  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1876  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 86:40
+  1877  .  .  .  .  .  .  .  .  .  .  .  }
+  1878  .  .  .  .  .  .  .  .  .  .  }
+  1879  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  1880  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 86:42
+  1881  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1882  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  1883  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  1884  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  1885  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  1886  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1887  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 87:9
+  1888  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  1889  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1863)
+  1890  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1891  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 87:13
+  1892  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  1893  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 87:14
+  1894  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1895  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 87:15
+  1896  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  1897  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  1898  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1899  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1900  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 87:20
+  1901  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1902  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1903  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 87:22
+  1904  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Ip"
+  1905  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1906  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1907  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1908  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 87:25
+  1909  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  1910  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  1911  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1912  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 87:27
+  1913  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "ip"
+  1914  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1799)
+  1915  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1916  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1917  .  .  .  .  .  .  .  .  .  .  .  .  }
+  1918  .  .  .  .  .  .  .  .  .  .  .  }
+  1919  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 88:5
+  1920  .  .  .  .  .  .  .  .  .  .  }
+  1921  .  .  .  .  .  .  .  .  .  }
+  1922  .  .  .  .  .  .  .  .  }
+  1923  .  .  .  .  .  .  .  .  Ellipsis: -
+  1924  .  .  .  .  .  .  .  .  Rparen: 88:6
+  1925  .  .  .  .  .  .  .  }
+  1926  .  .  .  .  .  .  }
+  1927  .  .  .  .  .  }
+  1928  .  .  .  .  }
+  1929  .  .  .  .  Rbrace: 89:1
+  1930  .  .  .  }
+  1931  .  .  }
+  1932  .  .  13: *ast.FuncDecl {
+  1933  .  .  .  Doc: *ast.CommentGroup {
+  1934  .  .  .  .  List: []*ast.Comment (len = 1) {
+  1935  .  .  .  .  .  0: *ast.Comment {
+  1936  .  .  .  .  .  .  Slash: 91:1
+  1937  .  .  .  .  .  .  Text: "// WithPort 设置海康存储端口"
+  1938  .  .  .  .  .  }
+  1939  .  .  .  .  }
+  1940  .  .  .  }
+  1941  .  .  .  Name: *ast.Ident {
+  1942  .  .  .  .  NamePos: 92:6
+  1943  .  .  .  .  Name: "WithPort"
+  1944  .  .  .  .  Obj: *ast.Object {
+  1945  .  .  .  .  .  Kind: func
+  1946  .  .  .  .  .  Name: "WithPort"
+  1947  .  .  .  .  .  Decl: *(obj @ 1932)
+  1948  .  .  .  .  }
+  1949  .  .  .  }
+  1950  .  .  .  Type: *ast.FuncType {
+  1951  .  .  .  .  Func: 92:1
+  1952  .  .  .  .  Params: *ast.FieldList {
+  1953  .  .  .  .  .  Opening: 92:14
+  1954  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1955  .  .  .  .  .  .  0: *ast.Field {
+  1956  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  1957  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  1958  .  .  .  .  .  .  .  .  .  NamePos: 92:15
+  1959  .  .  .  .  .  .  .  .  .  Name: "port"
+  1960  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  1961  .  .  .  .  .  .  .  .  .  .  Kind: var
+  1962  .  .  .  .  .  .  .  .  .  .  Name: "port"
+  1963  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 1955)
+  1964  .  .  .  .  .  .  .  .  .  }
+  1965  .  .  .  .  .  .  .  .  }
+  1966  .  .  .  .  .  .  .  }
+  1967  .  .  .  .  .  .  .  Type: *ast.Ident {
+  1968  .  .  .  .  .  .  .  .  NamePos: 92:20
+  1969  .  .  .  .  .  .  .  .  Name: "string"
+  1970  .  .  .  .  .  .  .  }
+  1971  .  .  .  .  .  .  }
+  1972  .  .  .  .  .  }
+  1973  .  .  .  .  .  Closing: 92:26
+  1974  .  .  .  .  }
+  1975  .  .  .  .  Results: *ast.FieldList {
+  1976  .  .  .  .  .  Opening: -
+  1977  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  1978  .  .  .  .  .  .  0: *ast.Field {
+  1979  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  1980  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  1981  .  .  .  .  .  .  .  .  .  NamePos: 92:28
+  1982  .  .  .  .  .  .  .  .  .  Name: "him"
+  1983  .  .  .  .  .  .  .  .  }
+  1984  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  1985  .  .  .  .  .  .  .  .  .  NamePos: 92:32
+  1986  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  1987  .  .  .  .  .  .  .  .  }
+  1988  .  .  .  .  .  .  .  }
+  1989  .  .  .  .  .  .  }
+  1990  .  .  .  .  .  }
+  1991  .  .  .  .  .  Closing: -
+  1992  .  .  .  .  }
+  1993  .  .  .  }
+  1994  .  .  .  Body: *ast.BlockStmt {
+  1995  .  .  .  .  Lbrace: 92:42
+  1996  .  .  .  .  List: []ast.Stmt (len = 1) {
+  1997  .  .  .  .  .  0: *ast.ReturnStmt {
+  1998  .  .  .  .  .  .  Return: 93:5
+  1999  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2000  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2001  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2002  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2003  .  .  .  .  .  .  .  .  .  .  NamePos: 93:12
+  2004  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2005  .  .  .  .  .  .  .  .  .  }
+  2006  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2007  .  .  .  .  .  .  .  .  .  .  NamePos: 93:16
+  2008  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2009  .  .  .  .  .  .  .  .  .  }
+  2010  .  .  .  .  .  .  .  .  }
+  2011  .  .  .  .  .  .  .  .  Lparen: 93:27
+  2012  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2013  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2014  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2015  .  .  .  .  .  .  .  .  .  .  .  Func: 93:28
+  2016  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  2017  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 93:32
+  2018  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2019  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  2020  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2021  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2022  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 93:33
+  2023  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2024  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2025  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2026  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2027  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2019)
+  2028  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2029  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2030  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2031  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2032  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 93:37
+  2033  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  2034  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2035  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2036  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2037  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 93:40
+  2038  .  .  .  .  .  .  .  .  .  .  .  }
+  2039  .  .  .  .  .  .  .  .  .  .  }
+  2040  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  2041  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 93:42
+  2042  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2043  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  2044  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  2045  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  2046  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  2047  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2048  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 94:9
+  2049  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2050  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2024)
+  2051  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2052  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 94:13
+  2053  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  2054  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 94:14
+  2055  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2056  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 94:15
+  2057  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  2058  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  2059  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2060  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2061  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 94:20
+  2062  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2063  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2064  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 94:22
+  2065  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Port"
+  2066  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2067  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2068  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2069  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 94:27
+  2070  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  2071  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  2072  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2073  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 94:29
+  2074  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "port"
+  2075  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 1960)
+  2076  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2077  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2078  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2079  .  .  .  .  .  .  .  .  .  .  .  }
+  2080  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 95:5
+  2081  .  .  .  .  .  .  .  .  .  .  }
+  2082  .  .  .  .  .  .  .  .  .  }
+  2083  .  .  .  .  .  .  .  .  }
+  2084  .  .  .  .  .  .  .  .  Ellipsis: -
+  2085  .  .  .  .  .  .  .  .  Rparen: 95:6
+  2086  .  .  .  .  .  .  .  }
+  2087  .  .  .  .  .  .  }
+  2088  .  .  .  .  .  }
+  2089  .  .  .  .  }
+  2090  .  .  .  .  Rbrace: 96:1
+  2091  .  .  .  }
+  2092  .  .  }
+  2093  .  .  14: *ast.FuncDecl {
+  2094  .  .  .  Doc: *ast.CommentGroup {
+  2095  .  .  .  .  List: []*ast.Comment (len = 1) {
+  2096  .  .  .  .  .  0: *ast.Comment {
+  2097  .  .  .  .  .  .  Slash: 98:1
+  2098  .  .  .  .  .  .  Text: "// WithUserName 设置海康存储用户名"
+  2099  .  .  .  .  .  }
+  2100  .  .  .  .  }
+  2101  .  .  .  }
+  2102  .  .  .  Name: *ast.Ident {
+  2103  .  .  .  .  NamePos: 99:6
+  2104  .  .  .  .  Name: "WithUserName"
+  2105  .  .  .  .  Obj: *ast.Object {
+  2106  .  .  .  .  .  Kind: func
+  2107  .  .  .  .  .  Name: "WithUserName"
+  2108  .  .  .  .  .  Decl: *(obj @ 2093)
+  2109  .  .  .  .  }
+  2110  .  .  .  }
+  2111  .  .  .  Type: *ast.FuncType {
+  2112  .  .  .  .  Func: 99:1
+  2113  .  .  .  .  Params: *ast.FieldList {
+  2114  .  .  .  .  .  Opening: 99:18
+  2115  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2116  .  .  .  .  .  .  0: *ast.Field {
+  2117  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2118  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2119  .  .  .  .  .  .  .  .  .  NamePos: 99:19
+  2120  .  .  .  .  .  .  .  .  .  Name: "userName"
+  2121  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2122  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2123  .  .  .  .  .  .  .  .  .  .  Name: "userName"
+  2124  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2116)
+  2125  .  .  .  .  .  .  .  .  .  }
+  2126  .  .  .  .  .  .  .  .  }
+  2127  .  .  .  .  .  .  .  }
+  2128  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2129  .  .  .  .  .  .  .  .  NamePos: 99:28
+  2130  .  .  .  .  .  .  .  .  Name: "string"
+  2131  .  .  .  .  .  .  .  }
+  2132  .  .  .  .  .  .  }
+  2133  .  .  .  .  .  }
+  2134  .  .  .  .  .  Closing: 99:34
+  2135  .  .  .  .  }
+  2136  .  .  .  .  Results: *ast.FieldList {
+  2137  .  .  .  .  .  Opening: -
+  2138  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2139  .  .  .  .  .  .  0: *ast.Field {
+  2140  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2141  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2142  .  .  .  .  .  .  .  .  .  NamePos: 99:36
+  2143  .  .  .  .  .  .  .  .  .  Name: "him"
+  2144  .  .  .  .  .  .  .  .  }
+  2145  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2146  .  .  .  .  .  .  .  .  .  NamePos: 99:40
+  2147  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  2148  .  .  .  .  .  .  .  .  }
+  2149  .  .  .  .  .  .  .  }
+  2150  .  .  .  .  .  .  }
+  2151  .  .  .  .  .  }
+  2152  .  .  .  .  .  Closing: -
+  2153  .  .  .  .  }
+  2154  .  .  .  }
+  2155  .  .  .  Body: *ast.BlockStmt {
+  2156  .  .  .  .  Lbrace: 99:50
+  2157  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2158  .  .  .  .  .  0: *ast.ReturnStmt {
+  2159  .  .  .  .  .  .  Return: 100:5
+  2160  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2161  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2162  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2163  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2164  .  .  .  .  .  .  .  .  .  .  NamePos: 100:12
+  2165  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2166  .  .  .  .  .  .  .  .  .  }
+  2167  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2168  .  .  .  .  .  .  .  .  .  .  NamePos: 100:16
+  2169  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2170  .  .  .  .  .  .  .  .  .  }
+  2171  .  .  .  .  .  .  .  .  }
+  2172  .  .  .  .  .  .  .  .  Lparen: 100:27
+  2173  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2174  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2175  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2176  .  .  .  .  .  .  .  .  .  .  .  Func: 100:28
+  2177  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  2178  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 100:32
+  2179  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2180  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  2181  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2182  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2183  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 100:33
+  2184  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2185  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2186  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2187  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2188  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2180)
+  2189  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2190  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2191  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2192  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2193  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 100:37
+  2194  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  2195  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2196  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2197  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2198  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 100:40
+  2199  .  .  .  .  .  .  .  .  .  .  .  }
+  2200  .  .  .  .  .  .  .  .  .  .  }
+  2201  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  2202  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 100:42
+  2203  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2204  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  2205  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  2206  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  2207  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  2208  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2209  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 101:9
+  2210  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2211  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2185)
+  2212  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2213  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 101:13
+  2214  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  2215  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 101:14
+  2216  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2217  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 101:15
+  2218  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  2219  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  2220  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2221  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2222  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 101:20
+  2223  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2224  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2225  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 101:22
+  2226  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "UserName"
+  2227  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2228  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2229  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2230  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 101:31
+  2231  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  2232  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  2233  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2234  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 101:33
+  2235  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "userName"
+  2236  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2121)
+  2237  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2238  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2239  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2240  .  .  .  .  .  .  .  .  .  .  .  }
+  2241  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 102:5
+  2242  .  .  .  .  .  .  .  .  .  .  }
+  2243  .  .  .  .  .  .  .  .  .  }
+  2244  .  .  .  .  .  .  .  .  }
+  2245  .  .  .  .  .  .  .  .  Ellipsis: -
+  2246  .  .  .  .  .  .  .  .  Rparen: 102:6
+  2247  .  .  .  .  .  .  .  }
+  2248  .  .  .  .  .  .  }
+  2249  .  .  .  .  .  }
+  2250  .  .  .  .  }
+  2251  .  .  .  .  Rbrace: 103:1
+  2252  .  .  .  }
+  2253  .  .  }
+  2254  .  .  15: *ast.FuncDecl {
+  2255  .  .  .  Doc: *ast.CommentGroup {
+  2256  .  .  .  .  List: []*ast.Comment (len = 1) {
+  2257  .  .  .  .  .  0: *ast.Comment {
+  2258  .  .  .  .  .  .  Slash: 105:1
+  2259  .  .  .  .  .  .  Text: "// WithPassword 设置海康存储用户密码"
+  2260  .  .  .  .  .  }
+  2261  .  .  .  .  }
+  2262  .  .  .  }
+  2263  .  .  .  Name: *ast.Ident {
+  2264  .  .  .  .  NamePos: 106:6
+  2265  .  .  .  .  Name: "WithPassword"
+  2266  .  .  .  .  Obj: *ast.Object {
+  2267  .  .  .  .  .  Kind: func
+  2268  .  .  .  .  .  Name: "WithPassword"
+  2269  .  .  .  .  .  Decl: *(obj @ 2254)
+  2270  .  .  .  .  }
+  2271  .  .  .  }
+  2272  .  .  .  Type: *ast.FuncType {
+  2273  .  .  .  .  Func: 106:1
+  2274  .  .  .  .  Params: *ast.FieldList {
+  2275  .  .  .  .  .  Opening: 106:18
+  2276  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2277  .  .  .  .  .  .  0: *ast.Field {
+  2278  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2279  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2280  .  .  .  .  .  .  .  .  .  NamePos: 106:19
+  2281  .  .  .  .  .  .  .  .  .  Name: "password"
+  2282  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2283  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2284  .  .  .  .  .  .  .  .  .  .  Name: "password"
+  2285  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2277)
+  2286  .  .  .  .  .  .  .  .  .  }
+  2287  .  .  .  .  .  .  .  .  }
+  2288  .  .  .  .  .  .  .  }
+  2289  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2290  .  .  .  .  .  .  .  .  NamePos: 106:28
+  2291  .  .  .  .  .  .  .  .  Name: "string"
+  2292  .  .  .  .  .  .  .  }
+  2293  .  .  .  .  .  .  }
+  2294  .  .  .  .  .  }
+  2295  .  .  .  .  .  Closing: 106:34
+  2296  .  .  .  .  }
+  2297  .  .  .  .  Results: *ast.FieldList {
+  2298  .  .  .  .  .  Opening: -
+  2299  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2300  .  .  .  .  .  .  0: *ast.Field {
+  2301  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2302  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2303  .  .  .  .  .  .  .  .  .  NamePos: 106:36
+  2304  .  .  .  .  .  .  .  .  .  Name: "him"
+  2305  .  .  .  .  .  .  .  .  }
+  2306  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2307  .  .  .  .  .  .  .  .  .  NamePos: 106:40
+  2308  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  2309  .  .  .  .  .  .  .  .  }
+  2310  .  .  .  .  .  .  .  }
+  2311  .  .  .  .  .  .  }
+  2312  .  .  .  .  .  }
+  2313  .  .  .  .  .  Closing: -
+  2314  .  .  .  .  }
+  2315  .  .  .  }
+  2316  .  .  .  Body: *ast.BlockStmt {
+  2317  .  .  .  .  Lbrace: 106:50
+  2318  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2319  .  .  .  .  .  0: *ast.ReturnStmt {
+  2320  .  .  .  .  .  .  Return: 107:5
+  2321  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2322  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2323  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2324  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2325  .  .  .  .  .  .  .  .  .  .  NamePos: 107:12
+  2326  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2327  .  .  .  .  .  .  .  .  .  }
+  2328  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2329  .  .  .  .  .  .  .  .  .  .  NamePos: 107:16
+  2330  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2331  .  .  .  .  .  .  .  .  .  }
+  2332  .  .  .  .  .  .  .  .  }
+  2333  .  .  .  .  .  .  .  .  Lparen: 107:27
+  2334  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2335  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2336  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2337  .  .  .  .  .  .  .  .  .  .  .  Func: 107:28
+  2338  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  2339  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 107:32
+  2340  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2341  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  2342  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2343  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2344  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 107:33
+  2345  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2346  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2347  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2348  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2349  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2341)
+  2350  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2351  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2352  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2353  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2354  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 107:37
+  2355  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  2356  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2357  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2358  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2359  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 107:40
+  2360  .  .  .  .  .  .  .  .  .  .  .  }
+  2361  .  .  .  .  .  .  .  .  .  .  }
+  2362  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  2363  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 107:42
+  2364  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2365  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  2366  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  2367  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  2368  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  2369  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2370  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 108:9
+  2371  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2372  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2346)
+  2373  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2374  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 108:13
+  2375  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  2376  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 108:14
+  2377  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2378  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 108:15
+  2379  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  2380  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  2381  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2382  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2383  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 108:20
+  2384  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2385  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2386  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 108:22
+  2387  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Password"
+  2388  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2389  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2390  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2391  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 108:31
+  2392  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  2393  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  2394  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2395  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 108:33
+  2396  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "password"
+  2397  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2282)
+  2398  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2399  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2400  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2401  .  .  .  .  .  .  .  .  .  .  .  }
+  2402  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 109:5
+  2403  .  .  .  .  .  .  .  .  .  .  }
+  2404  .  .  .  .  .  .  .  .  .  }
+  2405  .  .  .  .  .  .  .  .  }
+  2406  .  .  .  .  .  .  .  .  Ellipsis: -
+  2407  .  .  .  .  .  .  .  .  Rparen: 109:6
+  2408  .  .  .  .  .  .  .  }
+  2409  .  .  .  .  .  .  }
+  2410  .  .  .  .  .  }
+  2411  .  .  .  .  }
+  2412  .  .  .  .  Rbrace: 110:1
+  2413  .  .  .  }
+  2414  .  .  }
+  2415  .  .  16: *ast.FuncDecl {
+  2416  .  .  .  Doc: *ast.CommentGroup {
+  2417  .  .  .  .  List: []*ast.Comment (len = 1) {
+  2418  .  .  .  .  .  0: *ast.Comment {
+  2419  .  .  .  .  .  .  Slash: 112:1
+  2420  .  .  .  .  .  .  Text: "// WithIsDelete 设置是否删除:1-否,2-是"
+  2421  .  .  .  .  .  }
+  2422  .  .  .  .  }
+  2423  .  .  .  }
+  2424  .  .  .  Name: *ast.Ident {
+  2425  .  .  .  .  NamePos: 113:6
+  2426  .  .  .  .  Name: "WithIsDelete"
+  2427  .  .  .  .  Obj: *ast.Object {
+  2428  .  .  .  .  .  Kind: func
+  2429  .  .  .  .  .  Name: "WithIsDelete"
+  2430  .  .  .  .  .  Decl: *(obj @ 2415)
+  2431  .  .  .  .  }
+  2432  .  .  .  }
+  2433  .  .  .  Type: *ast.FuncType {
+  2434  .  .  .  .  Func: 113:1
+  2435  .  .  .  .  Params: *ast.FieldList {
+  2436  .  .  .  .  .  Opening: 113:18
+  2437  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2438  .  .  .  .  .  .  0: *ast.Field {
+  2439  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2440  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2441  .  .  .  .  .  .  .  .  .  NamePos: 113:19
+  2442  .  .  .  .  .  .  .  .  .  Name: "isDelete"
+  2443  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2444  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2445  .  .  .  .  .  .  .  .  .  .  Name: "isDelete"
+  2446  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2438)
+  2447  .  .  .  .  .  .  .  .  .  }
+  2448  .  .  .  .  .  .  .  .  }
+  2449  .  .  .  .  .  .  .  }
+  2450  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2451  .  .  .  .  .  .  .  .  NamePos: 113:28
+  2452  .  .  .  .  .  .  .  .  Name: "int"
+  2453  .  .  .  .  .  .  .  }
+  2454  .  .  .  .  .  .  }
+  2455  .  .  .  .  .  }
+  2456  .  .  .  .  .  Closing: 113:31
+  2457  .  .  .  .  }
+  2458  .  .  .  .  Results: *ast.FieldList {
+  2459  .  .  .  .  .  Opening: -
+  2460  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2461  .  .  .  .  .  .  0: *ast.Field {
+  2462  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2463  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2464  .  .  .  .  .  .  .  .  .  NamePos: 113:33
+  2465  .  .  .  .  .  .  .  .  .  Name: "him"
+  2466  .  .  .  .  .  .  .  .  }
+  2467  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2468  .  .  .  .  .  .  .  .  .  NamePos: 113:37
+  2469  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  2470  .  .  .  .  .  .  .  .  }
+  2471  .  .  .  .  .  .  .  }
+  2472  .  .  .  .  .  .  }
+  2473  .  .  .  .  .  }
+  2474  .  .  .  .  .  Closing: -
+  2475  .  .  .  .  }
+  2476  .  .  .  }
+  2477  .  .  .  Body: *ast.BlockStmt {
+  2478  .  .  .  .  Lbrace: 113:47
+  2479  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2480  .  .  .  .  .  0: *ast.ReturnStmt {
+  2481  .  .  .  .  .  .  Return: 114:5
+  2482  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2483  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2484  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2485  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2486  .  .  .  .  .  .  .  .  .  .  NamePos: 114:12
+  2487  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2488  .  .  .  .  .  .  .  .  .  }
+  2489  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2490  .  .  .  .  .  .  .  .  .  .  NamePos: 114:16
+  2491  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2492  .  .  .  .  .  .  .  .  .  }
+  2493  .  .  .  .  .  .  .  .  }
+  2494  .  .  .  .  .  .  .  .  Lparen: 114:27
+  2495  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2496  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2497  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2498  .  .  .  .  .  .  .  .  .  .  .  Func: 114:28
+  2499  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  2500  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 114:32
+  2501  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2502  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  2503  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2504  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2505  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 114:33
+  2506  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2507  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2508  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2509  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2510  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2502)
+  2511  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2512  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2513  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2514  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2515  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 114:37
+  2516  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  2517  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2518  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2519  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2520  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 114:40
+  2521  .  .  .  .  .  .  .  .  .  .  .  }
+  2522  .  .  .  .  .  .  .  .  .  .  }
+  2523  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  2524  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 114:42
+  2525  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2526  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  2527  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  2528  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  2529  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  2530  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2531  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 115:9
+  2532  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2533  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2507)
+  2534  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2535  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 115:13
+  2536  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  2537  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 115:14
+  2538  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2539  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 115:15
+  2540  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  2541  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  2542  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2543  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2544  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 115:20
+  2545  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2546  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2547  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 115:22
+  2548  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "IsDelete"
+  2549  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2550  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2551  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2552  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 115:31
+  2553  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  2554  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  2555  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2556  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 115:33
+  2557  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "isDelete"
+  2558  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2443)
+  2559  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2560  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2561  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2562  .  .  .  .  .  .  .  .  .  .  .  }
+  2563  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 116:5
+  2564  .  .  .  .  .  .  .  .  .  .  }
+  2565  .  .  .  .  .  .  .  .  .  }
+  2566  .  .  .  .  .  .  .  .  }
+  2567  .  .  .  .  .  .  .  .  Ellipsis: -
+  2568  .  .  .  .  .  .  .  .  Rparen: 116:6
+  2569  .  .  .  .  .  .  .  }
+  2570  .  .  .  .  .  .  }
+  2571  .  .  .  .  .  }
+  2572  .  .  .  .  }
+  2573  .  .  .  .  Rbrace: 117:1
+  2574  .  .  .  }
+  2575  .  .  }
+  2576  .  .  17: *ast.FuncDecl {
+  2577  .  .  .  Doc: *ast.CommentGroup {
+  2578  .  .  .  .  List: []*ast.Comment (len = 1) {
+  2579  .  .  .  .  .  0: *ast.Comment {
+  2580  .  .  .  .  .  .  Slash: 119:1
+  2581  .  .  .  .  .  .  Text: "// WithCreateTime 设置创建时间"
+  2582  .  .  .  .  .  }
+  2583  .  .  .  .  }
+  2584  .  .  .  }
+  2585  .  .  .  Name: *ast.Ident {
+  2586  .  .  .  .  NamePos: 120:6
+  2587  .  .  .  .  Name: "WithCreateTime"
+  2588  .  .  .  .  Obj: *ast.Object {
+  2589  .  .  .  .  .  Kind: func
+  2590  .  .  .  .  .  Name: "WithCreateTime"
+  2591  .  .  .  .  .  Decl: *(obj @ 2576)
+  2592  .  .  .  .  }
+  2593  .  .  .  }
+  2594  .  .  .  Type: *ast.FuncType {
+  2595  .  .  .  .  Func: 120:1
+  2596  .  .  .  .  Params: *ast.FieldList {
+  2597  .  .  .  .  .  Opening: 120:20
+  2598  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2599  .  .  .  .  .  .  0: *ast.Field {
+  2600  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2601  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2602  .  .  .  .  .  .  .  .  .  NamePos: 120:21
+  2603  .  .  .  .  .  .  .  .  .  Name: "createTime"
+  2604  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2605  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2606  .  .  .  .  .  .  .  .  .  .  Name: "createTime"
+  2607  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2599)
+  2608  .  .  .  .  .  .  .  .  .  }
+  2609  .  .  .  .  .  .  .  .  }
+  2610  .  .  .  .  .  .  .  }
+  2611  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2612  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2613  .  .  .  .  .  .  .  .  .  NamePos: 120:32
+  2614  .  .  .  .  .  .  .  .  .  Name: "time"
+  2615  .  .  .  .  .  .  .  .  }
+  2616  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2617  .  .  .  .  .  .  .  .  .  NamePos: 120:37
+  2618  .  .  .  .  .  .  .  .  .  Name: "Time"
+  2619  .  .  .  .  .  .  .  .  }
+  2620  .  .  .  .  .  .  .  }
+  2621  .  .  .  .  .  .  }
+  2622  .  .  .  .  .  }
+  2623  .  .  .  .  .  Closing: 120:41
+  2624  .  .  .  .  }
+  2625  .  .  .  .  Results: *ast.FieldList {
+  2626  .  .  .  .  .  Opening: -
+  2627  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2628  .  .  .  .  .  .  0: *ast.Field {
+  2629  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2630  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2631  .  .  .  .  .  .  .  .  .  NamePos: 120:43
+  2632  .  .  .  .  .  .  .  .  .  Name: "him"
+  2633  .  .  .  .  .  .  .  .  }
+  2634  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2635  .  .  .  .  .  .  .  .  .  NamePos: 120:47
+  2636  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  2637  .  .  .  .  .  .  .  .  }
+  2638  .  .  .  .  .  .  .  }
+  2639  .  .  .  .  .  .  }
+  2640  .  .  .  .  .  }
+  2641  .  .  .  .  .  Closing: -
+  2642  .  .  .  .  }
+  2643  .  .  .  }
+  2644  .  .  .  Body: *ast.BlockStmt {
+  2645  .  .  .  .  Lbrace: 120:57
+  2646  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2647  .  .  .  .  .  0: *ast.ReturnStmt {
+  2648  .  .  .  .  .  .  Return: 121:5
+  2649  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2650  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2651  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2652  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2653  .  .  .  .  .  .  .  .  .  .  NamePos: 121:12
+  2654  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2655  .  .  .  .  .  .  .  .  .  }
+  2656  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2657  .  .  .  .  .  .  .  .  .  .  NamePos: 121:16
+  2658  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2659  .  .  .  .  .  .  .  .  .  }
+  2660  .  .  .  .  .  .  .  .  }
+  2661  .  .  .  .  .  .  .  .  Lparen: 121:27
+  2662  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2663  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2664  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2665  .  .  .  .  .  .  .  .  .  .  .  Func: 121:28
+  2666  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  2667  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 121:32
+  2668  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2669  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  2670  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2671  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2672  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 121:33
+  2673  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2674  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2675  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2676  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2677  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2669)
+  2678  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2679  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2680  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2681  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2682  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 121:37
+  2683  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  2684  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2685  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2686  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2687  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 121:40
+  2688  .  .  .  .  .  .  .  .  .  .  .  }
+  2689  .  .  .  .  .  .  .  .  .  .  }
+  2690  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  2691  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 121:42
+  2692  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2693  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  2694  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  2695  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  2696  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  2697  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2698  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 122:9
+  2699  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2700  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2674)
+  2701  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2702  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 122:13
+  2703  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  2704  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 122:14
+  2705  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2706  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 122:15
+  2707  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  2708  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  2709  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2710  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2711  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 122:20
+  2712  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2713  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2714  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 122:22
+  2715  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "CreateTime"
+  2716  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2717  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2718  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2719  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 122:33
+  2720  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  2721  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  2722  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2723  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 122:35
+  2724  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "createTime"
+  2725  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2604)
+  2726  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2727  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2728  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2729  .  .  .  .  .  .  .  .  .  .  .  }
+  2730  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 123:5
+  2731  .  .  .  .  .  .  .  .  .  .  }
+  2732  .  .  .  .  .  .  .  .  .  }
+  2733  .  .  .  .  .  .  .  .  }
+  2734  .  .  .  .  .  .  .  .  Ellipsis: -
+  2735  .  .  .  .  .  .  .  .  Rparen: 123:6
+  2736  .  .  .  .  .  .  .  }
+  2737  .  .  .  .  .  .  }
+  2738  .  .  .  .  .  }
+  2739  .  .  .  .  }
+  2740  .  .  .  .  Rbrace: 124:1
+  2741  .  .  .  }
+  2742  .  .  }
+  2743  .  .  18: *ast.FuncDecl {
+  2744  .  .  .  Doc: *ast.CommentGroup {
+  2745  .  .  .  .  List: []*ast.Comment (len = 1) {
+  2746  .  .  .  .  .  0: *ast.Comment {
+  2747  .  .  .  .  .  .  Slash: 126:1
+  2748  .  .  .  .  .  .  Text: "// WithUpdateTime 设置更新时间"
+  2749  .  .  .  .  .  }
+  2750  .  .  .  .  }
+  2751  .  .  .  }
+  2752  .  .  .  Name: *ast.Ident {
+  2753  .  .  .  .  NamePos: 127:6
+  2754  .  .  .  .  Name: "WithUpdateTime"
+  2755  .  .  .  .  Obj: *ast.Object {
+  2756  .  .  .  .  .  Kind: func
+  2757  .  .  .  .  .  Name: "WithUpdateTime"
+  2758  .  .  .  .  .  Decl: *(obj @ 2743)
+  2759  .  .  .  .  }
+  2760  .  .  .  }
+  2761  .  .  .  Type: *ast.FuncType {
+  2762  .  .  .  .  Func: 127:1
+  2763  .  .  .  .  Params: *ast.FieldList {
+  2764  .  .  .  .  .  Opening: 127:20
+  2765  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2766  .  .  .  .  .  .  0: *ast.Field {
+  2767  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2768  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2769  .  .  .  .  .  .  .  .  .  NamePos: 127:21
+  2770  .  .  .  .  .  .  .  .  .  Name: "updateTime"
+  2771  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2772  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2773  .  .  .  .  .  .  .  .  .  .  Name: "updateTime"
+  2774  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2766)
+  2775  .  .  .  .  .  .  .  .  .  }
+  2776  .  .  .  .  .  .  .  .  }
+  2777  .  .  .  .  .  .  .  }
+  2778  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2779  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2780  .  .  .  .  .  .  .  .  .  NamePos: 127:32
+  2781  .  .  .  .  .  .  .  .  .  Name: "time"
+  2782  .  .  .  .  .  .  .  .  }
+  2783  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2784  .  .  .  .  .  .  .  .  .  NamePos: 127:37
+  2785  .  .  .  .  .  .  .  .  .  Name: "Time"
+  2786  .  .  .  .  .  .  .  .  }
+  2787  .  .  .  .  .  .  .  }
+  2788  .  .  .  .  .  .  }
+  2789  .  .  .  .  .  }
+  2790  .  .  .  .  .  Closing: 127:41
+  2791  .  .  .  .  }
+  2792  .  .  .  .  Results: *ast.FieldList {
+  2793  .  .  .  .  .  Opening: -
+  2794  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2795  .  .  .  .  .  .  0: *ast.Field {
+  2796  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2797  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2798  .  .  .  .  .  .  .  .  .  NamePos: 127:43
+  2799  .  .  .  .  .  .  .  .  .  Name: "him"
+  2800  .  .  .  .  .  .  .  .  }
+  2801  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2802  .  .  .  .  .  .  .  .  .  NamePos: 127:47
+  2803  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  2804  .  .  .  .  .  .  .  .  }
+  2805  .  .  .  .  .  .  .  }
+  2806  .  .  .  .  .  .  }
+  2807  .  .  .  .  .  }
+  2808  .  .  .  .  .  Closing: -
+  2809  .  .  .  .  }
+  2810  .  .  .  }
+  2811  .  .  .  Body: *ast.BlockStmt {
+  2812  .  .  .  .  Lbrace: 127:57
+  2813  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2814  .  .  .  .  .  0: *ast.ReturnStmt {
+  2815  .  .  .  .  .  .  Return: 128:5
+  2816  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2817  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2818  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2819  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2820  .  .  .  .  .  .  .  .  .  .  NamePos: 128:12
+  2821  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2822  .  .  .  .  .  .  .  .  .  }
+  2823  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2824  .  .  .  .  .  .  .  .  .  .  NamePos: 128:16
+  2825  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2826  .  .  .  .  .  .  .  .  .  }
+  2827  .  .  .  .  .  .  .  .  }
+  2828  .  .  .  .  .  .  .  .  Lparen: 128:27
+  2829  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2830  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2831  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2832  .  .  .  .  .  .  .  .  .  .  .  Func: 128:28
+  2833  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  2834  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 128:32
+  2835  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2836  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  2837  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2838  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2839  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 128:33
+  2840  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2841  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2842  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2843  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2844  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2836)
+  2845  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2846  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2847  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2848  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  2849  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 128:37
+  2850  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  2851  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2852  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2853  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2854  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 128:40
+  2855  .  .  .  .  .  .  .  .  .  .  .  }
+  2856  .  .  .  .  .  .  .  .  .  .  }
+  2857  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  2858  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 128:42
+  2859  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2860  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  2861  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  2862  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  2863  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  2864  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2865  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 129:9
+  2866  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  2867  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2841)
+  2868  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2869  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 129:13
+  2870  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  2871  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 129:14
+  2872  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2873  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 129:15
+  2874  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  2875  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  2876  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2877  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2878  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 129:20
+  2879  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2880  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2881  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 129:22
+  2882  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "UpdateTime"
+  2883  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2884  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2885  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2886  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 129:33
+  2887  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  2888  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  2889  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2890  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 129:35
+  2891  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "updateTime"
+  2892  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2771)
+  2893  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2894  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2895  .  .  .  .  .  .  .  .  .  .  .  .  }
+  2896  .  .  .  .  .  .  .  .  .  .  .  }
+  2897  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 130:5
+  2898  .  .  .  .  .  .  .  .  .  .  }
+  2899  .  .  .  .  .  .  .  .  .  }
+  2900  .  .  .  .  .  .  .  .  }
+  2901  .  .  .  .  .  .  .  .  Ellipsis: -
+  2902  .  .  .  .  .  .  .  .  Rparen: 130:6
+  2903  .  .  .  .  .  .  .  }
+  2904  .  .  .  .  .  .  }
+  2905  .  .  .  .  .  }
+  2906  .  .  .  .  }
+  2907  .  .  .  .  Rbrace: 131:1
+  2908  .  .  .  }
+  2909  .  .  }
+  2910  .  .  19: *ast.FuncDecl {
+  2911  .  .  .  Doc: *ast.CommentGroup {
+  2912  .  .  .  .  List: []*ast.Comment (len = 1) {
+  2913  .  .  .  .  .  0: *ast.Comment {
+  2914  .  .  .  .  .  .  Slash: 133:1
+  2915  .  .  .  .  .  .  Text: "// WithDeleteTime 设置删除时间"
+  2916  .  .  .  .  .  }
+  2917  .  .  .  .  }
+  2918  .  .  .  }
+  2919  .  .  .  Name: *ast.Ident {
+  2920  .  .  .  .  NamePos: 134:6
+  2921  .  .  .  .  Name: "WithDeleteTime"
+  2922  .  .  .  .  Obj: *ast.Object {
+  2923  .  .  .  .  .  Kind: func
+  2924  .  .  .  .  .  Name: "WithDeleteTime"
+  2925  .  .  .  .  .  Decl: *(obj @ 2910)
+  2926  .  .  .  .  }
+  2927  .  .  .  }
+  2928  .  .  .  Type: *ast.FuncType {
+  2929  .  .  .  .  Func: 134:1
+  2930  .  .  .  .  Params: *ast.FieldList {
+  2931  .  .  .  .  .  Opening: 134:20
+  2932  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2933  .  .  .  .  .  .  0: *ast.Field {
+  2934  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  2935  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  2936  .  .  .  .  .  .  .  .  .  NamePos: 134:21
+  2937  .  .  .  .  .  .  .  .  .  Name: "deleteTime"
+  2938  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  2939  .  .  .  .  .  .  .  .  .  .  Kind: var
+  2940  .  .  .  .  .  .  .  .  .  .  Name: "deleteTime"
+  2941  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 2933)
+  2942  .  .  .  .  .  .  .  .  .  }
+  2943  .  .  .  .  .  .  .  .  }
+  2944  .  .  .  .  .  .  .  }
+  2945  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2946  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2947  .  .  .  .  .  .  .  .  .  NamePos: 134:32
+  2948  .  .  .  .  .  .  .  .  .  Name: "time"
+  2949  .  .  .  .  .  .  .  .  }
+  2950  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2951  .  .  .  .  .  .  .  .  .  NamePos: 134:37
+  2952  .  .  .  .  .  .  .  .  .  Name: "Time"
+  2953  .  .  .  .  .  .  .  .  }
+  2954  .  .  .  .  .  .  .  }
+  2955  .  .  .  .  .  .  }
+  2956  .  .  .  .  .  }
+  2957  .  .  .  .  .  Closing: 134:41
+  2958  .  .  .  .  }
+  2959  .  .  .  .  Results: *ast.FieldList {
+  2960  .  .  .  .  .  Opening: -
+  2961  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  2962  .  .  .  .  .  .  0: *ast.Field {
+  2963  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+  2964  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2965  .  .  .  .  .  .  .  .  .  NamePos: 134:43
+  2966  .  .  .  .  .  .  .  .  .  Name: "him"
+  2967  .  .  .  .  .  .  .  .  }
+  2968  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2969  .  .  .  .  .  .  .  .  .  NamePos: 134:47
+  2970  .  .  .  .  .  .  .  .  .  Name: "IProperty"
+  2971  .  .  .  .  .  .  .  .  }
+  2972  .  .  .  .  .  .  .  }
+  2973  .  .  .  .  .  .  }
+  2974  .  .  .  .  .  }
+  2975  .  .  .  .  .  Closing: -
+  2976  .  .  .  .  }
+  2977  .  .  .  }
+  2978  .  .  .  Body: *ast.BlockStmt {
+  2979  .  .  .  .  Lbrace: 134:57
+  2980  .  .  .  .  List: []ast.Stmt (len = 1) {
+  2981  .  .  .  .  .  0: *ast.ReturnStmt {
+  2982  .  .  .  .  .  .  Return: 135:5
+  2983  .  .  .  .  .  .  Results: []ast.Expr (len = 1) {
+  2984  .  .  .  .  .  .  .  0: *ast.CallExpr {
+  2985  .  .  .  .  .  .  .  .  Fun: *ast.SelectorExpr {
+  2986  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  2987  .  .  .  .  .  .  .  .  .  .  NamePos: 135:12
+  2988  .  .  .  .  .  .  .  .  .  .  Name: "him"
+  2989  .  .  .  .  .  .  .  .  .  }
+  2990  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  2991  .  .  .  .  .  .  .  .  .  .  NamePos: 135:16
+  2992  .  .  .  .  .  .  .  .  .  .  Name: "SetProperty"
+  2993  .  .  .  .  .  .  .  .  .  }
+  2994  .  .  .  .  .  .  .  .  }
+  2995  .  .  .  .  .  .  .  .  Lparen: 135:27
+  2996  .  .  .  .  .  .  .  .  Args: []ast.Expr (len = 1) {
+  2997  .  .  .  .  .  .  .  .  .  0: *ast.FuncLit {
+  2998  .  .  .  .  .  .  .  .  .  .  Type: *ast.FuncType {
+  2999  .  .  .  .  .  .  .  .  .  .  .  Func: 135:28
+  3000  .  .  .  .  .  .  .  .  .  .  .  Params: *ast.FieldList {
+  3001  .  .  .  .  .  .  .  .  .  .  .  .  Opening: 135:32
+  3002  .  .  .  .  .  .  .  .  .  .  .  .  List: []*ast.Field (len = 1) {
+  3003  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Field {
+  3004  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+  3005  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  3006  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 135:33
+  3007  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  3008  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+  3009  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Kind: var
+  3010  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  3011  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 3003)
+  3012  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3013  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3014  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3015  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.Ident {
+  3016  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 135:37
+  3017  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "any"
+  3018  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3019  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3020  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3021  .  .  .  .  .  .  .  .  .  .  .  .  Closing: 135:40
+  3022  .  .  .  .  .  .  .  .  .  .  .  }
+  3023  .  .  .  .  .  .  .  .  .  .  }
+  3024  .  .  .  .  .  .  .  .  .  .  Body: *ast.BlockStmt {
+  3025  .  .  .  .  .  .  .  .  .  .  .  Lbrace: 135:42
+  3026  .  .  .  .  .  .  .  .  .  .  .  List: []ast.Stmt (len = 1) {
+  3027  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.AssignStmt {
+  3028  .  .  .  .  .  .  .  .  .  .  .  .  .  Lhs: []ast.Expr (len = 1) {
+  3029  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.SelectorExpr {
+  3030  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.TypeAssertExpr {
+  3031  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  3032  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 136:9
+  3033  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "obj"
+  3034  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 3008)
+  3035  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3036  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Lparen: 136:13
+  3037  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Type: *ast.StarExpr {
+  3038  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Star: 136:14
+  3039  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X: *ast.Ident {
+  3040  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 136:15
+  3041  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "Model"
+  3042  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 454)
+  3043  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3044  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3045  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Rparen: 136:20
+  3046  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3047  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+  3048  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 136:22
+  3049  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "DeleteTime"
+  3050  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3051  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3052  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3053  .  .  .  .  .  .  .  .  .  .  .  .  .  TokPos: 136:33
+  3054  .  .  .  .  .  .  .  .  .  .  .  .  .  Tok: =
+  3055  .  .  .  .  .  .  .  .  .  .  .  .  .  Rhs: []ast.Expr (len = 1) {
+  3056  .  .  .  .  .  .  .  .  .  .  .  .  .  .  0: *ast.Ident {
+  3057  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  NamePos: 136:35
+  3058  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Name: "deleteTime"
+  3059  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  Obj: *(obj @ 2938)
+  3060  .  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3061  .  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3062  .  .  .  .  .  .  .  .  .  .  .  .  }
+  3063  .  .  .  .  .  .  .  .  .  .  .  }
+  3064  .  .  .  .  .  .  .  .  .  .  .  Rbrace: 137:5
+  3065  .  .  .  .  .  .  .  .  .  .  }
+  3066  .  .  .  .  .  .  .  .  .  }
+  3067  .  .  .  .  .  .  .  .  }
+  3068  .  .  .  .  .  .  .  .  Ellipsis: -
+  3069  .  .  .  .  .  .  .  .  Rparen: 137:6
+  3070  .  .  .  .  .  .  .  }
+  3071  .  .  .  .  .  .  }
+  3072  .  .  .  .  .  }
+  3073  .  .  .  .  }
+  3074  .  .  .  .  Rbrace: 138:1
+  3075  .  .  .  }
+  3076  .  .  }
+  3077  .  }
+  3078  .  FileStart: 1:1
+  3079  .  FileEnd: 138:4
+  3080  .  Scope: *ast.Scope {
+  3081  .  .  Objects: map[string]*ast.Object (len = 23) {
+  3082  .  .  .  "DeleteTime": *(obj @ 400)
+  3083  .  .  .  "Model": *(obj @ 454)
+  3084  .  .  .  "Ip": *(obj @ 127)
+  3085  .  .  .  "SchoolName": *(obj @ 88)
+  3086  .  .  .  "Port": *(obj @ 166)
+  3087  .  .  .  "Password": *(obj @ 244)
+  3088  .  .  .  "UpdateTime": *(obj @ 361)
+  3089  .  .  .  "New": *(obj @ 732)
+  3090  .  .  .  "WithSchoolId": *(obj @ 1461)
+  3091  .  .  .  "WithSchoolName": *(obj @ 1622)
+  3092  .  .  .  "SchoolId": *(obj @ 49)
+  3093  .  .  .  "WithPassword": *(obj @ 2266)
+  3094  .  .  .  "WithIsDelete": *(obj @ 2427)
+  3095  .  .  .  "WithUpdateTime": *(obj @ 2755)
+  3096  .  .  .  "WithIp": *(obj @ 1783)
+  3097  .  .  .  "CreateTime": *(obj @ 322)
+  3098  .  .  .  "TableName": *(obj @ 841)
+  3099  .  .  .  "WithPort": *(obj @ 1944)
+  3100  .  .  .  "WithUserName": *(obj @ 2105)
+  3101  .  .  .  "WithDeleteTime": *(obj @ 2922)
+  3102  .  .  .  "UserName": *(obj @ 205)
+  3103  .  .  .  "WithCreateTime": *(obj @ 2588)
+  3104  .  .  .  "IsDelete": *(obj @ 283)
+  3105  .  .  }
+  3106  .  }
+  3107  .  Imports: []*ast.ImportSpec (len = 3) {
+  3108  .  .  0: *(obj @ 12)
+  3109  .  .  1: *(obj @ 20)
+  3110  .  .  2: *(obj @ 28)
+  3111  .  }
+  3112  .  Unresolved: []*ast.Ident (len = 73) {
+  3113  .  .  0: *(obj @ 58)
+  3114  .  .  1: *(obj @ 97)
+  3115  .  .  2: *(obj @ 136)
+  3116  .  .  3: *(obj @ 175)
+  3117  .  .  4: *(obj @ 214)
+  3118  .  .  5: *(obj @ 253)
+  3119  .  .  6: *(obj @ 292)
+  3120  .  .  7: *(obj @ 331)
+  3121  .  .  8: *(obj @ 370)
+  3122  .  .  9: *(obj @ 409)
+  3123  .  .  10: *(obj @ 470)
+  3124  .  .  11: *(obj @ 493)
+  3125  .  .  12: *(obj @ 515)
+  3126  .  .  13: *(obj @ 537)
+  3127  .  .  14: *(obj @ 559)
+  3128  .  .  15: *(obj @ 581)
+  3129  .  .  16: *(obj @ 603)
+  3130  .  .  17: *(obj @ 625)
+  3131  .  .  18: *(obj @ 648)
+  3132  .  .  19: *(obj @ 676)
+  3133  .  .  20: *(obj @ 704)
+  3134  .  .  21: *(obj @ 758)
+  3135  .  .  22: *(obj @ 860)
+  3136  .  .  23: *(obj @ 883)
+  3137  .  .  24: *(obj @ 961)
+  3138  .  .  25: *(obj @ 1012)
+  3139  .  .  26: *(obj @ 1044)
+  3140  .  .  27: *(obj @ 1054)
+  3141  .  .  28: *(obj @ 1155)
+  3142  .  .  29: *(obj @ 1171)
+  3143  .  .  30: *(obj @ 1231)
+  3144  .  .  31: *(obj @ 1320)
+  3145  .  .  32: *(obj @ 1408)
+  3146  .  .  33: *(obj @ 1484)
+  3147  .  .  34: *(obj @ 1497)
+  3148  .  .  35: *(obj @ 1519)
+  3149  .  .  36: *(obj @ 1548)
+  3150  .  .  37: *(obj @ 1645)
+  3151  .  .  38: *(obj @ 1658)
+  3152  .  .  39: *(obj @ 1680)
+  3153  .  .  40: *(obj @ 1709)
+  3154  .  .  41: *(obj @ 1806)
+  3155  .  .  42: *(obj @ 1819)
+  3156  .  .  43: *(obj @ 1841)
+  3157  .  .  44: *(obj @ 1870)
+  3158  .  .  45: *(obj @ 1967)
+  3159  .  .  46: *(obj @ 1980)
+  3160  .  .  47: *(obj @ 2002)
+  3161  .  .  48: *(obj @ 2031)
+  3162  .  .  49: *(obj @ 2128)
+  3163  .  .  50: *(obj @ 2141)
+  3164  .  .  51: *(obj @ 2163)
+  3165  .  .  52: *(obj @ 2192)
+  3166  .  .  53: *(obj @ 2289)
+  3167  .  .  54: *(obj @ 2302)
+  3168  .  .  55: *(obj @ 2324)
+  3169  .  .  56: *(obj @ 2353)
+  3170  .  .  57: *(obj @ 2450)
+  3171  .  .  58: *(obj @ 2463)
+  3172  .  .  59: *(obj @ 2485)
+  3173  .  .  60: *(obj @ 2514)
+  3174  .  .  61: *(obj @ 2612)
+  3175  .  .  62: *(obj @ 2630)
+  3176  .  .  63: *(obj @ 2652)
+  3177  .  .  64: *(obj @ 2681)
+  3178  .  .  65: *(obj @ 2779)
+  3179  .  .  66: *(obj @ 2797)
+  3180  .  .  67: *(obj @ 2819)
+  3181  .  .  68: *(obj @ 2848)
+  3182  .  .  69: *(obj @ 2946)
+  3183  .  .  70: *(obj @ 2964)
+  3184  .  .  71: *(obj @ 2986)
+  3185  .  .  72: *(obj @ 3015)
+  3186  .  }
+  3187  .  Comments: []*ast.CommentGroup (len = 21) {
+  3188  .  .  0: *(obj @ 74)
+  3189  .  .  1: *(obj @ 113)
+  3190  .  .  2: *(obj @ 152)
+  3191  .  .  3: *(obj @ 191)
+  3192  .  .  4: *(obj @ 230)
+  3193  .  .  5: *(obj @ 269)
+  3194  .  .  6: *(obj @ 308)
+  3195  .  .  7: *(obj @ 347)
+  3196  .  .  8: *(obj @ 386)
+  3197  .  .  9: *(obj @ 425)
+  3203  .  .  15: *(obj @ 2094)
+  3204  .  .  16: *(obj @ 2255)
+  3205  .  .  17: *(obj @ 2416)
+  3206  .  .  18: *(obj @ 2577)
+  3207  .  .  19: *(obj @ 2744)
+  3208  .  .  20: *(obj @ 2911)
+  3209  .  }
+  3210  }
