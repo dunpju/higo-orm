@@ -156,7 +156,7 @@ func (this *Model) gen(out string) {
 		this.replaceTableName(t.Name)
 		this.replacePrimaryKey(primaryKey)
 		this.replaceWithProperty()
-		this.astFindStructNode()
+		this.astForEach()
 		this.write(out + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.filename)
 	}
 }
@@ -325,31 +325,42 @@ func (this *Model) getTableFields(tableName string) []TableField {
 	return fields
 }
 
-// astFindStructNode 找到Struct Node
-func (this *Model) astFindStructNode() {
+type NewAst struct {
+	structNode *ast.GenDecl
+	starExprs  []*ast.StarExpr
+}
+
+func newNewAst() *NewAst {
+	return &NewAst{starExprs: make([]*ast.StarExpr, 0)}
+}
+
+type StarExpr struct {
+}
+
+// astForeach 遍历
+func (this *Model) astForEach() {
 	fileSet := token.NewFileSet()
 	file, err := parser.ParseFile(fileSet, this.outfile, this.stubContext, parser.ParseComments)
 	if err != nil {
 		panic(err)
 	}
-	var structNode *ast.GenDecl
-	starExprs := make([]*ast.StarExpr, 0)
+	newAst := newNewAst()
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
 			if n.Specs != nil && len(n.Specs) > 0 {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
-					StructType, ok := typeSpec.Type.(*ast.StructType)
+					structType, ok := typeSpec.Type.(*ast.StructType)
 					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == "Model" {
-						structNode = n //找到struct node
-						fieldsList := StructType.Fields.List
+						newAst.structNode = n //找到struct node
+						fieldsList := structType.Fields.List
 						if fieldsList != nil && len(fieldsList) > 0 {
 							for _, field := range fieldsList {
 								//找到 StarExpr
 								starExpr, ok := field.Type.(*ast.StarExpr)
 								if ok && len(field.Names) == 0 {
-									starExprs = append(starExprs, starExpr)
-									fmt.Println(starExprs)
+									starExpr.X.(*ast.SelectorExpr).X
+									newAst.starExprs = append(newAst.starExprs, starExpr)
 								}
 							}
 						}
@@ -359,7 +370,6 @@ func (this *Model) astFindStructNode() {
 		}
 		return true
 	})
-	fmt.Println(structNode)
 	//ast.Print(fileSet, file)
 }
 
