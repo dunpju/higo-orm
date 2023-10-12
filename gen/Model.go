@@ -27,6 +27,7 @@ const (
 	modelFieldsStubFilename       = "modelFields.stub"
 	modelPropertyStubFilename     = "modelProperty.stub"
 	modelWithPropertyStubFilename = "modelWithProperty.stub"
+	modelStructName               = "Model"
 )
 
 func initModel() {
@@ -82,6 +83,7 @@ type Model struct {
 	tableComment        string
 	properties          []string
 	withProperty        []string
+	upperProperties     []string
 }
 
 func newModel(db *him.DB, prefix string) *Model {
@@ -95,6 +97,7 @@ func newModel(db *him.DB, prefix string) *Model {
 		fields:              make([]string, 0),
 		properties:          make([]string, 0),
 		withProperty:        make([]string, 0),
+		upperProperties:     make([]string, 0),
 	}
 }
 
@@ -129,6 +132,7 @@ func (this *Model) gen(out string) {
 			if propertyType == "time.Time" {
 				this.mergeImport(`"time"`)
 			}
+			this.appendProperty(upperProperty)
 			blankFirst := LeftStrPad(" ", upperPropertyMaxLen-len(upperProperty), " ")
 			rawField := this.replaceRawField(upperProperty, blankFirst, field.Field, blankFirst, field.Comment)
 			this.mergeFields(rawField)
@@ -175,6 +179,21 @@ func (this *Model) write(file string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (this *Model) appendProperty(upperProperty string) {
+	if !this.findProperty(upperProperty) {
+		this.upperProperties = append(this.upperProperties, upperProperty)
+	}
+}
+
+func (this *Model) findProperty(upperProperty string) bool {
+	for _, s := range this.upperProperties {
+		if s == upperProperty {
+			return true
+		}
+	}
+	return false
 }
 
 func (this *Model) mergeImport(ipt string) {
@@ -326,13 +345,25 @@ func (this *Model) getTableFields(tableName string) []TableField {
 }
 
 type AlternativeAst struct {
+	importNode *ast.GenDecl
+	constNode  *ast.GenDecl
 	structNode *ast.GenDecl
 	starExprs  []*ast.StarExpr
 	fieldsList []*ast.Field
+	funcList   []FnDecl
+}
+
+type FnDecl struct {
+	Name string
+	Fd   *ast.FuncDecl
+}
+
+func newFnDecl(name string, fd *ast.FuncDecl) FnDecl {
+	return FnDecl{Name: name, Fd: fd}
 }
 
 func newAlternativeAst() *AlternativeAst {
-	return &AlternativeAst{starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0)}
+	return &AlternativeAst{starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0), funcList: make([]FnDecl, 0)}
 }
 
 // astForeach 遍历
@@ -346,10 +377,14 @@ func (this *Model) astForEach() {
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
-			if n.Specs != nil && len(n.Specs) > 0 {
+			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
+				alternativeAst.importNode = n
+			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
+				alternativeAst.constNode = n
+			} else if n.Specs != nil && len(n.Specs) > 0 {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
 					structType, ok := typeSpec.Type.(*ast.StructType)
-					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == "Model" {
+					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
 						alternativeAst.structNode = n //找到struct node
 						fieldsList := structType.Fields.List
 						if fieldsList != nil && len(fieldsList) > 0 {
@@ -365,9 +400,42 @@ func (this *Model) astForEach() {
 					}
 				}
 			}
+		case *ast.FuncDecl:
+			if len(n.Body.List) > 0 {
+				for _, stmt := range n.Body.List {
+					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
+						for _, result := range returnStmt.Results {
+							if callExpr, ok := result.(*ast.CallExpr); ok {
+								for _, arg := range callExpr.Args {
+									if funcLit, ok := arg.(*ast.FuncLit); ok {
+										for _, s := range funcLit.Body.List {
+											if assignStmt, ok := s.(*ast.AssignStmt); ok {
+												for _, lh := range assignStmt.Lhs {
+													if selectorExpr, ok := lh.(*ast.SelectorExpr); ok {
+														if typeAssertExpr, ok := selectorExpr.X.(*ast.TypeAssertExpr); ok {
+															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
+																if ident, ok := starExpr.X.(*ast.Ident); ok {
+																	if ident.Name == modelStructName && this.findProperty(selectorExpr.Sel.Name) {
+																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, n))
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 		return true
 	})
+	fmt.Println(alternativeAst)
 	//ast.Print(fileSet, file)
 }
 
