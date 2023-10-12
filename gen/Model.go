@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-orm/him"
@@ -8,8 +9,10 @@ import (
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"go/ast"
+	"go/format"
 	"go/parser"
 	"go/token"
+	"io"
 	"os"
 	"strings"
 )
@@ -77,6 +80,7 @@ type Model struct {
 	originalStubContext string
 	stubContext         string
 	filename            string
+	modelFilename       string
 	outfile             string
 	imports             []string
 	fields              []string
@@ -92,7 +96,7 @@ func newModel(db *him.DB, prefix string) *Model {
 		tables:              make([]Table, 0),
 		prefix:              prefix,
 		originalStubContext: stubs.NewStub(modelStubFilename).Context(),
-		filename:            "Model.go",
+		modelFilename:       "Model.go",
 		imports:             make([]string, 0),
 		fields:              make([]string, 0),
 		properties:          make([]string, 0),
@@ -101,7 +105,7 @@ func newModel(db *him.DB, prefix string) *Model {
 	}
 }
 
-func (this *Model) gen(out string) {
+func (this *Model) gen(outDir string) {
 	for _, t := range this.tables {
 		this.tableComment = t.Comment
 		tableFields := this.getTableFields(t.Name)
@@ -152,6 +156,7 @@ func (this *Model) gen(out string) {
 		}
 		this.stubContext = this.originalStubContext
 		pkg := CamelCase(strings.Replace(t.Name, this.prefix, "", 1))
+		this.outfile = outDir + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.modelFilename
 		this.replacePackage(pkg)
 		this.replaceImport()
 		this.replaceFields()
@@ -160,13 +165,15 @@ func (this *Model) gen(out string) {
 		this.replaceTableName(t.Name)
 		this.replacePrimaryKey(primaryKey)
 		this.replaceWithProperty()
-		this.astForEach()
-		this.write(out + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.filename)
+		if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
+			this.write(this.outfile, this.stubContext)
+		} else {
+			this.oldAstEach(this.newAstEach())
+		}
 	}
 }
 
-func (this *Model) write(file string) {
-	this.outfile = file
+func (this *Model) write(file, fileContext string) {
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		utils.Dir.Mkdir(file, os.ModePerm)
 	}
@@ -175,7 +182,7 @@ func (this *Model) write(file string) {
 		panic(err)
 	}
 	defer f.Close()
-	_, err = f.Write([]byte(this.stubContext))
+	_, err = f.Write([]byte(fileContext))
 	if err != nil {
 		panic(err)
 	}
@@ -345,7 +352,7 @@ func (this *Model) getTableFields(tableName string) []TableField {
 }
 
 type AlternativeAst struct {
-	importNode *ast.GenDecl
+	imports    []string
 	constNode  *ast.GenDecl
 	structNode *ast.GenDecl
 	starExprs  []*ast.StarExpr
@@ -363,22 +370,24 @@ func newFnDecl(name string, fd *ast.FuncDecl) FnDecl {
 }
 
 func newAlternativeAst() *AlternativeAst {
-	return &AlternativeAst{starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0), funcList: make([]FnDecl, 0)}
+	return &AlternativeAst{imports: make([]string, 0), starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0), funcList: make([]FnDecl, 0)}
 }
 
 // astForeach 遍历
-func (this *Model) astForEach() {
+func (this *Model) newAstEach() *AlternativeAst {
 	fileSet := token.NewFileSet()
-	file, err := parser.ParseFile(fileSet, this.outfile, this.stubContext, parser.ParseComments)
+	astFile, err := parser.ParseFile(fileSet, this.outfile, this.stubContext, parser.ParseComments)
 	if err != nil {
 		panic(err)
 	}
 	alternativeAst := newAlternativeAst()
-	ast.Inspect(file, func(node ast.Node) bool {
+	ast.Inspect(astFile, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
 			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
-				alternativeAst.importNode = n
+				for _, spec := range n.Specs {
+					alternativeAst.imports = append(alternativeAst.imports, spec.(*ast.ImportSpec).Path.Value)
+				}
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
 				alternativeAst.constNode = n
 			} else if n.Specs != nil && len(n.Specs) > 0 {
@@ -435,8 +444,115 @@ func (this *Model) astForEach() {
 		}
 		return true
 	})
-	fmt.Println(alternativeAst)
-	//ast.Print(fileSet, file)
+	//ast.Print(fileSet, astFile)
+	return alternativeAst
+}
+
+func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
+	oldFd, err := os.OpenFile(this.outfile, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		panic(err)
+	}
+	oldContext, err := io.ReadAll(oldFd)
+	if err != nil {
+		panic(err)
+	}
+	fileSet := token.NewFileSet()
+	astFile, err := parser.ParseFile(fileSet, this.outfile, oldContext, parser.ParseComments)
+	if err != nil {
+		panic(err)
+	}
+	ast.Inspect(astFile, func(node ast.Node) bool {
+		switch n := node.(type) {
+		case *ast.GenDecl:
+			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
+				ast.Print(fileSet, n)
+				for _, ipt := range alternativeAst.imports {
+					has := false
+					for _, spec := range n.Specs {
+						if ipt == spec.(*ast.ImportSpec).Path.Value {
+							has = true
+							continue
+						}
+					}
+					if !has {
+						n.Specs = append(n.Specs, &ast.ImportSpec{Path: &ast.BasicLit{Kind: token.STRING, Value: ipt}})
+					}
+				}
+				fmt.Println("========")
+				ast.Print(fileSet, n)
+			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
+
+			} else if n.Specs != nil && len(n.Specs) > 0 {
+				/*if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
+					structType, ok := typeSpec.Type.(*ast.StructType)
+					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
+						alternativeAst.structNode = n //找到struct node
+						fieldsList := structType.Fields.List
+						if fieldsList != nil && len(fieldsList) > 0 {
+							for _, field := range fieldsList {
+								starExpr, ok := field.Type.(*ast.StarExpr)
+								if ok && len(field.Names) == 0 { //找到 StarExpr
+									alternativeAst.starExprs = append(alternativeAst.starExprs, starExpr)
+								} else if len(field.Names) > 0 && !ok {
+									alternativeAst.fieldsList = append(alternativeAst.fieldsList, field)
+								}
+							}
+						}
+					}
+				}*/
+			}
+		case *ast.FuncDecl:
+			/*if len(n.Body.List) > 0 {
+				for _, stmt := range n.Body.List {
+					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
+						for _, result := range returnStmt.Results {
+							if callExpr, ok := result.(*ast.CallExpr); ok {
+								for _, arg := range callExpr.Args {
+									if funcLit, ok := arg.(*ast.FuncLit); ok {
+										for _, s := range funcLit.Body.List {
+											if assignStmt, ok := s.(*ast.AssignStmt); ok {
+												for _, lh := range assignStmt.Lhs {
+													if selectorExpr, ok := lh.(*ast.SelectorExpr); ok {
+														if typeAssertExpr, ok := selectorExpr.X.(*ast.TypeAssertExpr); ok {
+															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
+																if ident, ok := starExpr.X.(*ast.Ident); ok {
+																	if ident.Name == modelStructName && this.findProperty(selectorExpr.Sel.Name) {
+																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, n))
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}*/
+		}
+		return true
+	})
+	//ast.Print(fileSet, astFile)
+}
+
+func astToGo(dst *bytes.Buffer, node interface{}) {
+	addNewline := func() {
+		err := dst.WriteByte('\n') // add newline
+		if err != nil {
+			panic(err)
+		}
+	}
+	addNewline()
+	err := format.Node(dst, token.NewFileSet(), node)
+	if err != nil {
+		panic(err)
+	}
+	addNewline()
 }
 
 type Table struct {
