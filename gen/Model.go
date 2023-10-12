@@ -325,16 +325,14 @@ func (this *Model) getTableFields(tableName string) []TableField {
 	return fields
 }
 
-type NewAst struct {
+type AlternativeAst struct {
 	structNode *ast.GenDecl
 	starExprs  []*ast.StarExpr
+	fieldsList []*ast.Field
 }
 
-func newNewAst() *NewAst {
-	return &NewAst{starExprs: make([]*ast.StarExpr, 0)}
-}
-
-type StarExpr struct {
+func newAlternativeAst() *AlternativeAst {
+	return &AlternativeAst{starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0)}
 }
 
 // astForeach 遍历
@@ -344,7 +342,7 @@ func (this *Model) astForEach() {
 	if err != nil {
 		panic(err)
 	}
-	newAst := newNewAst()
+	alternativeAst := newAlternativeAst()
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
@@ -352,15 +350,15 @@ func (this *Model) astForEach() {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
 					structType, ok := typeSpec.Type.(*ast.StructType)
 					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == "Model" {
-						newAst.structNode = n //找到struct node
+						alternativeAst.structNode = n //找到struct node
 						fieldsList := structType.Fields.List
 						if fieldsList != nil && len(fieldsList) > 0 {
 							for _, field := range fieldsList {
-								//找到 StarExpr
 								starExpr, ok := field.Type.(*ast.StarExpr)
-								if ok && len(field.Names) == 0 {
-									starExpr.X.(*ast.SelectorExpr).X
-									newAst.starExprs = append(newAst.starExprs, starExpr)
+								if ok && len(field.Names) == 0 { //找到 StarExpr
+									alternativeAst.starExprs = append(alternativeAst.starExprs, starExpr)
+								} else if len(field.Names) > 0 && !ok {
+									alternativeAst.fieldsList = append(alternativeAst.fieldsList, field)
 								}
 							}
 						}
