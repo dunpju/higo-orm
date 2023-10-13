@@ -483,6 +483,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				// 测试
 				n.Specs = append(n.Specs, &ast.ImportSpec{Path: &ast.BasicLit{Kind: token.STRING, Value: `"test"`}})
 				// printer.Fprint(os.Stdout, fileSet, n)
+				n.Specs = n.Specs[0:1]
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
 
 			} else if n.Specs != nil && len(n.Specs) > 0 {
