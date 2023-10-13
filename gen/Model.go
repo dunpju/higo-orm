@@ -11,6 +11,7 @@ import (
 	"go/ast"
 	"go/format"
 	"go/parser"
+	"go/printer"
 	"go/token"
 	"io"
 	"os"
@@ -466,7 +467,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		switch n := node.(type) {
 		case *ast.GenDecl:
 			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
-				ast.Print(fileSet, n)
+				// ast.Print(fileSet, n)
 				for _, ipt := range alternativeAst.imports {
 					has := false
 					for _, spec := range n.Specs {
@@ -479,8 +480,9 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 						n.Specs = append(n.Specs, &ast.ImportSpec{Path: &ast.BasicLit{Kind: token.STRING, Value: ipt}})
 					}
 				}
-				fmt.Println("========")
-				ast.Print(fileSet, n)
+				// 测试
+				n.Specs = append(n.Specs, &ast.ImportSpec{Path: &ast.BasicLit{Kind: token.STRING, Value: `"test"`}})
+				// printer.Fprint(os.Stdout, fileSet, n)
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
 
 			} else if n.Specs != nil && len(n.Specs) > 0 {
@@ -538,6 +540,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		return true
 	})
 	//ast.Print(fileSet, astFile)
+	printer.Fprint(os.Stdout, fileSet, astFile)
 }
 
 func astToGo(dst *bytes.Buffer, node interface{}) {
