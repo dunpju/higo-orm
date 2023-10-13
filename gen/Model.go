@@ -9,7 +9,6 @@ import (
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"go/ast"
-	"go/format"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -89,6 +88,7 @@ type Model struct {
 	properties          []string
 	withProperty        []string
 	upperProperties     []string
+	newFileBuf          *bytes.Buffer
 }
 
 func newModel(db *him.DB, prefix string) *Model {
@@ -103,6 +103,7 @@ func newModel(db *him.DB, prefix string) *Model {
 		properties:          make([]string, 0),
 		withProperty:        make([]string, 0),
 		upperProperties:     make([]string, 0),
+		newFileBuf:          bytes.NewBufferString(""),
 	}
 }
 
@@ -541,22 +542,12 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		return true
 	})
 	//ast.Print(fileSet, astFile)
-	printer.Fprint(os.Stdout, fileSet, astFile)
+	printer.Fprint(this, fileSet, astFile)
+	this.write(this.outfile, this.newFileBuf.String())
 }
 
-func astToGo(dst *bytes.Buffer, node interface{}) {
-	addNewline := func() {
-		err := dst.WriteByte('\n') // add newline
-		if err != nil {
-			panic(err)
-		}
-	}
-	addNewline()
-	err := format.Node(dst, token.NewFileSet(), node)
-	if err != nil {
-		panic(err)
-	}
-	addNewline()
+func (this *Model) Write(p []byte) (n int, err error) {
+	return this.newFileBuf.Write(p)
 }
 
 type Table struct {
