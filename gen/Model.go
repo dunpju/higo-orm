@@ -9,8 +9,8 @@ import (
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"go/ast"
+	"go/format"
 	"go/parser"
-	"go/printer"
 	"go/token"
 	"io"
 	"os"
@@ -464,29 +464,91 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 	if err != nil {
 		panic(err)
 	}
+
+	newFileBuf := bytes.NewBufferString("")
 	ast.Inspect(astFile, func(node ast.Node) bool {
 		switch n := node.(type) {
+		case *ast.File:
+			newFileBuf.WriteString(fmt.Sprintf("package %s\n", n.Name.Name))
+			newFileBuf.WriteString(fmt.Sprintf("\n"))
 		case *ast.GenDecl:
 			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
-				// ast.Print(fileSet, n)
-				for _, ipt := range alternativeAst.imports {
+				newFileBuf.WriteString(fmt.Sprintf("%s ", token.IMPORT.String()))
+				if n.Lparen.IsValid() {
+					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LPAREN.String()))
+				}
+				for _, spec := range n.Specs {
+					newFileBuf.WriteString(fmt.Sprintf("%s\n", LeftStrPad(spec.(*ast.ImportSpec).Path.Value, 4, " ")))
+				}
+				if n.Rparen.IsValid() {
+					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
+				}
+				newFileBuf.WriteString(fmt.Sprintf("\n"))
+			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
+				newFileBuf.WriteString(fmt.Sprintf("%s ", token.CONST.String()))
+				if n.Lparen.IsValid() {
+					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LPAREN.String()))
+				}
+				for _, spec := range n.Specs {
+					valueSpec := spec.(*ast.ValueSpec)
+					for _, ident := range valueSpec.Names {
+						newFileBuf.WriteString(fmt.Sprintf("%s ", LeftStrPad(ident.Name, 4, " ")))
+					}
+					selectorExpr := valueSpec.Type.(*ast.SelectorExpr)
+					newFileBuf.WriteString(fmt.Sprintf("%s.%s ", selectorExpr.X.(*ast.Ident).Name, selectorExpr.Sel.Name))
+					for _, expr := range valueSpec.Values {
+						newFileBuf.WriteString(fmt.Sprintf("%s ", expr.(*ast.BasicLit).Value))
+					}
+					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, valueSpec.Comment.Text()))
+				}
+				if n.Rparen.IsValid() {
+					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
+				}
+				newFileBuf.WriteString(fmt.Sprintf("\n"))
+				//ast.Print(fileSet, alternativeAst.constNode)
+				/*newValueSpecs := make([]*ast.ValueSpec, 0)
+				for _, newSpec := range alternativeAst.constNode.Specs {
 					has := false
-					for _, spec := range n.Specs {
-						if ipt == spec.(*ast.ImportSpec).Path.Value {
+					for _, oldSpec := range n.Specs {
+						if oldSpec.(*ast.ValueSpec).Names[0].Name == newSpec.(*ast.ValueSpec).Names[0].Name {
 							has = true
-							continue
+							break
 						}
 					}
 					if !has {
-						n.Specs = append(n.Specs, &ast.ImportSpec{Path: &ast.BasicLit{Kind: token.STRING, Value: ipt}})
+						newValueSpecs = append(newValueSpecs, newSpec.(*ast.ValueSpec))
 					}
 				}
-				// 测试
-				n.Specs = append(n.Specs, &ast.ImportSpec{Path: &ast.BasicLit{Kind: token.STRING, Value: `"test"`}})
-				// printer.Fprint(os.Stdout, fileSet, n)
-				n.Specs = n.Specs[0:1]
-			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
-
+				if len(newValueSpecs) > 0 {
+					for _, valueSpec := range newValueSpecs {
+						names := make([]*ast.Ident, 0)
+						name := ast.NewIdent(valueSpec.Names[0].Name)
+						name.Obj = ast.NewObj(ast.Con, valueSpec.Names[0].Name)
+						names = append(names, name)
+						astSelectorExpr := &ast.SelectorExpr{
+							X:   ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).X.(*ast.Ident).Name),
+							Sel: ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).Sel.Name),
+						}
+						values := make([]ast.Expr, 0)
+						astBasicLit := &ast.BasicLit{
+							Kind:  valueSpec.Values[0].(*ast.BasicLit).Kind,
+							Value: valueSpec.Values[0].(*ast.BasicLit).Value,
+						}
+						values = append(values, astBasicLit)
+						commentList := make([]*ast.Comment, 0)
+						commentList = append(commentList, &ast.Comment{Text: valueSpec.Comment.List[0].Text})
+						comment := &ast.CommentGroup{
+							List: commentList,
+						}
+						n.Specs = append(n.Specs, &ast.ValueSpec{
+							Names:   names,
+							Type:    astSelectorExpr,
+							Values:  values,
+							Comment: comment,
+						})
+					}
+				}*/
+				//ast.Print(fileSet, n)
 			} else if n.Specs != nil && len(n.Specs) > 0 {
 				/*if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
 					structType, ok := typeSpec.Type.(*ast.StructType)
@@ -542,12 +604,33 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		return true
 	})
 	//ast.Print(fileSet, astFile)
-	printer.Fprint(this, fileSet, astFile)
-	this.write(this.outfile, this.newFileBuf.String())
+	/*err = printer.Fprint(this, fileSet, astFile)
+	if err != nil {
+		panic(err)
+	}*/
+
+	fmt.Println(newFileBuf.String())
+
+	//this.write(this.outfile, newFileBuf.String())
 }
 
 func (this *Model) Write(p []byte) (n int, err error) {
 	return this.newFileBuf.Write(p)
+}
+
+func astToGo(dst *bytes.Buffer, node interface{}) {
+	addNewline := func() {
+		err := dst.WriteByte('\n') // add newline
+		if err != nil {
+			panic(err)
+		}
+	}
+	addNewline()
+	err := format.Node(dst, token.NewFileSet(), node)
+	if err != nil {
+		panic(err)
+	}
+	addNewline()
 }
 
 type Table struct {

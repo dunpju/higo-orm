@@ -7,6 +7,7 @@ require (
 	github.com/dunpju/higo-utils v1.0.95
 	github.com/golang/protobuf v1.5.2
 	github.com/spf13/cobra v1.2.1
+	golang.org/x/tools v0.1.2
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
 )
