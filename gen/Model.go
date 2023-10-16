@@ -486,7 +486,6 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 				newFileBuf.WriteString("\n")
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
-
 				newValueSpecs := make([]*ast.ValueSpec, 0)
 				for _, newSpec := range alternativeAst.constNode.Specs {
 					has := false
@@ -538,7 +537,6 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 						}
 					}
 				}
-
 				newFileBuf.WriteString(fmt.Sprintf("%s ", token.CONST.String()))
 				if n.Lparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LPAREN.String()))
@@ -564,6 +562,23 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 				newFileBuf.WriteString("\n")
 			} else if n.Specs != nil && len(n.Specs) > 0 {
+				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
+					structType, structTypeOk := typeSpec.Type.(*ast.StructType)
+					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
+						fmt.Println(n.Doc.Text())
+						newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, n.Doc.Text()))
+						fieldsList := structType.Fields.List
+						if fieldsList != nil && len(fieldsList) > 0 {
+							for _, field := range fieldsList {
+								starExpr, starExprOk := field.Type.(*ast.StarExpr)
+								if starExprOk && len(field.Names) == 0 { //找到 StarExpr
+									fmt.Println(starExpr)
+								} else if len(field.Names) > 0 && !starExprOk {
+								}
+							}
+						}
+					}
+				}
 			}
 		case *ast.FuncDecl:
 			funcDeclWrite := newFuncDeclWrite()
