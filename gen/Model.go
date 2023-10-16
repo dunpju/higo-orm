@@ -486,19 +486,76 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 				newFileBuf.WriteString("\n")
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
+
+				newValueSpecs := make([]*ast.ValueSpec, 0)
+				for _, newSpec := range alternativeAst.constNode.Specs {
+					has := false
+					for _, oldSpec := range n.Specs {
+						if oldSpec.(*ast.ValueSpec).Names[0].Name == newSpec.(*ast.ValueSpec).Names[0].Name {
+							has = true
+							break
+						}
+					}
+					if !has {
+						newValueSpecs = append(newValueSpecs, newSpec.(*ast.ValueSpec))
+					}
+				}
+				if len(newValueSpecs) > 0 {
+					for _, valueSpec := range newValueSpecs {
+						names := make([]*ast.Ident, 0)
+						name := ast.NewIdent(valueSpec.Names[0].Name)
+						name.Obj = ast.NewObj(ast.Con, valueSpec.Names[0].Name)
+						names = append(names, name)
+						astSelectorExpr := &ast.SelectorExpr{
+							X:   ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).X.(*ast.Ident).Name),
+							Sel: ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).Sel.Name),
+						}
+						values := make([]ast.Expr, 0)
+						astBasicLit := &ast.BasicLit{
+							Kind:  valueSpec.Values[0].(*ast.BasicLit).Kind,
+							Value: valueSpec.Values[0].(*ast.BasicLit).Value,
+						}
+						values = append(values, astBasicLit)
+						commentList := make([]*ast.Comment, 0)
+						commentList = append(commentList, &ast.Comment{Text: valueSpec.Comment.List[0].Text})
+						comment := &ast.CommentGroup{
+							List: commentList,
+						}
+						n.Specs = append(n.Specs, &ast.ValueSpec{
+							Names:   names,
+							Type:    astSelectorExpr,
+							Values:  values,
+							Comment: comment,
+						})
+					}
+				}
+				upperPropertyMaxLen := 0
+				for _, spec := range n.Specs {
+					valueSpec := spec.(*ast.ValueSpec)
+					for _, ident := range valueSpec.Names {
+						if upperPropertyMaxLen < len(ident.Name) {
+							upperPropertyMaxLen = len(ident.Name)
+						}
+					}
+				}
+
 				newFileBuf.WriteString(fmt.Sprintf("%s ", token.CONST.String()))
 				if n.Lparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LPAREN.String()))
 				}
 				for _, spec := range n.Specs {
 					valueSpec := spec.(*ast.ValueSpec)
+					blank := ""
 					for _, ident := range valueSpec.Names {
-						newFileBuf.WriteString(fmt.Sprintf("%s ", LeftStrPad(ident.Name, 4, " ")))
+						newFileBuf.WriteString(fmt.Sprintf("%s", LeftStrPad(ident.Name, 4, " ")))
+						blank = fmt.Sprintf("%s", LeftStrPad(" ", upperPropertyMaxLen-len(ident.Name), " "))
+						newFileBuf.WriteString(blank)
 					}
 					selectorExpr := valueSpec.Type.(*ast.SelectorExpr)
 					newFileBuf.WriteString(fmt.Sprintf("%s.%s ", selectorExpr.X.(*ast.Ident).Name, selectorExpr.Sel.Name))
 					for _, expr := range valueSpec.Values {
-						newFileBuf.WriteString(fmt.Sprintf("%s ", expr.(*ast.BasicLit).Value))
+						newFileBuf.WriteString(fmt.Sprintf("%s", expr.(*ast.BasicLit).Value))
+						newFileBuf.WriteString(blank)
 					}
 					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, valueSpec.Comment.Text()))
 				}
@@ -552,10 +609,6 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		return true
 	})
 	//ast.Print(fileSet, astFile)
-	/*err = printer.Fprint(this, fileSet, astFile)
-	if err != nil {
-		panic(err)
-	}*/
 
 	fmt.Println(newFileBuf.String())
 
