@@ -11,6 +11,7 @@ import (
 	"go/ast"
 	"go/format"
 	"go/parser"
+	"go/printer"
 	"go/token"
 	"io"
 	"os"
@@ -505,70 +506,16 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
 				}
 				newFileBuf.WriteString(fmt.Sprintf("\n"))
-				//ast.Print(fileSet, alternativeAst.constNode)
-				/*newValueSpecs := make([]*ast.ValueSpec, 0)
-				for _, newSpec := range alternativeAst.constNode.Specs {
-					has := false
-					for _, oldSpec := range n.Specs {
-						if oldSpec.(*ast.ValueSpec).Names[0].Name == newSpec.(*ast.ValueSpec).Names[0].Name {
-							has = true
-							break
-						}
-					}
-					if !has {
-						newValueSpecs = append(newValueSpecs, newSpec.(*ast.ValueSpec))
-					}
-				}
-				if len(newValueSpecs) > 0 {
-					for _, valueSpec := range newValueSpecs {
-						names := make([]*ast.Ident, 0)
-						name := ast.NewIdent(valueSpec.Names[0].Name)
-						name.Obj = ast.NewObj(ast.Con, valueSpec.Names[0].Name)
-						names = append(names, name)
-						astSelectorExpr := &ast.SelectorExpr{
-							X:   ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).X.(*ast.Ident).Name),
-							Sel: ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).Sel.Name),
-						}
-						values := make([]ast.Expr, 0)
-						astBasicLit := &ast.BasicLit{
-							Kind:  valueSpec.Values[0].(*ast.BasicLit).Kind,
-							Value: valueSpec.Values[0].(*ast.BasicLit).Value,
-						}
-						values = append(values, astBasicLit)
-						commentList := make([]*ast.Comment, 0)
-						commentList = append(commentList, &ast.Comment{Text: valueSpec.Comment.List[0].Text})
-						comment := &ast.CommentGroup{
-							List: commentList,
-						}
-						n.Specs = append(n.Specs, &ast.ValueSpec{
-							Names:   names,
-							Type:    astSelectorExpr,
-							Values:  values,
-							Comment: comment,
-						})
-					}
-				}*/
-				//ast.Print(fileSet, n)
 			} else if n.Specs != nil && len(n.Specs) > 0 {
-				/*if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
-					structType, ok := typeSpec.Type.(*ast.StructType)
-					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
-						alternativeAst.structNode = n //找到struct node
-						fieldsList := structType.Fields.List
-						if fieldsList != nil && len(fieldsList) > 0 {
-							for _, field := range fieldsList {
-								starExpr, ok := field.Type.(*ast.StarExpr)
-								if ok && len(field.Names) == 0 { //找到 StarExpr
-									alternativeAst.starExprs = append(alternativeAst.starExprs, starExpr)
-								} else if len(field.Names) > 0 && !ok {
-									alternativeAst.fieldsList = append(alternativeAst.fieldsList, field)
-								}
-							}
-						}
-					}
-				}*/
 			}
 		case *ast.FuncDecl:
+			funcDeclWrite := newFuncDeclWrite()
+			err = printer.Fprint(funcDeclWrite, fileSet, n)
+			if err != nil {
+				panic(err)
+			}
+			funcDeclWrite.buf.WriteString("\n")
+			fmt.Println(funcDeclWrite.buf.String())
 			/*if len(n.Body.List) > 0 {
 				for _, stmt := range n.Body.List {
 					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
@@ -612,6 +559,18 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 	fmt.Println(newFileBuf.String())
 
 	//this.write(this.outfile, newFileBuf.String())
+}
+
+type FuncDeclWrite struct {
+	buf *bytes.Buffer
+}
+
+func newFuncDeclWrite() *FuncDeclWrite {
+	return &FuncDeclWrite{buf: bytes.NewBufferString("")}
+}
+
+func (this *FuncDeclWrite) Write(p []byte) (n int, err error) {
+	return this.buf.Write(p)
 }
 
 func (this *Model) Write(p []byte) (n int, err error) {
