@@ -471,7 +471,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		switch n := node.(type) {
 		case *ast.File:
 			newFileBuf.WriteString(fmt.Sprintf("package %s\n", n.Name.Name))
-			newFileBuf.WriteString(fmt.Sprintf("\n"))
+			newFileBuf.WriteString("\n")
 		case *ast.GenDecl:
 			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
 				newFileBuf.WriteString(fmt.Sprintf("%s ", token.IMPORT.String()))
@@ -484,7 +484,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				if n.Rparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
 				}
-				newFileBuf.WriteString(fmt.Sprintf("\n"))
+				newFileBuf.WriteString("\n")
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
 				newFileBuf.WriteString(fmt.Sprintf("%s ", token.CONST.String()))
 				if n.Lparen.IsValid() {
@@ -505,7 +505,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				if n.Rparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
 				}
-				newFileBuf.WriteString(fmt.Sprintf("\n"))
+				newFileBuf.WriteString("\n")
 			} else if n.Specs != nil && len(n.Specs) > 0 {
 			}
 		case *ast.FuncDecl:
@@ -515,7 +515,8 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				panic(err)
 			}
 			funcDeclWrite.buf.WriteString("\n")
-			fmt.Println(funcDeclWrite.buf.String())
+			newFileBuf.WriteString(funcDeclWrite.buf.String())
+			newFileBuf.WriteString("\n")
 			/*if len(n.Body.List) > 0 {
 				for _, stmt := range n.Body.List {
 					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
