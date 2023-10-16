@@ -552,7 +552,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 					selectorExpr := valueSpec.Type.(*ast.SelectorExpr)
 					newFileBuf.WriteString(fmt.Sprintf("%s.%s ", selectorExpr.X.(*ast.Ident).Name, selectorExpr.Sel.Name))
 					for _, expr := range valueSpec.Values {
-						newFileBuf.WriteString(fmt.Sprintf("%s", expr.(*ast.BasicLit).Value))
+						newFileBuf.WriteString(fmt.Sprintf("%s %s", token.ASSIGN, expr.(*ast.BasicLit).Value))
 						newFileBuf.WriteString(blank)
 					}
 					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, valueSpec.Comment.Text()))
@@ -565,18 +565,74 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
 					structType, structTypeOk := typeSpec.Type.(*ast.StructType)
 					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
-						fmt.Println(n.Doc.Text())
 						newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, n.Doc.Text()))
-						fieldsList := structType.Fields.List
-						if fieldsList != nil && len(fieldsList) > 0 {
-							for _, field := range fieldsList {
-								starExpr, starExprOk := field.Type.(*ast.StarExpr)
-								if starExprOk && len(field.Names) == 0 { //找到 StarExpr
-									fmt.Println(starExpr)
-								} else if len(field.Names) > 0 && !starExprOk {
+						newFileBuf.WriteString(fmt.Sprintf("%s ", n.Tok.String()))
+						newFileBuf.WriteString(fmt.Sprintf("%s ", typeSpec.Name.String()))
+						newFileBuf.WriteString(fmt.Sprintf("%s ", token.STRUCT.String()))
+						newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LBRACE.String()))
+						starExpression := newStarExprs()
+						fields := newFieldRaw()
+						upperPropertyMaxLen := 0
+						propertyTypeMaxLen := 0
+						for _, expr := range alternativeAst.starExprs {
+							before := fmt.Sprintf("%s.%s", expr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
+								expr.X.(*ast.SelectorExpr).Sel.String())
+							starExpression.append(before)
+						}
+						for _, field := range alternativeAst.fieldsList {
+							upperProperty := field.Names[0].Name
+							if upperPropertyMaxLen < len(upperProperty) {
+								upperPropertyMaxLen = len(upperProperty)
+							}
+							var propertyType string
+							ident, identOK := field.Type.(*ast.Ident)
+							if identOK {
+								propertyType = ident.String()
+							} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
+								propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
+							}
+							if propertyTypeMaxLen < len(propertyType) {
+								propertyTypeMaxLen = len(propertyType)
+							}
+							propertyTag := field.Tag.Value
+							fields.append(upperProperty, propertyType, propertyTag)
+						}
+						for _, field := range structType.Fields.List {
+							starExpr, starExprOk := field.Type.(*ast.StarExpr)
+							if starExprOk && len(field.Names) == 0 {
+								after := fmt.Sprintf("%s.%s", starExpr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
+									starExpr.X.(*ast.SelectorExpr).Sel.String())
+								starExpression.append(after)
+							} else if len(field.Names) > 0 && !starExprOk {
+								upperProperty := field.Names[0].Name
+								if upperPropertyMaxLen < len(upperProperty) {
+									upperPropertyMaxLen = len(upperProperty)
 								}
+
+								var propertyType string
+								ident, identOK := field.Type.(*ast.Ident)
+								if identOK {
+									propertyType = ident.String()
+								} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
+									propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
+								}
+								if propertyTypeMaxLen < len(propertyType) {
+									propertyTypeMaxLen = len(propertyType)
+								}
+								propertyTag := field.Tag.Value
+								fields.append(upperProperty, propertyType, propertyTag)
 							}
 						}
+						for _, starExpr := range starExpression.collect {
+							newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
+						}
+						for _, fr := range fields.collect {
+							upperProperty := fmt.Sprintf("%s%s", fr.upperProperty, LeftStrPad(" ", upperPropertyMaxLen-len(fr.upperProperty), " "))
+							propertyType := fmt.Sprintf("%s%s", fr.propertyType, LeftStrPad(" ", propertyTypeMaxLen-len(fr.propertyType), " "))
+							newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s%s\n", upperProperty, propertyType, fr.propertyTag), 4, " "))
+						}
+						newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RBRACE.String()))
+						newFileBuf.WriteString("\n")
 					}
 				}
 			}
@@ -627,7 +683,50 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 
 	fmt.Println(newFileBuf.String())
 
-	//this.write(this.outfile, newFileBuf.String())
+	this.write(this.outfile, newFileBuf.String())
+}
+
+type fieldRaw struct {
+	upperProperty, propertyType, propertyTag string
+	collect                                  []fieldRaw
+}
+
+func newFieldRaw() *fieldRaw {
+	return &fieldRaw{collect: make([]fieldRaw, 0)}
+}
+
+func (this *fieldRaw) append(upperProperty, propertyType, propertyTag string) {
+	has := false
+	for _, s := range this.collect {
+		if s.upperProperty == upperProperty {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.collect = append(this.collect, fieldRaw{upperProperty: upperProperty, propertyType: propertyType, propertyTag: propertyTag})
+	}
+}
+
+type starExprs struct {
+	collect []string
+}
+
+func newStarExprs() *starExprs {
+	return &starExprs{collect: make([]string, 0)}
+}
+
+func (this *starExprs) append(starExpr string) {
+	has := false
+	for _, s := range this.collect {
+		if s == starExpr {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.collect = append(this.collect, starExpr)
+	}
 }
 
 type FuncDeclWrite struct {
