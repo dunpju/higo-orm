@@ -658,9 +658,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		newFileBuf.WriteString("\n")
 	}
 	//ast.Print(fileSet, astFile)
-
-	fmt.Println(newFileBuf.String())
-
+	//fmt.Println(newFileBuf.String())
 	this.write(this.outfile, newFileBuf.String())
 }
 
