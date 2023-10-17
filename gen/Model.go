@@ -363,15 +363,6 @@ type AlternativeAst struct {
 	funcList   []FnDecl
 }
 
-type FnDecl struct {
-	Name string
-	Fd   *ast.FuncDecl
-}
-
-func newFnDecl(name string, fd *ast.FuncDecl) FnDecl {
-	return FnDecl{Name: name, Fd: fd}
-}
-
 func newAlternativeAst() *AlternativeAst {
 	return &AlternativeAst{imports: make([]string, 0), starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0), funcList: make([]FnDecl, 0)}
 }
@@ -466,6 +457,11 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 		panic(err)
 	}
 
+	funcList := newFuncListCollect()
+	for _, fd := range alternativeAst.funcList {
+		funcList.append(fd)
+	}
+
 	newFileBuf := bytes.NewBufferString("")
 	ast.Inspect(astFile, func(node ast.Node) bool {
 		switch n := node.(type) {
@@ -486,52 +482,16 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 				newFileBuf.WriteString("\n")
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
-				newValueSpecs := make([]*ast.ValueSpec, 0)
-				for _, newSpec := range alternativeAst.constNode.Specs {
-					has := false
-					for _, oldSpec := range n.Specs {
-						if oldSpec.(*ast.ValueSpec).Names[0].Name == newSpec.(*ast.ValueSpec).Names[0].Name {
-							has = true
-							break
-						}
-					}
-					if !has {
-						newValueSpecs = append(newValueSpecs, newSpec.(*ast.ValueSpec))
-					}
+				constNode := newConstNodeCollect()
+				for _, spec := range alternativeAst.constNode.Specs {
+					constNode.append(spec.(*ast.ValueSpec))
 				}
-				if len(newValueSpecs) > 0 {
-					for _, valueSpec := range newValueSpecs {
-						names := make([]*ast.Ident, 0)
-						name := ast.NewIdent(valueSpec.Names[0].Name)
-						name.Obj = ast.NewObj(ast.Con, valueSpec.Names[0].Name)
-						names = append(names, name)
-						astSelectorExpr := &ast.SelectorExpr{
-							X:   ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).X.(*ast.Ident).Name),
-							Sel: ast.NewIdent(valueSpec.Type.(*ast.SelectorExpr).Sel.Name),
-						}
-						values := make([]ast.Expr, 0)
-						astBasicLit := &ast.BasicLit{
-							Kind:  valueSpec.Values[0].(*ast.BasicLit).Kind,
-							Value: valueSpec.Values[0].(*ast.BasicLit).Value,
-						}
-						values = append(values, astBasicLit)
-						commentList := make([]*ast.Comment, 0)
-						commentList = append(commentList, &ast.Comment{Text: valueSpec.Comment.List[0].Text})
-						comment := &ast.CommentGroup{
-							List: commentList,
-						}
-						n.Specs = append(n.Specs, &ast.ValueSpec{
-							Names:   names,
-							Type:    astSelectorExpr,
-							Values:  values,
-							Comment: comment,
-						})
-					}
+				for _, spec := range n.Specs {
+					constNode.append(spec.(*ast.ValueSpec))
 				}
 				upperPropertyMaxLen := 0
-				for _, spec := range n.Specs {
-					valueSpec := spec.(*ast.ValueSpec)
-					for _, ident := range valueSpec.Names {
+				for _, spec := range constNode.collect {
+					for _, ident := range spec.Names {
 						if upperPropertyMaxLen < len(ident.Name) {
 							upperPropertyMaxLen = len(ident.Name)
 						}
@@ -541,21 +501,20 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				if n.Lparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LPAREN.String()))
 				}
-				for _, spec := range n.Specs {
-					valueSpec := spec.(*ast.ValueSpec)
+				for _, spec := range constNode.collect {
 					blank := ""
-					for _, ident := range valueSpec.Names {
+					for _, ident := range spec.Names {
 						newFileBuf.WriteString(fmt.Sprintf("%s", LeftStrPad(ident.Name, 4, " ")))
 						blank = fmt.Sprintf("%s", LeftStrPad(" ", upperPropertyMaxLen-len(ident.Name), " "))
 						newFileBuf.WriteString(blank)
 					}
-					selectorExpr := valueSpec.Type.(*ast.SelectorExpr)
+					selectorExpr := spec.Type.(*ast.SelectorExpr)
 					newFileBuf.WriteString(fmt.Sprintf("%s.%s ", selectorExpr.X.(*ast.Ident).Name, selectorExpr.Sel.Name))
-					for _, expr := range valueSpec.Values {
+					for _, expr := range spec.Values {
 						newFileBuf.WriteString(fmt.Sprintf("%s %s", token.ASSIGN, expr.(*ast.BasicLit).Value))
 						newFileBuf.WriteString(blank)
 					}
-					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, valueSpec.Comment.Text()))
+					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, spec.Comment.Text()))
 				}
 				if n.Rparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
@@ -570,14 +529,14 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 						newFileBuf.WriteString(fmt.Sprintf("%s ", typeSpec.Name.String()))
 						newFileBuf.WriteString(fmt.Sprintf("%s ", token.STRUCT.String()))
 						newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LBRACE.String()))
-						starExpression := newStarExprs()
-						fields := newFieldRaw()
+						starExprList := newStarExprCollect()
+						fieldsList := newFieldsListCollect()
 						upperPropertyMaxLen := 0
 						propertyTypeMaxLen := 0
 						for _, expr := range alternativeAst.starExprs {
 							before := fmt.Sprintf("%s.%s", expr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
 								expr.X.(*ast.SelectorExpr).Sel.String())
-							starExpression.append(before)
+							starExprList.append(before)
 						}
 						for _, field := range alternativeAst.fieldsList {
 							upperProperty := field.Names[0].Name
@@ -595,20 +554,19 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 								propertyTypeMaxLen = len(propertyType)
 							}
 							propertyTag := field.Tag.Value
-							fields.append(upperProperty, propertyType, propertyTag)
+							fieldsList.append(upperProperty, propertyType, propertyTag)
 						}
 						for _, field := range structType.Fields.List {
 							starExpr, starExprOk := field.Type.(*ast.StarExpr)
 							if starExprOk && len(field.Names) == 0 {
 								after := fmt.Sprintf("%s.%s", starExpr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
 									starExpr.X.(*ast.SelectorExpr).Sel.String())
-								starExpression.append(after)
+								starExprList.append(after)
 							} else if len(field.Names) > 0 && !starExprOk {
 								upperProperty := field.Names[0].Name
 								if upperPropertyMaxLen < len(upperProperty) {
 									upperPropertyMaxLen = len(upperProperty)
 								}
-
 								var propertyType string
 								ident, identOK := field.Type.(*ast.Ident)
 								if identOK {
@@ -620,13 +578,13 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 									propertyTypeMaxLen = len(propertyType)
 								}
 								propertyTag := field.Tag.Value
-								fields.append(upperProperty, propertyType, propertyTag)
+								fieldsList.append(upperProperty, propertyType, propertyTag)
 							}
 						}
-						for _, starExpr := range starExpression.collect {
+						for _, starExpr := range starExprList.collect {
 							newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
 						}
-						for _, fr := range fields.collect {
+						for _, fr := range fieldsList.collect {
 							upperProperty := fmt.Sprintf("%s%s", fr.upperProperty, LeftStrPad(" ", upperPropertyMaxLen-len(fr.upperProperty), " "))
 							propertyType := fmt.Sprintf("%s%s", fr.propertyType, LeftStrPad(" ", propertyTypeMaxLen-len(fr.propertyType), " "))
 							newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s%s\n", upperProperty, propertyType, fr.propertyTag), 4, " "))
@@ -637,15 +595,8 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 			}
 		case *ast.FuncDecl:
-			funcDeclWrite := newFuncDeclWrite()
-			err = printer.Fprint(funcDeclWrite, fileSet, n)
-			if err != nil {
-				panic(err)
-			}
-			funcDeclWrite.buf.WriteString("\n")
-			newFileBuf.WriteString(funcDeclWrite.buf.String())
-			newFileBuf.WriteString("\n")
-			/*if len(n.Body.List) > 0 {
+			isWithFunc := false
+			if len(n.Body.List) > 0 {
 				for _, stmt := range n.Body.List {
 					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
 						for _, result := range returnStmt.Results {
@@ -660,7 +611,8 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
 																if ident, ok := starExpr.X.(*ast.Ident); ok {
 																	if ident.Name == modelStructName && this.findProperty(selectorExpr.Sel.Name) {
-																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, n))
+																		funcList.append(newFnDecl(selectorExpr.Sel.Name, n))
+																		isWithFunc = true
 																	}
 																}
 															}
@@ -675,70 +627,35 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 						}
 					}
 				}
-			}*/
+			}
+			if !isWithFunc {
+				funcDeclWrite := newFuncDeclWrite()
+				err = printer.Fprint(funcDeclWrite, fileSet, n)
+				if err != nil {
+					panic(err)
+				}
+				funcDeclWrite.buf.WriteString("\n")
+				newFileBuf.WriteString(funcDeclWrite.buf.String())
+				newFileBuf.WriteString("\n")
+			}
 		}
 		return true
 	})
+	for _, fd := range funcList.collect {
+		funcDeclWrite := newFuncDeclWrite()
+		err = printer.Fprint(funcDeclWrite, fileSet, fd.Fd)
+		if err != nil {
+			panic(err)
+		}
+		funcDeclWrite.buf.WriteString("\n")
+		newFileBuf.WriteString(funcDeclWrite.buf.String())
+		newFileBuf.WriteString("\n")
+	}
 	//ast.Print(fileSet, astFile)
 
 	fmt.Println(newFileBuf.String())
 
 	this.write(this.outfile, newFileBuf.String())
-}
-
-type fieldRaw struct {
-	upperProperty, propertyType, propertyTag string
-	collect                                  []fieldRaw
-}
-
-func newFieldRaw() *fieldRaw {
-	return &fieldRaw{collect: make([]fieldRaw, 0)}
-}
-
-func (this *fieldRaw) append(upperProperty, propertyType, propertyTag string) {
-	has := false
-	for _, s := range this.collect {
-		if s.upperProperty == upperProperty {
-			has = true
-			break
-		}
-	}
-	if !has {
-		this.collect = append(this.collect, fieldRaw{upperProperty: upperProperty, propertyType: propertyType, propertyTag: propertyTag})
-	}
-}
-
-type starExprs struct {
-	collect []string
-}
-
-func newStarExprs() *starExprs {
-	return &starExprs{collect: make([]string, 0)}
-}
-
-func (this *starExprs) append(starExpr string) {
-	has := false
-	for _, s := range this.collect {
-		if s == starExpr {
-			has = true
-			break
-		}
-	}
-	if !has {
-		this.collect = append(this.collect, starExpr)
-	}
-}
-
-type FuncDeclWrite struct {
-	buf *bytes.Buffer
-}
-
-func newFuncDeclWrite() *FuncDeclWrite {
-	return &FuncDeclWrite{buf: bytes.NewBufferString("")}
-}
-
-func (this *FuncDeclWrite) Write(p []byte) (n int, err error) {
-	return this.buf.Write(p)
 }
 
 func (this *Model) Write(p []byte) (n int, err error) {
