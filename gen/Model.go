@@ -9,12 +9,12 @@ import (
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"go/ast"
-	"go/format"
 	"go/parser"
 	"go/printer"
 	"go/token"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -32,6 +32,7 @@ const (
 	modelPropertyStubFilename     = "modelProperty.stub"
 	modelWithPropertyStubFilename = "modelWithProperty.stub"
 	modelStructName               = "Model"
+	starExprArmModel              = "arm.Model"
 )
 
 func initModel() {
@@ -51,6 +52,7 @@ func initModel() {
 }
 
 // go run .\bin\generator.go model --table=school --conn=Default --prefix=ts_ --out=app\models
+// go run .\bin\generator.go model --table=all --conn=Default --prefix=ts_ --out=app\models
 var model = &cobra.Command{
 	Use:     "model",
 	Short:   "模型构建工具",
@@ -173,6 +175,7 @@ func (this *Model) gen(outDir string) {
 		} else {
 			this.oldAstEach(this.newAstEach())
 		}
+		fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
 	}
 }
 
@@ -461,6 +464,29 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 	for _, fd := range alternativeAst.funcList {
 		funcList.append(fd)
 	}
+	hasStarExprArmModel := false
+	ast.Inspect(astFile, func(node ast.Node) bool {
+		switch n := node.(type) {
+		case *ast.GenDecl:
+			if n.Specs != nil && len(n.Specs) > 0 {
+				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
+					structType, structTypeOk := typeSpec.Type.(*ast.StructType)
+					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() {
+						for _, field := range structType.Fields.List {
+							if starExpr, starExprOk := field.Type.(*ast.StarExpr); starExprOk {
+								after := fmt.Sprintf("%s.%s", starExpr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
+									starExpr.X.(*ast.SelectorExpr).Sel.String())
+								if starExprArmModel == after {
+									hasStarExprArmModel = true
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return true
+	})
 
 	newFileBuf := bytes.NewBufferString("")
 	ast.Inspect(astFile, func(node ast.Node) bool {
@@ -515,6 +541,12 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 						newFileBuf.WriteString(blank)
 					}
 					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, spec.Comment.Text()))
+					pattern := `\n$`
+					reg, _ := regexp.Compile(pattern)
+					matched := reg.Match([]byte(newFileBuf.String()))
+					if !matched {
+						newFileBuf.WriteString("\n")
+					}
 				}
 				if n.Rparen.IsValid() {
 					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
@@ -588,7 +620,13 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 							}
 						}
 						for _, starExpr := range starExprList.collect {
-							newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
+							if starExprArmModel == starExpr {
+								if hasStarExprArmModel {
+									newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
+								}
+							} else {
+								newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
+							}
 						}
 						for _, fr := range fieldsList.collect {
 							upperProperty := fmt.Sprintf("%s%s", fr.upperProperty, LeftStrPad(" ", upperPropertyMaxLen-len(fr.upperProperty), " "))
@@ -664,21 +702,6 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 
 func (this *Model) Write(p []byte) (n int, err error) {
 	return this.newFileBuf.Write(p)
-}
-
-func astToGo(dst *bytes.Buffer, node interface{}) {
-	addNewline := func() {
-		err := dst.WriteByte('\n') // add newline
-		if err != nil {
-			panic(err)
-		}
-	}
-	addNewline()
-	err := format.Node(dst, token.NewFileSet(), node)
-	if err != nil {
-		panic(err)
-	}
-	addNewline()
 }
 
 type Table struct {
