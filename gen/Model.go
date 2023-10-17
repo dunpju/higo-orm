@@ -523,8 +523,10 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 			} else if n.Specs != nil && len(n.Specs) > 0 {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
 					structType, structTypeOk := typeSpec.Type.(*ast.StructType)
-					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
-						newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, n.Doc.Text()))
+					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() {
+						if n.Doc.Text() != "" {
+							newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, n.Doc.Text()))
+						}
 						newFileBuf.WriteString(fmt.Sprintf("%s ", n.Tok.String()))
 						newFileBuf.WriteString(fmt.Sprintf("%s ", typeSpec.Name.String()))
 						newFileBuf.WriteString(fmt.Sprintf("%s ", token.STRUCT.String()))
@@ -533,28 +535,30 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 						fieldsList := newFieldsListCollect()
 						upperPropertyMaxLen := 0
 						propertyTypeMaxLen := 0
-						for _, expr := range alternativeAst.starExprs {
-							before := fmt.Sprintf("%s.%s", expr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
-								expr.X.(*ast.SelectorExpr).Sel.String())
-							starExprList.append(before)
-						}
-						for _, field := range alternativeAst.fieldsList {
-							upperProperty := field.Names[0].Name
-							if upperPropertyMaxLen < len(upperProperty) {
-								upperPropertyMaxLen = len(upperProperty)
+						if typeSpec.Name.String() == modelStructName {
+							for _, expr := range alternativeAst.starExprs {
+								before := fmt.Sprintf("%s.%s", expr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
+									expr.X.(*ast.SelectorExpr).Sel.String())
+								starExprList.append(before)
 							}
-							var propertyType string
-							ident, identOK := field.Type.(*ast.Ident)
-							if identOK {
-								propertyType = ident.String()
-							} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
-								propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
+							for _, field := range alternativeAst.fieldsList {
+								upperProperty := field.Names[0].Name
+								if upperPropertyMaxLen < len(upperProperty) {
+									upperPropertyMaxLen = len(upperProperty)
+								}
+								var propertyType string
+								ident, identOK := field.Type.(*ast.Ident)
+								if identOK {
+									propertyType = ident.String()
+								} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
+									propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
+								}
+								if propertyTypeMaxLen < len(propertyType) {
+									propertyTypeMaxLen = len(propertyType)
+								}
+								propertyTag := field.Tag.Value
+								fieldsList.append(upperProperty, propertyType, propertyTag)
 							}
-							if propertyTypeMaxLen < len(propertyType) {
-								propertyTypeMaxLen = len(propertyType)
-							}
-							propertyTag := field.Tag.Value
-							fieldsList.append(upperProperty, propertyType, propertyTag)
 						}
 						for _, field := range structType.Fields.List {
 							starExpr, starExprOk := field.Type.(*ast.StarExpr)
@@ -573,6 +577,8 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 									propertyType = ident.String()
 								} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
 									propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
+								} else if _, interfaceTypeOK := field.Type.(*ast.InterfaceType); interfaceTypeOK {
+									propertyType = fmt.Sprintf("%s%s%s", token.INTERFACE, token.LBRACE, token.RBRACE)
 								}
 								if propertyTypeMaxLen < len(propertyType) {
 									propertyTypeMaxLen = len(propertyType)
