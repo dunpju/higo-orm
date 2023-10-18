@@ -561,7 +561,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 					structType, structTypeOk := typeSpec.Type.(*ast.StructType)
 					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() {
 						if n.Doc.Text() != "" {
-							newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, n.Doc.Text()))
+							newFileBuf.WriteString(fmt.Sprintf("%s%s %s", token.QUO, token.QUO, n.Doc.Text()))
 						}
 						newFileBuf.WriteString(fmt.Sprintf("%s ", n.Tok.String()))
 						newFileBuf.WriteString(fmt.Sprintf("%s ", typeSpec.Name.String()))
