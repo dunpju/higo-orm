@@ -101,17 +101,21 @@ func newModel(db *him.DB, prefix string) *Model {
 		prefix:              prefix,
 		originalStubContext: stubs.NewStub(modelStubFilename).Context(),
 		modelFilename:       "Model.go",
-		imports:             make([]string, 0),
-		fields:              make([]string, 0),
-		properties:          make([]string, 0),
-		withProperty:        make([]string, 0),
-		upperProperties:     make([]string, 0),
-		newFileBuf:          bytes.NewBufferString(""),
 	}
+}
+
+func (this *Model) reset() {
+	this.imports = make([]string, 0)
+	this.fields = make([]string, 0)
+	this.properties = make([]string, 0)
+	this.withProperty = make([]string, 0)
+	this.upperProperties = make([]string, 0)
+	this.newFileBuf = bytes.NewBufferString("")
 }
 
 func (this *Model) gen(outDir string) {
 	for _, t := range this.tables {
+		this.reset()
 		this.tableComment = t.Comment
 		tableFields := this.getTableFields(t.Name)
 		upperPropertyMaxLen := 0
@@ -331,7 +335,7 @@ func (this *Model) replaceWithProperty() {
 	this.stubContext = strings.Replace(this.stubContext, "%WITH_PROPERTY%", strings.Join(this.withProperty, "\n\n"), 1)
 }
 
-// GetTables 获取数据库所有表
+// getTables 获取数据库所有表
 func (this *Model) getTables() {
 	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME LIKE '%s%%'`, this.db.DBC().Database(), this.prefix)).Get(&this.tables)
 	if gormDB.Error != nil {
@@ -339,7 +343,7 @@ func (this *Model) getTables() {
 	}
 }
 
-// GetTable 获取数据库表
+// getTable 获取数据库表
 func (this *Model) getTable(table string) {
 	gormDB := this.db.Raw(fmt.Sprintf(`SELECT TABLE_NAME as Name,TABLE_COMMENT as Comment FROM information_schema.TABLES WHERE table_schema='%s' AND TABLE_NAME = '%s'`, this.db.DBC().Database(), table)).Get(&this.tables)
 	if gormDB.Error != nil {
@@ -347,7 +351,7 @@ func (this *Model) getTable(table string) {
 	}
 }
 
-// GetTableFields 获取表所有字段信息
+// getTableFields 获取表所有字段信息
 func (this *Model) getTableFields(tableName string) []TableField {
 	var fields []TableField
 	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&fields)
