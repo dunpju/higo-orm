@@ -1,13 +1,26 @@
-package SchoolEntity
+package %PACKAGE%
 
 import (
 	"github.com/dunpju/higo-orm/arm"
 	"time"
 )
 
+import (
+%IMPORT%
+)
+
+const (
+	FlagDelete arm.Flag = iota + 1
+	FlagUpdate
+)
+
+const (
+%FIELDS%
+)
+
 type Entity struct {
 	isEdit      bool
-	currentFlag arm.Flag
+	_flag       arm.Flag
 	SchoolId    int64     `json:"schoolId"   comment:"主键"`
 	SchoolName  string    `json:"schoolName" comment:"学校名称"`
 	Ip          string    `json:"ip"         comment:"海康存储ip地址"`
@@ -20,10 +33,14 @@ type Entity struct {
 	DeleteTime  time.Time `json:"deleteTime" comment:"删除时间"`
 }
 
+// Entity %TABLE_COMMENT%实体
+type Entity struct {
+%PROPERTY%
+}
+
 func New() *Entity {
 	tn := time.Now()
 	return &Entity{CreateTime: tn, UpdateTime: tn}
-
 }
 
 func (this *Entity) IsEdit() bool {
@@ -35,12 +52,12 @@ func (this *Entity) Edit(isEdit bool) {
 }
 
 func (this *Entity) SetFlag(flag arm.Flag) {
-	this.currentFlag = flag
+	this._flag = flag
 	this.isEdit = true
 }
 
 func (this *Entity) Flag() arm.Flag {
-	return this.currentFlag
+	return this._flag
 }
 
 func (this *Entity) PrimaryEmpty() bool {

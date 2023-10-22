@@ -6,6 +6,8 @@ import (
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-utils/utils"
+	"github.com/dunpju/higo-utils/utils/dirutil"
+	"github.com/dunpju/higo-utils/utils/stringutil"
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"go/ast"
@@ -13,16 +15,18 @@ import (
 	"go/printer"
 	"go/token"
 	"io"
+	"log"
 	"os"
 	"regexp"
 	"strings"
 )
 
 var (
-	table  string
-	conn   string
-	prefix string
-	out    string
+	table           string
+	conn            string
+	prefix          string
+	out             string
+	capitalBeganReg = regexp.MustCompile(`^[A-Z].*`) //匹配大写字母开头
 )
 
 const (
@@ -33,7 +37,21 @@ const (
 	modelWithPropertyStubFilename = "modelWithProperty.stub"
 	modelStructName               = "Model"
 	starExprArmModel              = "arm.Model"
+	yes                           = "yes"
+	no                            = "no"
 )
+
+type YesNo string
+
+func (this YesNo) Bool() bool {
+	lower := strings.ToLower(string(this))
+	if lower == "yes" {
+		return true
+	} else if lower == "no" {
+		return false
+	}
+	panic(fmt.Errorf("undefined Constant"))
+}
 
 func initModel() {
 	model.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
@@ -59,6 +77,78 @@ var model = &cobra.Command{
 	Long:    `模型构建工具`,
 	Example: "model",
 	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			isGenerateDao        YesNo = yes
+			isGenerateEntity     YesNo
+			confirmBeginGenerate YesNo
+			isMatchCapitalBegan  string
+		)
+	loopDao:
+		fmt.Print("Whether Generate Dao [yes|no] (default:yes):")
+		n, err := fmt.Scanln(&isGenerateDao)
+		if nil != err && n > 0 {
+			panic(err)
+		}
+		if (yes != isGenerateDao && no != isGenerateDao) && n > 0 {
+			goto loopDao
+		}
+		fmt.Printf("Choice Generate Dao: %s\n", isGenerateDao)
+		if isGenerateDao.Bool() { // 确认构建dao
+			if capitalBeganReg == nil {
+				log.Fatalln("regexp err")
+			}
+			daoDir := "dao"
+			isMatchCapitalBegan = capitalBeganReg.FindString(dirutil.Basename(out))
+			if isMatchCapitalBegan != "" {
+				daoDir = stringutil.Ucfirst(daoDir)
+			}
+			outDaoDir := dirutil.Dirname(out) + `\` + daoDir
+			fmt.Printf("Confirm Output Directory Of Dao Default (%s)? Enter/Input: ", outDaoDir)
+			n, err = fmt.Scanln(&outDaoDir)
+			if nil != err && n > 0 {
+				panic(err)
+			}
+			fmt.Printf("Confirmed Output Directory Of Dao: %s\n", outDaoDir)
+			//确认构建dao，默认必须构建entity
+			isGenerateEntity = yes
+			goto loopChoiceGenerateEntity
+		}
+	loopEntity:
+		fmt.Print("Whether Generate Entity [yes|no] (default:yes):")
+		n, err = fmt.Scanln(&isGenerateEntity)
+		if nil != err && n > 0 {
+			panic(err)
+		}
+		if (yes != isGenerateEntity && no != isGenerateEntity) && n > 0 {
+			goto loopEntity
+		}
+	loopChoiceGenerateEntity:
+		fmt.Printf("Choice Generate Entity: %s\n", isGenerateEntity)
+		if isGenerateEntity.Bool() { //确认构建entity
+			entityDir := "entity"
+			isMatchCapitalBegan = capitalBeganReg.FindString(dirutil.Basename(out))
+			if isMatchCapitalBegan != "" {
+				entityDir = stringutil.Ucfirst(entityDir)
+			}
+			outEntityDir := dirutil.Dirname(out) + `\` + entityDir
+			fmt.Printf("Confirm Output Directory Of Entity Default (%s)? Enter/Input: ", outEntityDir)
+			n, err = fmt.Scanln(&outEntityDir)
+			if nil != err && n > 0 {
+				panic(err)
+			}
+			fmt.Printf("Confirmed Output Directory Of Entity: %s\n", outEntityDir)
+		}
+		//确认开始构建
+	loopConfirmBeginGenerate:
+		fmt.Print("Whether Start Generate [yes|no] (default:yes):")
+		n, err = fmt.Scanln(&confirmBeginGenerate)
+		if (yes != confirmBeginGenerate && no != confirmBeginGenerate) && n > 0 {
+			goto loopConfirmBeginGenerate
+		}
+		if (yes != confirmBeginGenerate) && n > 0 {
+			goto loopDao
+		}
+		fmt.Print("Start Generate ......\n")
 		db, err := him.DBConnect(conn)
 		if err != nil {
 			panic(err)
@@ -66,7 +156,7 @@ var model = &cobra.Command{
 		if prefix == "" {
 			prefix = db.DBC().Prefix()
 		}
-		model := newModel(db, prefix)
+		model := newModel(db, prefix, isGenerateDao, isGenerateEntity)
 		if allTable == table {
 			model.getTables()
 		} else {
@@ -92,15 +182,19 @@ type Model struct {
 	withProperty        []string
 	upperProperties     []string
 	newFileBuf          *bytes.Buffer
+	isGenerateDao       YesNo
+	isGenerateEntity    YesNo
 }
 
-func newModel(db *him.DB, prefix string) *Model {
+func newModel(db *him.DB, prefix string, isGenerateDao, isGenerateEntity YesNo) *Model {
 	return &Model{
 		db:                  db,
 		tables:              make([]Table, 0),
 		prefix:              prefix,
 		originalStubContext: stubs.NewStub(modelStubFilename).Context(),
 		modelFilename:       "Model.go",
+		isGenerateDao:       isGenerateDao,
+		isGenerateEntity:    isGenerateEntity,
 	}
 }
 
@@ -180,6 +274,19 @@ func (this *Model) gen(outDir string) {
 			this.oldAstEach(this.newAstEach())
 		}
 		fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
+		if this.isGenerateDao.Bool() {
+			//entity := templates.NewEntity(modelTool, genModel)
+			//entity.Generate()
+			//templates.NewDao(modelTool, genModel, *entity).Generate()
+		} else if this.isGenerateEntity.Bool() {
+			newEntity().
+				setTable(t).
+				setPrimaryKey(primaryKey).
+				setFieldMaxLen(fieldMaxLen).
+				setPropertyTypeMaxLen(propertyTypeMaxLen).
+				setUpperPropertyMaxLen(upperPropertyMaxLen).
+				gen()
+		}
 	}
 }
 
