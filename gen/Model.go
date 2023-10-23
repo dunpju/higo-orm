@@ -82,6 +82,7 @@ var model = &cobra.Command{
 			isGenerateEntity     YesNo
 			confirmBeginGenerate YesNo
 			isMatchCapitalBegan  string
+			outEntityDir         string
 		)
 	loopDao:
 		fmt.Print("Whether Generate Dao [yes|no] (default:yes):")
@@ -130,7 +131,7 @@ var model = &cobra.Command{
 			if isMatchCapitalBegan != "" {
 				entityDir = stringutil.Ucfirst(entityDir)
 			}
-			outEntityDir := dirutil.Dirname(out) + `\` + entityDir
+			outEntityDir = dirutil.Dirname(out) + `\` + entityDir
 			fmt.Printf("Confirm Output Directory Of Entity Default (%s)? Enter/Input: ", outEntityDir)
 			n, err = fmt.Scanln(&outEntityDir)
 			if nil != err && n > 0 {
@@ -156,7 +157,7 @@ var model = &cobra.Command{
 		if prefix == "" {
 			prefix = db.DBC().Prefix()
 		}
-		model := newModel(db, prefix, isGenerateDao, isGenerateEntity)
+		model := newModel(db, prefix, isGenerateDao, isGenerateEntity).setOutEntityDir(outEntityDir)
 		if allTable == table {
 			model.getTables()
 		} else {
@@ -184,6 +185,7 @@ type Model struct {
 	newFileBuf          *bytes.Buffer
 	isGenerateDao       YesNo
 	isGenerateEntity    YesNo
+	outEntityDir        string
 }
 
 func newModel(db *him.DB, prefix string, isGenerateDao, isGenerateEntity YesNo) *Model {
@@ -207,6 +209,11 @@ func (this *Model) reset() {
 	this.newFileBuf = bytes.NewBufferString("")
 }
 
+func (this *Model) setOutEntityDir(outEntityDir string) *Model {
+	this.outEntityDir = outEntityDir
+	return this
+}
+
 func (this *Model) gen(outDir string) {
 	for _, t := range this.tables {
 		this.reset()
@@ -216,6 +223,8 @@ func (this *Model) gen(outDir string) {
 		fieldMaxLen := 0
 		propertyTypeMaxLen := 0
 		primaryKey := ""
+		isPrimaryKey := false
+		properties := make([]property, 0)
 		isBreak := false
 	begin:
 		for _, field := range tableFields {
@@ -235,21 +244,23 @@ func (this *Model) gen(outDir string) {
 			}
 			if field.Key == "PRI" {
 				primaryKey = upperProperty
+				isPrimaryKey = true
 			}
 			if propertyType == "time.Time" {
 				this.mergeImport(`"time"`)
 			}
 			this.appendProperty(upperProperty)
 			blankFirst := LeftStrPad(" ", upperPropertyMaxLen-len(upperProperty), " ")
-			rawField := this.replaceRawField(upperProperty, blankFirst, field.Field, blankFirst, field.Comment)
-			this.mergeFields(rawField)
+			rowField := this.replaceRowField(upperProperty, blankFirst, field.Field, blankFirst, field.Comment)
+			this.mergeFields(rowField)
 			blankSecond := LeftStrPad(" ", propertyTypeMaxLen-len(propertyType), " ")
 			blankThree := LeftStrPad(" ", fieldMaxLen-len(field.Field), " ")
 			blankFour := LeftStrPad(" ", fieldMaxLen-len(field.Field), " ")
-			rawProperty := this.replaceRawProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, field.Field, field.Comment)
-			this.mergeProperty(rawProperty)
-			rawWithProperty := this.replaceRawWithProperty(upperProperty, utils.String.Lcfirst(upperProperty), propertyType, field.Comment)
-			this.mergeWithProperty(rawWithProperty)
+			rowProperty := this.replaceRowProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, field.Field, field.Comment)
+			this.mergeProperty(rowProperty)
+			rowWithProperty := this.replaceRowWithProperty(upperProperty, utils.String.Lcfirst(upperProperty), propertyType, field.Comment)
+			this.mergeWithProperty(rowWithProperty)
+			properties = append(properties, newProperty(isPrimaryKey, upperProperty, propertyType, field.Field, field.Comment))
 		}
 		if fieldMaxLen > 0 {
 			if !isBreak {
@@ -275,13 +286,24 @@ func (this *Model) gen(outDir string) {
 		}
 		fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
 		if this.isGenerateDao.Bool() {
-			//entity := templates.NewEntity(modelTool, genModel)
-			//entity.Generate()
+			newEntity().
+				setOutDir(this.outEntityDir).
+				setPackage(fmt.Sprintf("%sEntity", pkg)).
+				setTable(t).
+				setPrimaryKey(primaryKey).
+				setProperties(properties).
+				setFieldMaxLen(fieldMaxLen).
+				setPropertyTypeMaxLen(propertyTypeMaxLen).
+				setUpperPropertyMaxLen(upperPropertyMaxLen).
+				gen()
 			//templates.NewDao(modelTool, genModel, *entity).Generate()
 		} else if this.isGenerateEntity.Bool() {
 			newEntity().
+				setOutDir(fmt.Sprintf("%s/../", outDir)).
+				setPackage(fmt.Sprintf("%sEntity", pkg)).
 				setTable(t).
 				setPrimaryKey(primaryKey).
+				setProperties(properties).
 				setFieldMaxLen(fieldMaxLen).
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
@@ -347,9 +369,9 @@ func (this *Model) mergeFields(rawField string) {
 	}
 }
 
-func (this *Model) mergeProperty(rawProperty string) {
+func (this *Model) mergeProperty(rowProperty string) {
 	has := false
-	leftStrPad := LeftStrPad(rawProperty, 4, " ")
+	leftStrPad := LeftStrPad(rowProperty, 4, " ")
 	for _, s := range this.properties {
 		if s == leftStrPad {
 			has = true
@@ -361,20 +383,20 @@ func (this *Model) mergeProperty(rawProperty string) {
 	}
 }
 
-func (this *Model) mergeWithProperty(rawWithProperty string) {
+func (this *Model) mergeWithProperty(rowWithProperty string) {
 	has := false
 	for _, s := range this.withProperty {
-		if s == rawWithProperty {
+		if s == rowWithProperty {
 			has = true
 			break
 		}
 	}
 	if !has {
-		this.withProperty = append(this.withProperty, rawWithProperty)
+		this.withProperty = append(this.withProperty, rowWithProperty)
 	}
 }
 
-func (this *Model) replaceRawField(upperProperty, blankFirst, tableFields, blankSecond, tableFieldsComment string) string {
+func (this *Model) replaceRowField(upperProperty, blankFirst, tableFields, blankSecond, tableFieldsComment string) string {
 	stub := stubs.NewStub(modelFieldsStubFilename).Context()
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
 	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
@@ -384,7 +406,7 @@ func (this *Model) replaceRawField(upperProperty, blankFirst, tableFields, blank
 	return stub
 }
 
-func (this *Model) replaceRawProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, tableFields, tableFieldsComment string) string {
+func (this *Model) replaceRowProperty(upperProperty, blankFirst, propertyType, blankSecond, blankThree, blankFour, tableFields, tableFieldsComment string) string {
 	stub := stubs.NewStub(modelPropertyStubFilename).Context()
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
 	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
@@ -397,7 +419,7 @@ func (this *Model) replaceRawProperty(upperProperty, blankFirst, propertyType, b
 	return stub
 }
 
-func (this *Model) replaceRawWithProperty(upperProperty, lowerProperty, propertyType, tableFieldsComment string) string {
+func (this *Model) replaceRowWithProperty(upperProperty, lowerProperty, propertyType, tableFieldsComment string) string {
 	stub := stubs.NewStub(modelWithPropertyStubFilename).Context()
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 3)
 	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 2)
