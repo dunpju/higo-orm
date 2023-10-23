@@ -299,7 +299,7 @@ func (this *Model) gen(outDir string) {
 			//templates.NewDao(modelTool, genModel, *entity).Generate()
 		} else if this.isGenerateEntity.Bool() {
 			newEntity().
-				setOutDir(fmt.Sprintf("%s/../", outDir)).
+				setOutDir(this.outEntityDir).
 				setPackage(fmt.Sprintf("%sEntity", pkg)).
 				setTable(t).
 				setPrimaryKey(primaryKey).
