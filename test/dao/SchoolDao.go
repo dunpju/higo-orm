@@ -39,7 +39,7 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) *SchoolDao {
 		} else if SchoolEntity.FlagUpdate == entity.Flag() {
 
 		}
-		this.model.Set(School.UpdateTime, entity.UpdateTime)
+		this.model.DB().Set(School.UpdateTime, entity.UpdateTime)
 	} else { //新增
 		this.model.DB().Insert().Into(this.model.TableName()).
 			Set(School.SchoolName, entity.SchoolName). //学校名称
