@@ -110,12 +110,12 @@ func main() {
 	fmt.Println(users5)
 
 	users6 := make([]map[string]interface{}, 0)
-	connect.Query().Select("user_id", "user_name").
-		From("users").
-		Where("user_id", "=", 8).
-		First(&users6)
+	select6 := connect.Query().Select("user_id", "user_name").
+		From("users")
+	select6.Where("user_id", "=", 8)
+	select6.First(&users6)
 	// SELECT user_id, user_name FROM users WHERE (user_id = 8) LIMIT 1
-	fmt.Println(users6)
+	fmt.Println("users6:", users6)
 
 	users7 := make([]map[string]interface{}, 0)
 	db7 := connect.Query().Select("user_id", "user_name").
@@ -123,7 +123,7 @@ func main() {
 		Where("user_id", "=", 8).
 		First(&users7)
 	// SELECT user_id, user_name FROM users1 WHERE (user_id = 8) LIMIT 1
-	fmt.Println(users7)
+	fmt.Println("users7:", users7)
 	// Error 1146 (42S02): Table 'test.users1' doesn't exist
 	fmt.Println(db7.Error)
 
