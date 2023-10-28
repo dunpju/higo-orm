@@ -24,11 +24,11 @@ func newInsertInto(db *DB, gormDB *gorm.DB) InsertInto {
 	return InsertInto{db: db, gormDB: gormDB}
 }
 
-func (this InsertInto) Into(from string) InsertBuilder {
+func (this InsertInto) Into(from string) *InsertBuilder {
 	if this.db.begin {
 		this.db.Builder = newInsertBuilder(this.db).begin(this.gormDB).insert(from)
 	} else {
 		this.db.Builder = newInsertBuilder(this.db).insert(from)
 	}
-	return this.db.Builder.(InsertBuilder)
+	return this.db.Builder.(*InsertBuilder)
 }

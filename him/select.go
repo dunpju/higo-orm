@@ -35,24 +35,24 @@ type SelectBuilder struct {
 	Error       error
 }
 
-func newSelectBuilder(connect string) SelectBuilder {
+func newSelectBuilder(connect string) *SelectBuilder {
 	if connect != "" {
 		dbc, err := getConnect(connect)
 		if err != nil {
-			return SelectBuilder{Error: err}
+			return &SelectBuilder{Error: err}
 		}
 		return query(dbc)
 	} else {
 		dbc, err := getConnect(DefaultConnect)
 		if err != nil {
-			return SelectBuilder{Error: err}
+			return &SelectBuilder{Error: err}
 		}
 		return query(dbc)
 	}
 }
 
-func query(dbc *connect) SelectBuilder {
-	return SelectBuilder{
+func query(dbc *connect) *SelectBuilder {
+	return &SelectBuilder{
 		db:       dbc.db,
 		connect:  dbc,
 		columns:  make([]string, 0),
@@ -65,77 +65,77 @@ func query(dbc *connect) SelectBuilder {
 	}
 }
 
-func (this SelectBuilder) Connect() *connect {
+func (this *SelectBuilder) Connect() *connect {
 	return this.connect
 }
 
-func (this SelectBuilder) DB() *gorm.DB {
+func (this *SelectBuilder) DB() *gorm.DB {
 	return this.db.GormDB()
 }
 
-func (this SelectBuilder) begin(db *gorm.DB) SelectBuilder {
+func (this *SelectBuilder) begin(db *gorm.DB) *SelectBuilder {
 	this.db.gormDB = db
 	return this
 }
 
-func (this SelectBuilder) _select(columns ...string) SelectBuilder {
+func (this *SelectBuilder) _select(columns ...string) *SelectBuilder {
 	this.columns = append(this.columns, columns...)
 	return this
 }
 
-func (this SelectBuilder) _from(from string) SelectBuilder {
+func (this *SelectBuilder) _from(from string) *SelectBuilder {
 	this.from = from
 	return this
 }
 
-func (this SelectBuilder) Offset(offset uint64) SelectBuilder {
+func (this *SelectBuilder) Offset(offset uint64) *SelectBuilder {
 	this.hasOffset = true
 	this.offset = offset
 	return this
 }
 
-func (this SelectBuilder) Limit(limit uint64) SelectBuilder {
+func (this *SelectBuilder) Limit(limit uint64) *SelectBuilder {
 	this.hasLimit = true
 	this.limit = limit
 	return this
 }
 
-func (this SelectBuilder) OrderBy(orderBys ...string) SelectBuilder {
+func (this *SelectBuilder) OrderBy(orderBys ...string) *SelectBuilder {
 	this.hasOrderBy = true
 	this.orderBy = orderBys
 	return this
 }
 
-func (this SelectBuilder) GroupBy(groupBys ...string) SelectBuilder {
+func (this *SelectBuilder) GroupBy(groupBys ...string) *SelectBuilder {
 	this.hasGroupBys = true
 	this.groupBys = append(this.groupBys, groupBys...)
 	return this
 }
 
-func (this SelectBuilder) Column(col interface{}, args ...interface{}) SelectBuilder {
+func (this *SelectBuilder) Column(col interface{}, args ...interface{}) *SelectBuilder {
 	this.hasColumn = true
 	this.column = append(this.column, column{column: col, args: args})
 	return this
 }
 
-func (this SelectBuilder) Distinct() SelectBuilder {
+func (this *SelectBuilder) Distinct() *SelectBuilder {
 	this.hasDistinct = true
 	return this
 }
 
-func (this SelectBuilder) count() SelectBuilder {
+func (this *SelectBuilder) count() *SelectBuilder {
 	this.isCount = true
 	this.countColumn = fmt.Sprintf("COUNT(*) %s", _count_)
 	return this
 }
 
-func (this SelectBuilder) sum(column string) SelectBuilder {
+func (this *SelectBuilder) sum(column string) *SelectBuilder {
 	this.isSum = true
 	this.sumColumn = fmt.Sprintf("SUM(%s) %s", column, _count_)
 	return this
 }
 
-func (this SelectBuilder) ToSql() (string, []interface{}, error) {
+func (this *SelectBuilder) ToSql() (string, []interface{}, error) {
 	if this.isWhereRaw || this.isRaw {
 		return whereRawHandle(*this.wheres)
 	}

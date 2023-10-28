@@ -44,7 +44,7 @@ func (this *Model) Alias(alias string) *Model {
 	return this
 }
 
-func (this *Model) Select(columns ...string) him.SelectBuilder {
+func (this *Model) Select(columns ...string) *him.SelectBuilder {
 	return this.db.Query().Select(columns...).From(this.table.String())
 }
 
@@ -52,25 +52,25 @@ func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
 	return him.NewRawBuilder(this.db, pred, args)
 }
 
-func (this *Model) Insert() him.InsertBuilder {
+func (this *Model) Insert() *him.InsertBuilder {
 	this.builder = this.db.Insert().Into(this.table.String())
-	return this.builder.(him.InsertBuilder)
+	return this.builder.(*him.InsertBuilder)
 }
 
-func (this *Model) Update() him.UpdateBuilder {
+func (this *Model) Update() *him.UpdateBuilder {
 	this.builder = this.db.Update().Table(this.table.String())
-	return this.builder.(him.UpdateBuilder)
+	return this.builder.(*him.UpdateBuilder)
 }
 
-func (this *Model) Delete() him.DeleteBuilder {
+func (this *Model) Delete() *him.DeleteBuilder {
 	this.builder = this.db.Delete().From(this.table.String())
-	return this.builder.(him.DeleteBuilder)
+	return this.builder.(*him.DeleteBuilder)
 }
 
 func (this *Model) Set(column any, value interface{}) *Model {
-	if insertBuilder, ok := this.builder.(him.InsertBuilder); ok {
+	if insertBuilder, ok := this.builder.(*him.InsertBuilder); ok {
 		this.builder = insertBuilder.Set(column, value)
-	} else if updateBuilder, ok := this.builder.(him.UpdateBuilder); ok {
+	} else if updateBuilder, ok := this.builder.(*him.UpdateBuilder); ok {
 		this.builder = updateBuilder.Set(column, value)
 	}
 	return this

@@ -39,9 +39,9 @@ func (this *DB) TX(tx *gorm.DB) *Transaction {
 }
 
 func (this *DB) Set(column string, value interface{}) *DB {
-	if updateBuilder, ok := this.db.Builder.(UpdateBuilder); ok {
+	if updateBuilder, ok := this.db.Builder.(*UpdateBuilder); ok {
 		this.db.Builder = updateBuilder.Set(column, value)
-	} else if insertBuilder, ok := this.db.Builder.(InsertBuilder); ok {
+	} else if insertBuilder, ok := this.db.Builder.(*InsertBuilder); ok {
 		this.db.Builder = insertBuilder.Column(column, value)
 	}
 	return this
@@ -53,25 +53,25 @@ func (this *DB) GormDB() *gorm.DB {
 
 func (this *DB) LastInsertId() (*gorm.DB, int64) {
 	if this.begin {
-		return this.db.Builder.(InsertBuilder).begin(this.gormDB).LastInsertId()
+		return this.db.Builder.(*InsertBuilder).begin(this.gormDB).LastInsertId()
 	}
-	return this.db.Builder.(InsertBuilder).LastInsertId()
+	return this.db.Builder.(*InsertBuilder).LastInsertId()
 }
 
 func (this *DB) Save() (*gorm.DB, int64) {
 	if this.begin {
-		return this.db.Builder.(InsertBuilder).begin(this.gormDB).Save()
+		return this.db.Builder.(*InsertBuilder).begin(this.gormDB).Save()
 	}
-	return this.db.Builder.(InsertBuilder).Save()
+	return this.db.Builder.(*InsertBuilder).Save()
 }
 
 func (this *DB) Exec() (*gorm.DB, int64) {
-	if update, ok := this.db.Builder.(UpdateBuilder); ok {
+	if update, updateOk := this.db.Builder.(*UpdateBuilder); updateOk {
 		if this.begin {
 			return update.begin(this.gormDB).Exec()
 		}
 		return update.Exec()
-	} else if del, ok1 := this.db.Builder.(DeleteBuilder); ok1 {
+	} else if del, deleteOk := this.db.Builder.(*DeleteBuilder); deleteOk {
 		if this.begin {
 			return del.begin(this.gormDB).Exec()
 		}

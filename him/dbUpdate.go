@@ -22,11 +22,11 @@ func newUpdateFrom(db *DB, gormDB *gorm.DB) UpdateTable {
 	return UpdateTable{db: db, gormDB: gormDB}
 }
 
-func (this UpdateTable) Table(from string) UpdateBuilder {
+func (this UpdateTable) Table(from string) *UpdateBuilder {
 	if this.db.begin {
 		this.db.Builder = newUpdateBuilder(this.db.connect).begin(this.gormDB).update(from)
 	} else {
 		this.db.Builder = newUpdateBuilder(this.db.connect).update(from)
 	}
-	return this.db.Builder.(UpdateBuilder)
+	return this.db.Builder.(*UpdateBuilder)
 }

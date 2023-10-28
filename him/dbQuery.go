@@ -23,13 +23,13 @@ func newSelect(db *DB, gormDB *gorm.DB) Select {
 	return Select{db: db, gormDB: gormDB}
 }
 
-func (this Select) selectBuilder() SelectBuilder {
+func (this Select) selectBuilder() *SelectBuilder {
 	if this.db.begin {
 		this.db.Builder = newSelectBuilder(this.db.connect).begin(this.gormDB)
 	} else {
 		this.db.Builder = newSelectBuilder(this.db.connect)
 	}
-	return this.db.Builder.(SelectBuilder)
+	return this.db.Builder.(*SelectBuilder)
 }
 
 func (this Select) Distinct() Select {
@@ -60,7 +60,7 @@ func newSelectRaw(db *DB, gormDB *gorm.DB) SelectRaw {
 }
 
 func (this SelectRaw) Get(dest interface{}) *gorm.DB {
-	return this.db.Builder.(SelectBuilder).Get(dest)
+	return this.db.Builder.(*SelectBuilder).Get(dest)
 }
 
 type SelectFrom struct {
@@ -72,9 +72,9 @@ func newSelectFrom(db *DB, gormDB *gorm.DB) SelectFrom {
 	return SelectFrom{db: db, gormDB: gormDB}
 }
 
-func (this SelectFrom) From(from string) SelectBuilder {
-	this.db.Builder = this.db.Builder.(SelectBuilder)._from(from)
-	return this.db.Builder.(SelectBuilder)
+func (this SelectFrom) From(from string) *SelectBuilder {
+	this.db.Builder = this.db.Builder.(*SelectBuilder)._from(from)
+	return this.db.Builder.(*SelectBuilder)
 }
 
 type IAlias interface {

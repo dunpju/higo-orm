@@ -17,17 +17,17 @@ type InsertBuilder struct {
 	Error      error
 }
 
-func newDBInsertBuilder(db *DB, connect *connect) InsertBuilder {
-	insertBuilder := InsertBuilder{db: db, connect: connect, setColumns: newInsertColumn(), setValues: make([]*insertValue, 0)}
+func newDBInsertBuilder(db *DB, connect *connect) *InsertBuilder {
+	insertBuilder := &InsertBuilder{db: db, connect: connect, setColumns: newInsertColumn(), setValues: make([]*insertValue, 0)}
 	insertBuilder.db.Builder = insertBuilder
 	return insertBuilder
 }
 
-func newErrorInsertBuilder(err error) InsertBuilder {
-	return InsertBuilder{Error: err}
+func newErrorInsertBuilder(err error) *InsertBuilder {
+	return &InsertBuilder{Error: err}
 }
 
-func newInsertBuilder(db *DB) InsertBuilder {
+func newInsertBuilder(db *DB) *InsertBuilder {
 	if conn, ok := _connect.Load(db.connect); ok {
 		return newDBInsertBuilder(db, conn.(*connect))
 	} else {
@@ -35,21 +35,21 @@ func newInsertBuilder(db *DB) InsertBuilder {
 	}
 }
 
-func (this InsertBuilder) DB() *gorm.DB {
+func (this *InsertBuilder) DB() *gorm.DB {
 	return this.db.GormDB()
 }
 
-func (this InsertBuilder) TX(tx *gorm.DB) InsertBuilder {
+func (this *InsertBuilder) TX(tx *gorm.DB) *InsertBuilder {
 	this = this.begin(tx)
 	return this
 }
 
-func (this InsertBuilder) begin(db *gorm.DB) InsertBuilder {
+func (this *InsertBuilder) begin(db *gorm.DB) *InsertBuilder {
 	this.db.gormDB = db
 	return this
 }
 
-func (this InsertBuilder) insert(into string) InsertBuilder {
+func (this *InsertBuilder) insert(into string) *InsertBuilder {
 	this.builder = squirrel.Insert(into)
 	return this
 }
@@ -78,21 +78,21 @@ func (this *insertColumn) len() int {
 	return len(this.columns)
 }
 
-func (this InsertBuilder) Columns(columns ...any) *ValuesBuilder {
+func (this *InsertBuilder) Columns(columns ...any) *ValuesBuilder {
 	this.setColumns.add(columnsToString(columns...)...)
 	return newValuesBuilder(this)
 }
 
-func (this InsertBuilder) columns(columns ...string) InsertBuilder {
+func (this *InsertBuilder) columns(columns ...string) *InsertBuilder {
 	this.builder = this.builder.Columns(columns...)
 	return this
 }
 
 type ValuesBuilder struct {
-	insertBuilder InsertBuilder
+	insertBuilder *InsertBuilder
 }
 
-func newValuesBuilder(insertBuilder InsertBuilder) *ValuesBuilder {
+func newValuesBuilder(insertBuilder *InsertBuilder) *ValuesBuilder {
 	return &ValuesBuilder{insertBuilder: insertBuilder}
 }
 
@@ -127,16 +127,16 @@ func (this *insertValue) len() int {
 	return len(this.values)
 }
 
-func (this InsertBuilder) values(values ...interface{}) InsertBuilder {
+func (this *InsertBuilder) values(values ...interface{}) *InsertBuilder {
 	this.builder = this.builder.Values(values...)
 	return this
 }
 
-func (this InsertBuilder) Column(column any, value interface{}) InsertBuilder {
+func (this *InsertBuilder) Column(column any, value interface{}) *InsertBuilder {
 	return this.Set(columnToString(column), value)
 }
 
-func (this InsertBuilder) Set(column any, value interface{}) InsertBuilder {
+func (this *InsertBuilder) Set(column any, value interface{}) *InsertBuilder {
 	this.setColumns.add(columnToString(column))
 	if len(this.setValues) > 0 {
 		this.setValues[0].value(value)
@@ -147,7 +147,7 @@ func (this InsertBuilder) Set(column any, value interface{}) InsertBuilder {
 	return this
 }
 
-func (this InsertBuilder) toBuilder() InsertBuilder {
+func (this *InsertBuilder) toBuilder() *InsertBuilder {
 	for _, value := range this.setValues {
 		this = this.values(value.values...)
 	}
@@ -155,22 +155,22 @@ func (this InsertBuilder) toBuilder() InsertBuilder {
 	return this
 }
 
-func (this InsertBuilder) ToSql() (string, []interface{}, error) {
+func (this *InsertBuilder) ToSql() (string, []interface{}, error) {
 	this.builder = this.toBuilder().builder
 	return this.builder.ToSql()
 }
 
-func (this InsertBuilder) Save() (gormDB *gorm.DB, affected int64) {
+func (this *InsertBuilder) Save() (gormDB *gorm.DB, affected int64) {
 	builder, db, _ := this.save()
 	return db, builder.affected
 }
 
-func (this InsertBuilder) LastInsertId() (*gorm.DB, int64) {
+func (this *InsertBuilder) LastInsertId() (*gorm.DB, int64) {
 	_, db, id := this.save()
 	return db, id
 }
 
-func (this InsertBuilder) save() (InsertBuilder, *gorm.DB, int64) {
+func (this *InsertBuilder) save() (*InsertBuilder, *gorm.DB, int64) {
 	gormDB, insertID, rowsAffected := newExecer(this, this.db.GormDB()).exec()
 	if gormDB.Error != nil {
 		this.Error = gormDB.Error

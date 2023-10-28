@@ -13,7 +13,7 @@ type counter struct {
 	Count_ int64
 }
 
-func (this SelectBuilder) First(dest interface{}) *gorm.DB {
+func (this *SelectBuilder) First(dest interface{}) *gorm.DB {
 	this = this.Limit(1)
 	sql, args, err := this.ToSql()
 	if err != nil {
@@ -23,7 +23,7 @@ func (this SelectBuilder) First(dest interface{}) *gorm.DB {
 	return this.db.GormDB().Raw(sql, args...).Scan(dest)
 }
 
-func (this SelectBuilder) Get(dest interface{}) *gorm.DB {
+func (this *SelectBuilder) Get(dest interface{}) *gorm.DB {
 	sql, args, err := this.ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err
@@ -32,7 +32,7 @@ func (this SelectBuilder) Get(dest interface{}) *gorm.DB {
 	return this.db.GormDB().Raw(sql, args...).Scan(dest)
 }
 
-func (this SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, Paginate) {
+func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, Paginate) {
 	countStatement := this.count().Limit(1)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
@@ -57,7 +57,7 @@ func (this SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gor
 	return this.db.GormDB(), Paginate{Total: uint64(count_.Count_), PerPage: perPage, CurrentPage: page, Items: dest}
 }
 
-func (this SelectBuilder) Count() (*gorm.DB, int64) {
+func (this *SelectBuilder) Count() (*gorm.DB, int64) {
 	var count_ int64
 	this.db.gormDB = this.db.GormDB().Table(this.from)
 	if len(this.columns) > 0 {
@@ -80,7 +80,7 @@ func (this SelectBuilder) Count() (*gorm.DB, int64) {
 	return this.db.GormDB(), count_
 }
 
-func (this SelectBuilder) Sum(column string) (*gorm.DB, uint64) {
+func (this *SelectBuilder) Sum(column string) (*gorm.DB, uint64) {
 	countStatement := this.sum(column)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
