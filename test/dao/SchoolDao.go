@@ -28,20 +28,26 @@ func (this *SchoolDao) TX(tx *gorm.DB) *SchoolDao {
 	return this
 }
 
+func (this *SchoolDao) CheckError(gormDB *gorm.DB) {
+	if gormDB.Error != nil {
+		panic(gormDB.Error)
+	}
+}
+
 func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) *SchoolDao {
 	if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
 		if !this.GetBySchoolId(entity.SchoolId).Exist() {
-			DaoException.Throw("不存在", 0)
+			//DaoException.Throw("不存在", 0)
 		}
-		this.model.DB().Update().Table(this.model.TableName()).Where(School.SchoolId, "=", entity.SchoolId)
+		this.model.Update().Where(School.SchoolId, "=", entity.SchoolId)
 		if SchoolEntity.FlagDelete == entity.Flag() {
 
 		} else if SchoolEntity.FlagUpdate == entity.Flag() {
 
 		}
-		this.model.DB().Set(School.UpdateTime, entity.UpdateTime)
+		this.model.Set(School.UpdateTime, entity.UpdateTime)
 	} else { //新增
-		this.model.DB().Insert().Into(this.model.TableName()).
+		this.model.Insert().
 			Set(School.SchoolName, entity.SchoolName). //学校名称
 			Set(School.Ip, entity.Ip). //海康存储ip地址
 			Set(School.Port, entity.Port). //海康存储端口
@@ -70,7 +76,7 @@ func (this *SchoolDao) Update() *gorm.DB {
 // GetBySchoolId id查询
 func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
 	model := this.Model()
-	gormDB := this.model.DB().Query().Select().From(this.model.TableName()).
+	gormDB := this.model.Select().
 		Where(School.SchoolId, "=", schoolId).
 		First(&model)
 	this.CheckError(gormDB)
@@ -80,7 +86,7 @@ func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
 // GetBySchoolIds id集查询
 func (this *SchoolDao) GetBySchoolIds(schoolIds []int64, fields ...string) []*School.Model {
 	models := this.Models()
-	gormDB := this.model.DB().Query().Select(fields...).From(this.model.TableName()).
+	gormDB := this.model.Select(fields...).
 		WhereIn(School.SchoolId, schoolIds).
 		Get(&models)
 	this.CheckError(gormDB)
@@ -89,7 +95,7 @@ func (this *SchoolDao) GetBySchoolIds(schoolIds []int64, fields ...string) []*Sc
 
 // DeleteBySchoolId 硬删除
 func (this *SchoolDao) DeleteBySchoolId(schoolId int64) *gorm.DB {
-	gormDB, _ := this.model.DB().Delete().From(this.model.TableName()).
+	gormDB, _ := this.model.Delete().
 		Where(School.SchoolId, "=", schoolId).
 		Exec()
 	this.CheckError(gormDB)
@@ -106,7 +112,7 @@ func (this *SchoolDao) List(perPage, page uint64, where map[string]interface{}) 
 		UserName   string `gorm:"column:userName" json:"userName"`
 		Password   string `gorm:"column:password" json:"password"`
 	}
-	gormDB, paginate := this.model.DB().Query().Select().From(this.model.TableName()).
+	gormDB, paginate := this.model.Select().
 		Paginate(page, perPage, &models)
 	this.CheckError(gormDB)
 	return paginate

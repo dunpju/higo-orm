@@ -72,6 +72,12 @@ func main() {
 			Exec()
 		checkError(gormDB)
 		fmt.Println(rowsAffected)
+		school1 := School.New().TX(tx).Update().Where(School.SchoolId, "=", 2)
+		school1 = school1.Set(School.UserName, "2222")
+		school1 = school1.Set(School.Ip, "2222")
+		gormDB, rowsAffected = school1.Exec()
+		checkError(gormDB)
+		fmt.Println(rowsAffected)
 		school := School.New().
 			TX(tx).
 			Insert().

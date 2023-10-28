@@ -53,15 +53,27 @@ func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
 }
 
 func (this *Model) Insert() him.InsertBuilder {
-	return this.db.Insert().Into(this.table.String())
+	this.builder = this.db.Insert().Into(this.table.String())
+	return this.builder.(him.InsertBuilder)
 }
 
 func (this *Model) Update() him.UpdateBuilder {
-	return this.db.Update().Table(this.table.String())
+	this.builder = this.db.Update().Table(this.table.String())
+	return this.builder.(him.UpdateBuilder)
 }
 
 func (this *Model) Delete() him.DeleteBuilder {
-	return this.db.Delete().From(this.table.String())
+	this.builder = this.db.Delete().From(this.table.String())
+	return this.builder.(him.DeleteBuilder)
+}
+
+func (this *Model) Set(column any, value interface{}) *Model {
+	if insertBuilder, ok := this.builder.(him.InsertBuilder); ok {
+		this.builder = insertBuilder.Set(column, value)
+	} else if updateBuilder, ok := this.builder.(him.UpdateBuilder); ok {
+		this.builder = updateBuilder.Set(column, value)
+	}
+	return this
 }
 
 func (this *Model) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
