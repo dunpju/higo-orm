@@ -2,6 +2,10 @@ package him
 
 import "fmt"
 
+func ColumnToString(column any) string {
+	return columnToString(column)
+}
+
 func columnToString(column any) string {
 	if c, ok := column.(string); ok {
 		return c

@@ -203,3 +203,8 @@ func (this *UpdateBuilder) Exec() (gormDB *gorm.DB, affected int64) {
 	this.db = db
 	return this.db, rowsAffected
 }
+
+func (this *UpdateBuilder) SetWheres(wheres *Wheres) *UpdateBuilder {
+	this.wheres = wheres
+	return this
+}

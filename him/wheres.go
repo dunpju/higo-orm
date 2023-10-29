@@ -48,8 +48,7 @@ func (w *Wheres) forEach(fn func(w where) (bool, error)) error {
 }
 
 func (w *Wheres) And() *Wheres {
-	w.logic = AND
-	return w
+	return w.and()
 }
 
 func (w *Wheres) and() *Wheres {
@@ -58,8 +57,7 @@ func (w *Wheres) and() *Wheres {
 }
 
 func (w *Wheres) Or() *Wheres {
-	w.logic = OR
-	return w
+	return w.or()
 }
 
 func (w *Wheres) or() *Wheres {
@@ -80,11 +78,7 @@ func (w *Wheres) whereRaw(sql string, args []interface{}, err error) {
 }
 
 func (w *Wheres) Where(column, operator string, value interface{}) {
-	if w.logic == AND {
-		w.collect = append(w.collect, and(column, operator, value))
-	} else {
-		w.collect = append(w.collect, or(column, operator, value))
-	}
+	w.where(column, operator, value)
 }
 
 func (w *Wheres) where(column, operator string, value interface{}) {

@@ -39,7 +39,7 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) *SchoolDao {
 		if !this.GetBySchoolId(entity.SchoolId).Exist() {
 			//DaoException.Throw("不存在", 0)
 		}
-		this.model.Update().Where(School.SchoolId, "=", entity.SchoolId)
+		this.model.Where(School.SchoolId, "=", entity.SchoolId)
 		if SchoolEntity.FlagDelete == entity.Flag() {
 
 		} else if SchoolEntity.FlagUpdate == entity.Flag() {
@@ -67,7 +67,7 @@ func (this *SchoolDao) Add() (gormDB *gorm.DB, lastInsertId int64) {
 
 // Update 更新
 func (this *SchoolDao) Update() *gorm.DB {
-	gormDB, _ := this.model.DB().Exec()
+	gormDB, _ := this.model.Update().Exec()
 	this.CheckError(gormDB)
 	return gormDB
 }

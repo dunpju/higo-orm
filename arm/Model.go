@@ -13,6 +13,7 @@ type Model struct {
 	builder any
 	err     error
 	wheres  *him.Wheres
+	sets    him.Sets
 }
 
 func Connect(model IModel) error {
@@ -25,7 +26,7 @@ func Connect(model IModel) error {
 }
 
 func newModel(db *him.DB, model IModel) *Model {
-	return &Model{db: db, model: model, table: model.TableName(), wheres: him.NewWheres()}
+	return &Model{db: db, model: model, table: model.TableName(), wheres: him.NewWheres(), sets: him.NewSets()}
 }
 
 func (this *Model) DB() *him.DB {
@@ -54,12 +55,22 @@ func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
 }
 
 func (this *Model) Insert() *him.InsertBuilder {
-	this.builder = this.db.Insert().Into(this.table.String())
+	builder := this.db.Insert().Into(this.table.String())
+	this.sets.ForEach(func(s him.Set) bool {
+		builder.Set(s.Column(), s.Value())
+		return true
+	})
+	this.builder = builder
 	return this.builder.(*him.InsertBuilder)
 }
 
 func (this *Model) Update() *him.UpdateBuilder {
-	this.builder = this.db.Update().Table(this.table.String())
+	builder := this.db.Update().Table(this.table.String()).SetWheres(this.wheres)
+	this.sets.ForEach(func(s him.Set) bool {
+		builder.Set(s.Column(), s.Value())
+		return true
+	})
+	this.builder = builder
 	return this.builder.(*him.UpdateBuilder)
 }
 
@@ -69,6 +80,7 @@ func (this *Model) Delete() *him.DeleteBuilder {
 }
 
 func (this *Model) Set(column any, value interface{}) *Model {
+	this.sets.Append(column, value)
 	if insertBuilder, insertOk := this.builder.(*him.InsertBuilder); insertOk {
 		this.builder = insertBuilder.Column(column, value)
 	} else if updateBuilder, updateOk := this.builder.(*him.UpdateBuilder); updateOk {
@@ -78,7 +90,7 @@ func (this *Model) Set(column any, value interface{}) *Model {
 }
 
 func (this *Model) Where(column any, operator string, value interface{}) *Model {
-	this.wheres.And().Where(columnToString(column), operator, value)
+	this.wheres.And().Where(him.ColumnToString(column), operator, value)
 	return this
 }
 
