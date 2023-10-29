@@ -12,6 +12,7 @@ type Model struct {
 	model   IModel
 	builder any
 	err     error
+	wheres  *him.Wheres
 }
 
 func Connect(model IModel) error {
@@ -24,7 +25,7 @@ func Connect(model IModel) error {
 }
 
 func newModel(db *him.DB, model IModel) *Model {
-	return &Model{db: db, model: model, table: model.TableName()}
+	return &Model{db: db, model: model, table: model.TableName(), wheres: him.NewWheres()}
 }
 
 func (this *Model) DB() *him.DB {
@@ -68,15 +69,20 @@ func (this *Model) Delete() *him.DeleteBuilder {
 }
 
 func (this *Model) Set(column any, value interface{}) *Model {
-	if insertBuilder, ok := this.builder.(*him.InsertBuilder); ok {
-		this.builder = insertBuilder.Set(column, value)
-	} else if updateBuilder, ok := this.builder.(*him.UpdateBuilder); ok {
+	if insertBuilder, insertOk := this.builder.(*him.InsertBuilder); insertOk {
+		this.builder = insertBuilder.Column(column, value)
+	} else if updateBuilder, updateOk := this.builder.(*him.UpdateBuilder); updateOk {
 		this.builder = updateBuilder.Set(column, value)
 	}
 	return this
 }
 
-func (this *Model) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
+func (this *Model) Where(column any, operator string, value interface{}) *Model {
+	this.wheres.And().Where(columnToString(column), operator, value)
+	return this
+}
+
+func (this *Model) beginTX(opts ...*sql.TxOptions) *gorm.DB {
 	db, err := him.DBConnect(this.db.Connect())
 	if err != nil {
 		this.err = err
@@ -86,7 +92,7 @@ func (this *Model) BeginTX(opts ...*sql.TxOptions) *gorm.DB {
 }
 
 func (this *Model) Begin(opts ...*sql.TxOptions) *him.TX {
-	return him.NewTX(this.BeginTX(opts...))
+	return him.NewTX(this.beginTX(opts...))
 }
 
 func (this *Model) TX(tx *gorm.DB) *Model {

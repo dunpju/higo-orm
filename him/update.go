@@ -9,7 +9,7 @@ type UpdateBuilder struct {
 	db      *gorm.DB
 	connect *connect
 	builder squirrel.UpdateBuilder
-	wheres  *wheres
+	wheres  *Wheres
 	Error   error
 }
 
@@ -19,13 +19,13 @@ func newUpdateBuilder(connect string) *UpdateBuilder {
 		if err != nil {
 			return &UpdateBuilder{Error: err}
 		}
-		return &UpdateBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+		return &UpdateBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: NewWheres()}
 	} else {
 		dbc, err := getConnect(DefaultConnect)
 		if err != nil {
 			return &UpdateBuilder{Error: err}
 		}
-		return &UpdateBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+		return &UpdateBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: NewWheres()}
 	}
 }
 

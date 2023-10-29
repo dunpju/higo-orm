@@ -9,7 +9,7 @@ type DeleteBuilder struct {
 	db      *gorm.DB
 	connect *connect
 	builder squirrel.DeleteBuilder
-	wheres  *wheres
+	wheres  *Wheres
 	Error   error
 }
 
@@ -19,13 +19,13 @@ func newDeleteBuilder(connect string) *DeleteBuilder {
 		if err != nil {
 			return &DeleteBuilder{Error: err}
 		}
-		return &DeleteBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+		return &DeleteBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: NewWheres()}
 	} else {
 		dbc, err := getConnect(DefaultConnect)
 		if err != nil {
 			return &DeleteBuilder{Error: err}
 		}
-		return &DeleteBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: newWheres()}
+		return &DeleteBuilder{db: dbc.db.GormDB(), connect: dbc, wheres: NewWheres()}
 	}
 }
 

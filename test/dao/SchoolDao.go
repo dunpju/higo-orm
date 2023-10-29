@@ -47,21 +47,20 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) *SchoolDao {
 		}
 		this.model.Set(School.UpdateTime, entity.UpdateTime)
 	} else { //新增
-		this.model.Insert().
-			Set(School.SchoolName, entity.SchoolName). //学校名称
-			Set(School.Ip, entity.Ip). //海康存储ip地址
-			Set(School.Port, entity.Port). //海康存储端口
-			Set(School.UserName, entity.UserName). //海康存储用户名
-			Set(School.Password, entity.Password). //海康存储用户密码
-			Set(School.CreateTime, entity.CreateTime). //创建时间
-			Set(School.UpdateTime, entity.UpdateTime) //更新时间
+		this.model.Set(School.SchoolName, entity.SchoolName) //学校名称
+		this.model.Set(School.Ip, entity.Ip)                 //海康存储ip地址
+		this.model.Set(School.Port, entity.Port)             //海康存储端口
+		this.model.Set(School.UserName, entity.UserName)     //海康存储用户名
+		this.model.Set(School.Password, entity.Password)     //海康存储用户密码
+		this.model.Set(School.CreateTime, entity.CreateTime) //创建时间
+		this.model.Set(School.UpdateTime, entity.UpdateTime) //更新时间
 	}
 	return this
 }
 
 // Add 添加
 func (this *SchoolDao) Add() (gormDB *gorm.DB, lastInsertId int64) {
-	gormDB, lastInsertId = this.model.DB().LastInsertId()
+	gormDB, lastInsertId = this.model.Insert().LastInsertId()
 	this.CheckError(gormDB)
 	return
 }

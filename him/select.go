@@ -18,7 +18,7 @@ type SelectBuilder struct {
 	columns     []string
 	from        string
 	joins       []join
-	wheres      *wheres
+	wheres      *Wheres
 	hasOffset   bool
 	offset      uint64
 	hasLimit    bool
@@ -57,7 +57,7 @@ func query(dbc *connect) *SelectBuilder {
 		connect:  dbc,
 		columns:  make([]string, 0),
 		joins:    make([]join, 0),
-		wheres:   newWheres(),
+		wheres:   NewWheres(),
 		orderBy:  make([]string, 0),
 		groupBys: make([]string, 0),
 		havings:  make([]having, 0),

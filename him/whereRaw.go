@@ -1,6 +1,6 @@
 package him
 
-func whereRawHandle(wheres wheres) (string, []interface{}, error) {
+func whereRawHandle(wheres Wheres) (string, []interface{}, error) {
 	pred, args, err := wheres.pred()
 	if err != nil {
 		return "", nil, err
@@ -9,7 +9,7 @@ func whereRawHandle(wheres wheres) (string, []interface{}, error) {
 }
 
 type WhereRawBuilder struct {
-	wheres wheres
+	wheres Wheres
 }
 
 func (this WhereRawBuilder) ToSql() (string, []interface{}, error) {

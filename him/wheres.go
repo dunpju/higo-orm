@@ -4,16 +4,16 @@ import (
 	"strings"
 )
 
-type wheres struct {
+type Wheres struct {
 	logic   Logic
 	collect []where
 }
 
-func newWheres() *wheres {
-	return &wheres{logic: AND, collect: make([]where, 0)}
+func NewWheres() *Wheres {
+	return &Wheres{logic: AND, collect: make([]where, 0)}
 }
 
-func (w *wheres) pred() (string, []interface{}, error) {
+func (w *Wheres) pred() (string, []interface{}, error) {
 	pred := make([]string, 0)
 	args := make([]interface{}, 0)
 	err := w.forEach(func(w where) (bool, error) {
@@ -30,11 +30,11 @@ func (w *wheres) pred() (string, []interface{}, error) {
 	return strings.Join(pred, " "), args, err
 }
 
-func (w *wheres) len() int {
+func (w *Wheres) len() int {
 	return len(w.collect)
 }
 
-func (w *wheres) forEach(fn func(w where) (bool, error)) error {
+func (w *Wheres) forEach(fn func(w where) (bool, error)) error {
 	for _, c := range w.collect {
 		b, err := fn(c)
 		if err != nil {
@@ -47,21 +47,31 @@ func (w *wheres) forEach(fn func(w where) (bool, error)) error {
 	return nil
 }
 
-func (w *wheres) and() *wheres {
+func (w *Wheres) And() *Wheres {
 	w.logic = AND
 	return w
 }
 
-func (w *wheres) or() *wheres {
+func (w *Wheres) and() *Wheres {
+	w.logic = AND
+	return w
+}
+
+func (w *Wheres) Or() *Wheres {
 	w.logic = OR
 	return w
 }
 
-func (w *wheres) raw(sql string, args []interface{}, err error) {
+func (w *Wheres) or() *Wheres {
+	w.logic = OR
+	return w
+}
+
+func (w *Wheres) raw(sql string, args []interface{}, err error) {
 	w.collect = append(w.collect, and("", "RAW", raw{sql, args, err}))
 }
 
-func (w *wheres) whereRaw(sql string, args []interface{}, err error) {
+func (w *Wheres) whereRaw(sql string, args []interface{}, err error) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and("", "whereRaw", whereRaw{sql, args, err}))
 	} else {
@@ -69,7 +79,7 @@ func (w *wheres) whereRaw(sql string, args []interface{}, err error) {
 	}
 }
 
-func (w *wheres) where(column, operator string, value interface{}) {
+func (w *Wheres) Where(column, operator string, value interface{}) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, operator, value))
 	} else {
@@ -77,7 +87,15 @@ func (w *wheres) where(column, operator string, value interface{}) {
 	}
 }
 
-func (w *wheres) whereIn(column string, value interface{}) {
+func (w *Wheres) where(column, operator string, value interface{}) {
+	if w.logic == AND {
+		w.collect = append(w.collect, and(column, operator, value))
+	} else {
+		w.collect = append(w.collect, or(column, operator, value))
+	}
+}
+
+func (w *Wheres) whereIn(column string, value interface{}) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "IN", value))
 	} else {
@@ -85,7 +103,7 @@ func (w *wheres) whereIn(column string, value interface{}) {
 	}
 }
 
-func (w *wheres) whereNotIn(column string, value interface{}) {
+func (w *Wheres) whereNotIn(column string, value interface{}) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "NotIn", value))
 	} else {
@@ -93,7 +111,7 @@ func (w *wheres) whereNotIn(column string, value interface{}) {
 	}
 }
 
-func (w *wheres) whereNull(column string) {
+func (w *Wheres) whereNull(column string) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "Null", nil))
 	} else {
@@ -101,7 +119,7 @@ func (w *wheres) whereNull(column string) {
 	}
 }
 
-func (w *wheres) whereNotNull(column string) {
+func (w *Wheres) whereNotNull(column string) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "NotNull", nil))
 	} else {
@@ -109,7 +127,7 @@ func (w *wheres) whereNotNull(column string) {
 	}
 }
 
-func (w *wheres) whereLike(column string, value interface{}) {
+func (w *Wheres) whereLike(column string, value interface{}) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "Like", value))
 	} else {
@@ -117,7 +135,7 @@ func (w *wheres) whereLike(column string, value interface{}) {
 	}
 }
 
-func (w *wheres) whereNotLike(column string, value interface{}) {
+func (w *Wheres) whereNotLike(column string, value interface{}) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "NotLike", value))
 	} else {
@@ -125,7 +143,7 @@ func (w *wheres) whereNotLike(column string, value interface{}) {
 	}
 }
 
-func (w *wheres) whereBetween(column string, first, second interface{}) {
+func (w *Wheres) whereBetween(column string, first, second interface{}) {
 	if w.logic == AND {
 		w.collect = append(w.collect, and(column, "BETWEEN", between{column, first, second}))
 	} else {
