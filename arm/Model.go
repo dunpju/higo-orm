@@ -59,7 +59,7 @@ func (this *Model) Insert() *him.InsertBuilder {
 	this.sets.ForEach(func(s him.Set) bool {
 		builder.Set(s.Column(), s.Value())
 		return true
-	})
+	}).Reset()
 	this.builder = builder
 	return this.builder.(*him.InsertBuilder)
 }
@@ -69,13 +69,15 @@ func (this *Model) Update() *him.UpdateBuilder {
 	this.sets.ForEach(func(s him.Set) bool {
 		builder.Set(s.Column(), s.Value())
 		return true
-	})
+	}).Reset()
+	this.wheres.Reset()
 	this.builder = builder
 	return this.builder.(*him.UpdateBuilder)
 }
 
 func (this *Model) Delete() *him.DeleteBuilder {
-	this.builder = this.db.Delete().From(this.table.String())
+	this.builder = this.db.Delete().From(this.table.String()).SetWheres(this.wheres)
+	this.wheres.Reset()
 	return this.builder.(*him.DeleteBuilder)
 }
 

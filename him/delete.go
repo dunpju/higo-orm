@@ -163,3 +163,8 @@ func (this *DeleteBuilder) Exec() (*gorm.DB, int64) {
 	this.db = gormDB
 	return this.db, rowsAffected
 }
+
+func (this *DeleteBuilder) SetWheres(wheres *Wheres) *DeleteBuilder {
+	this.wheres = wheres
+	return this
+}

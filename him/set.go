@@ -6,17 +6,22 @@ func NewSets() Sets {
 	return make([]Set, 0)
 }
 
+func (this Sets) Reset() {
+	this = NewSets()
+}
+
 func (this Sets) Append(column any, value interface{}) {
 	this = append(this, NewSet(column, value))
 }
 
-func (this Sets) ForEach(fn func(s Set) bool) {
+func (this Sets) ForEach(fn func(s Set) bool) Sets {
 	for _, set := range this {
 		b := fn(set)
 		if !b {
 			break
 		}
 	}
+	return this
 }
 
 type Set struct {

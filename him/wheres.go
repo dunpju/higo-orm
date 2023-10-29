@@ -144,3 +144,7 @@ func (w *Wheres) whereBetween(column string, first, second interface{}) {
 		w.collect = append(w.collect, or(column, "BETWEEN", between{column, first, second}))
 	}
 }
+
+func (w *Wheres) Reset() {
+	w = NewWheres()
+}
