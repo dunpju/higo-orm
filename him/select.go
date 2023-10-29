@@ -88,6 +88,17 @@ func (this *SelectBuilder) _from(from string) *SelectBuilder {
 	return this
 }
 
+func (this *SelectBuilder) Query() *Select {
+	conn, err := getConnect(this.connect.DB().connect)
+	if err != nil {
+		this.Error = err
+	} else {
+		this.db = newDB(conn.DB().GormDB(), this.connect.db.connect, conn.dbc, this.db.begin)
+		return newSelect(this.db, this.db.gormDB)
+	}
+	return newSelect(this.db, nil)
+}
+
 func (this *SelectBuilder) Offset(offset uint64) *SelectBuilder {
 	this.hasOffset = true
 	this.offset = offset

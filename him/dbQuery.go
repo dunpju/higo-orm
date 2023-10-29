@@ -1,8 +1,10 @@
 package him
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
-func (this *DB) Query() Select {
+func (this *DB) Query() *Select {
 	conn, err := getConnect(this.connect)
 	if err != nil {
 		this.Error = err
@@ -16,14 +18,14 @@ func (this *DB) Query() Select {
 type Select struct {
 	db         *DB
 	gormDB     *gorm.DB
-	selectFrom SelectFrom
+	selectFrom *SelectFrom
 }
 
-func newSelect(db *DB, gormDB *gorm.DB) Select {
-	return Select{db: db, gormDB: gormDB}
+func newSelect(db *DB, gormDB *gorm.DB) *Select {
+	return &Select{db: db, gormDB: gormDB}
 }
 
-func (this Select) selectBuilder() *SelectBuilder {
+func (this *Select) selectBuilder() *SelectBuilder {
 	if this.db.begin {
 		this.db.Builder = newSelectBuilder(this.db.connect).begin(this.gormDB)
 	} else {
@@ -32,12 +34,12 @@ func (this Select) selectBuilder() *SelectBuilder {
 	return this.db.Builder.(*SelectBuilder)
 }
 
-func (this Select) Distinct() Select {
+func (this *Select) Distinct() *Select {
 	this.db.Builder = this.selectBuilder().Distinct()
 	return this
 }
 
-func (this Select) Select(columns ...string) SelectFrom {
+func (this *Select) Select(columns ...string) *SelectFrom {
 	if len(columns) == 0 {
 		columns = append(columns, "*")
 	}
@@ -45,7 +47,7 @@ func (this Select) Select(columns ...string) SelectFrom {
 	return newSelectFrom(this.db, this.gormDB)
 }
 
-func (this Select) Raw(pred string, args ...interface{}) SelectRaw {
+func (this *Select) Raw(pred string, args ...interface{}) SelectRaw {
 	this.db.Builder = this.selectBuilder().Raw(pred, args...)
 	return newSelectRaw(this.db, this.gormDB)
 }
@@ -68,11 +70,11 @@ type SelectFrom struct {
 	gormDB *gorm.DB
 }
 
-func newSelectFrom(db *DB, gormDB *gorm.DB) SelectFrom {
-	return SelectFrom{db: db, gormDB: gormDB}
+func newSelectFrom(db *DB, gormDB *gorm.DB) *SelectFrom {
+	return &SelectFrom{db: db, gormDB: gormDB}
 }
 
-func (this SelectFrom) From(from string) *SelectBuilder {
+func (this *SelectFrom) From(from string) *SelectBuilder {
 	this.db.Builder = this.db.Builder.(*SelectBuilder)._from(from)
 	return this.db.Builder.(*SelectBuilder)
 }

@@ -19,6 +19,7 @@ func begin(db *DB, tx *gorm.DB) *Transaction {
 		return transaction
 	}
 	transaction.dbc = dbc
+	transaction.dbc.DB().begin = db.begin
 	if tx != nil {
 		transaction.gormDB = tx
 	} else {

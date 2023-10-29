@@ -68,7 +68,12 @@ func main() {
 		Exec()
 	fmt.Println("db22: ", affected, fmt.Sprintf("%p", db22), db22.Error)
 	db22.Rollback()
+	fmt.Println("db22.Rollback(): ", db22.Error)
 
+	connect, err = him.DBConnect(him.DefaultConnect)
+	if err != nil {
+		panic(err)
+	}
 	insert23, id := connect.Insert().
 		Into("users").
 		Set("user_name", "insert23").
@@ -102,11 +107,10 @@ func main() {
 		go func(i int) {
 			wg.Add(1)
 			defer wg.Done()
-			insert26 := connect.Begin(insert25DB).Insert().
-				Into("users").
-				Set("user_name", fmt.Sprintf("ghgh26_%d", i)).
-				Set("day", time.Now().Format(time.DateOnly)).
-				Set("create_time", time.Now().Format(time.DateTime))
+			insert26 := connect.Begin(insert25DB).Insert().Into("users")
+			insert26.Set("user_name", fmt.Sprintf("ghgh26_%d", i))
+			insert26.Set("day", time.Now().Format(time.DateOnly))
+			insert26.Set("create_time", time.Now().Format(time.DateTime))
 			if i%2 == 0 {
 				time.Sleep(time.Duration(i) * time.Second)
 				insert25DB.Error = fmt.Errorf("测试插入异常%d", i)

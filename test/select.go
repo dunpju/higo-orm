@@ -32,6 +32,19 @@ func main() {
 		panic(err)
 	}
 
+	users66 := make([]map[string]interface{}, 0)
+	select66 := connect.Query().Select("user_id", "user_name").
+		From("users")
+	select66.Where("user_id", "=", 8)
+	select66.First(&users66)
+	// SELECT user_id, user_name FROM users WHERE (user_id = 8) LIMIT 1
+	fmt.Println("users66-1:", users66)
+	select66 = select66.Query().Select("user_id").From("users")
+	select66.Where("user_id", "=", 9)
+	select66.First(&users66)
+	fmt.Println("users66-2:", users66)
+	return
+
 	userNames := make([]string, 0)
 	userNames = append(userNames, "ggg")
 	userNames = append(userNames, "ttttt")
@@ -115,7 +128,11 @@ func main() {
 	select6.Where("user_id", "=", 8)
 	select6.First(&users6)
 	// SELECT user_id, user_name FROM users WHERE (user_id = 8) LIMIT 1
-	fmt.Println("users6:", users6)
+	fmt.Println("users6-1:", users6)
+	select6.Query().Select("user_id").From("users")
+	select6.Where("user_id", "=", 9)
+	select6.First(&users6)
+	fmt.Println("users6-2:", users6)
 
 	users7 := make([]map[string]interface{}, 0)
 	db7 := connect.Query().Select("user_id", "user_name").

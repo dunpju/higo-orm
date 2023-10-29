@@ -30,8 +30,9 @@ func (this *DB) Begin(tx ...*gorm.DB) *Transaction {
 	this.begin = true
 	if len(tx) > 0 {
 		this.gormDB = tx[0]
+		return begin(this, this.gormDB)
 	}
-	return begin(this, this.gormDB)
+	return begin(this, nil)
 }
 
 func (this *DB) TX(tx *gorm.DB) *Transaction {
