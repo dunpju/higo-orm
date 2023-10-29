@@ -74,12 +74,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	insert23, id := connect.Insert().
-		Into("users").
-		Set("user_name", "insert23").
-		Set("day", time.Now().Format(time.DateOnly)).
-		Set("create_time", time.Now().Format(time.DateTime)).
-		LastInsertId()
+	insert23db := connect.Insert().Into("users")
+	insert23db.Set("user_name", "insert23")
+	insert23db.Set("day", time.Now().Format(time.DateOnly))
+	insert23db.Set("create_time", time.Now().Format(time.DateTime))
+	insert23, id := insert23db.LastInsertId()
 	// INSERT INTO users (user_name,day,create_time) VALUES ('insert23','2023-09-20','2023-09-20 21:24:48')
 	fmt.Println("insert23: ", id, insert23.Error)
 

@@ -33,20 +33,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	update0, affected := connect.Update().
-		Table("users").
-		Set("user_name", "user_5").
-		Where("user_id", "=", 5).
-		Exec()
+	update0db := connect.Update().Table("users")
+	update0db.Set("user_name", "user_544")
+	update0db.Where("user_id", "=", 5)
+	update0, affected := update0db.Exec()
 	fmt.Println("update0: ", affected, fmt.Sprintf("%p", update0), update0.Error)
-	update1, affected := connect.Begin().Update().
-		Table("users").
-		Set("user_name", "user_6").
-		Where("user_id", "=", 5).
-		Exec()
+
+	update1db := connect.Begin().Update().Table("users")
+	update1db.Set("user_name", "user_6")
+	update1db.Where("user_id", "=", 5)
+	update1, affected := update1db.Exec()
 	fmt.Println("update1: ", affected, fmt.Sprintf("%p", update1), update1.Error)
-	update1.Rollback()
+	update1RollbackDB := update1.Rollback()
+	fmt.Println("update1RollbackDB.Error", update1RollbackDB.Error)
 
 	wg := sync.WaitGroup{}
 	for i := 0; i < 10; i++ {
@@ -109,19 +108,18 @@ func main() {
 		go func(i int) {
 			wg.Add(1)
 			defer wg.Done()
-			update5 := connect1.Begin().GormDB()
-			update := connect1.TX(update5).Update().Table("users")
-			update = update.Where("user_id", "=", 2)
-			update = update.Set("user_name", fmt.Sprintf("update5_%d", i))
 
-			update6, affected := connect1.Begin(update5).Update().
-				Table("users").
-				Set("user_name", fmt.Sprintf("update6_%d", i)).
-				Where("user_id", "=", 7).
-				Exec()
+			update5db := connect1.Begin().Update().Table("users")
+			update5db.Where("user_id", "=", 2)
+			update5db.Set("user_name", fmt.Sprintf("update5_%d", i))
+
+			update6db := connect1.Begin(update5db.DB()).Update().Table("users")
+			update6db.Set("user_name", fmt.Sprintf("update6_%d", i))
+			update6db.Where("user_id", "=", 7)
+			update6, affected := update6db.Exec()
 
 			// sql交叉测试
-			update5, affected5 := update.Exec()
+			update5, affected5 := update5db.Exec()
 			// UPDATE users SET user_name = 'update5_9' WHERE (user_id = 2)
 			fmt.Println("update5: ", affected5, fmt.Sprintf("%p", update5), update5.Error)
 			if i%2 == 0 {
