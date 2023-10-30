@@ -13,7 +13,7 @@ type Model struct {
 	builder any
 	err     error
 	wheres  *him.Wheres
-	sets    him.Sets
+	sets    *him.Sets
 }
 
 func Connect(model IModel) error {

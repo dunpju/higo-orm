@@ -1,4 +1,4 @@
-package dao
+package %PACKAGE%
 
 import (
     "github.com/dunpju/higo-orm/arm"
@@ -7,6 +7,10 @@ import (
     "github.com/dunpju/higo-orm/test/entity/SchoolEntity"
     "github.com/dunpju/higo-orm/test/model/School"
     "gorm.io/gorm"
+)
+
+import (
+%IMPORT%
 )
 
 type SchoolDao struct {

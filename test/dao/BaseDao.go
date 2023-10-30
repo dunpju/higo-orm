@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"github.com/dunpju/higo-orm/arm"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-throw/exception"
 	"github.com/go-sql-driver/mysql"
@@ -8,11 +9,11 @@ import (
 )
 
 type BaseDao struct {
-	*him.BaseDao
+	*arm.BaseDao
 }
 
 func newBaseDao() *BaseDao {
-	dao, err := him.NewBaseDao(him.DefaultConnect)
+	dao, err := arm.NewBaseDao(him.DefaultConnect)
 	if err != nil {
 		panic(err)
 	}
