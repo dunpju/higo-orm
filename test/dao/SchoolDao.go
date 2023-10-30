@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"github.com/dunpju/higo-orm/arm"
 	"github.com/dunpju/higo-orm/exception/DaoException"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/entity/SchoolEntity"
@@ -25,7 +26,7 @@ func (this *SchoolDao) Models() []*School.Model {
 }
 
 func (this *SchoolDao) TX(tx *gorm.DB) *SchoolDao {
-	this.model.DB().TX(tx)
+	this.model.TX(tx)
 	return this
 }
 
@@ -35,16 +36,16 @@ func (this *SchoolDao) CheckError(gormDB *gorm.DB) {
 	}
 }
 
-func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) *SchoolDao {
+func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 	if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
 		if !this.GetBySchoolId(entity.SchoolId).Exist() {
 			DaoException.Throw("不存在", 0)
 		}
 		this.model.Where(School.SchoolId, "=", entity.SchoolId)
 		if SchoolEntity.FlagDelete == entity.Flag() {
-
+			// todo::填充修改字段
 		} else if SchoolEntity.FlagUpdate == entity.Flag() {
-
+			// todo::填充修改字段
 		}
 		this.model.Set(School.UpdateTime, entity.UpdateTime)
 	} else { //新增
