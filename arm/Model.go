@@ -81,21 +81,6 @@ func (this *Model) Delete() *him.DeleteBuilder {
 	return this.builder.(*him.DeleteBuilder)
 }
 
-func (this *Model) Set(column any, value interface{}) *Model {
-	this.sets.Append(column, value)
-	if insertBuilder, insertOk := this.builder.(*him.InsertBuilder); insertOk {
-		this.builder = insertBuilder.Column(column, value)
-	} else if updateBuilder, updateOk := this.builder.(*him.UpdateBuilder); updateOk {
-		this.builder = updateBuilder.Set(column, value)
-	}
-	return this
-}
-
-func (this *Model) Where(column any, operator string, value interface{}) *Model {
-	this.wheres.And().Where(him.ColumnToString(column), operator, value)
-	return this
-}
-
 func (this *Model) beginTX(opts ...*sql.TxOptions) *gorm.DB {
 	db, err := him.DBConnect(this.db.Connect())
 	if err != nil {
@@ -120,4 +105,19 @@ func (this *Model) Error() error {
 
 func (this *Model) GormDB() *gorm.DB {
 	return this.db.GormDB()
+}
+
+func (this *Model) Set(column any, value interface{}) *Model {
+	this.sets.Append(column, value)
+	if insertBuilder, insertOk := this.builder.(*him.InsertBuilder); insertOk {
+		this.builder = insertBuilder.Column(column, value)
+	} else if updateBuilder, updateOk := this.builder.(*him.UpdateBuilder); updateOk {
+		this.builder = updateBuilder.Set(column, value)
+	}
+	return this
+}
+
+func (this *Model) Where(column any, operator string, value interface{}) *Model {
+	this.wheres.And().Where(him.ColumnToString(column), operator, value)
+	return this
 }

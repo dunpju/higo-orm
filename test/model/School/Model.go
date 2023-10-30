@@ -62,6 +62,12 @@ func (this *Model) Exist() bool {
 	return this.SchoolId > 0
 }
 
+func (this *Model) Builder(dao arm.IDao, fn func()) arm.IDao {
+	this = this.New()
+	fn()
+	return dao
+}
+
 func WithSchoolId(schoolId int64) him.IProperty {
 	return him.SetProperty(func(obj any) {
 		obj.(*Model).SchoolId = schoolId

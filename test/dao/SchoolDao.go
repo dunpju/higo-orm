@@ -37,27 +37,28 @@ func (this *SchoolDao) CheckError(gormDB *gorm.DB) {
 }
 
 func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
-	if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
-		if !this.GetBySchoolId(entity.SchoolId).Exist() {
-			DaoException.Throw("不存在", 0)
+	return this.model.Builder(this, func() {
+		if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
+			if !this.GetBySchoolId(entity.SchoolId).Exist() {
+				DaoException.Throw("不存在", 0)
+			}
+			this.model.Where(School.SchoolId, "=", entity.SchoolId)
+			if SchoolEntity.FlagDelete == entity.Flag() {
+				// todo::填充修改字段
+			} else if SchoolEntity.FlagUpdate == entity.Flag() {
+				// todo::填充修改字段
+			}
+			this.model.Set(School.UpdateTime, entity.UpdateTime)
+		} else { //新增
+			this.model.Set(School.SchoolName, entity.SchoolName) //学校名称
+			this.model.Set(School.Ip, entity.Ip)                 //海康存储ip地址
+			this.model.Set(School.Port, entity.Port)             //海康存储端口
+			this.model.Set(School.UserName, entity.UserName)     //海康存储用户名
+			this.model.Set(School.Password, entity.Password)     //海康存储用户密码
+			this.model.Set(School.CreateTime, entity.CreateTime) //创建时间
+			this.model.Set(School.UpdateTime, entity.UpdateTime) //更新时间
 		}
-		this.model.Where(School.SchoolId, "=", entity.SchoolId)
-		if SchoolEntity.FlagDelete == entity.Flag() {
-			// todo::填充修改字段
-		} else if SchoolEntity.FlagUpdate == entity.Flag() {
-			// todo::填充修改字段
-		}
-		this.model.Set(School.UpdateTime, entity.UpdateTime)
-	} else { //新增
-		this.model.Set(School.SchoolName, entity.SchoolName) //学校名称
-		this.model.Set(School.Ip, entity.Ip)                 //海康存储ip地址
-		this.model.Set(School.Port, entity.Port)             //海康存储端口
-		this.model.Set(School.UserName, entity.UserName)     //海康存储用户名
-		this.model.Set(School.Password, entity.Password)     //海康存储用户密码
-		this.model.Set(School.CreateTime, entity.CreateTime) //创建时间
-		this.model.Set(School.UpdateTime, entity.UpdateTime) //更新时间
-	}
-	return this
+	})
 }
 
 // Add 添加

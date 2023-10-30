@@ -43,6 +43,10 @@ func main() {
 	schoolEntity.Password = "Password" + time.Now().Format(time.DateTime)
 	schoolDao.SetData(schoolEntity).Add()
 
+	models = schoolDao.GetBySchoolIds([]int64{5, 6})
+	fmt.Println(models)
+
+	schoolEntity = SchoolEntity.New()
 	schoolEntity.SchoolName = "SchoolName" + time.Now().Format(time.DateTime)
 	schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
 	schoolEntity.Port = "Port" + time.Now().Format(time.DateTime)
