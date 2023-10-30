@@ -13,6 +13,11 @@ func NewWheres() *Wheres {
 	return &Wheres{logic: AND, collect: make([]where, 0)}
 }
 
+func (w *Wheres) clone(c *Wheres) {
+	w.logic = c.logic
+	w.collect = c.collect
+}
+
 func (w *Wheres) pred() (string, []interface{}, error) {
 	pred := make([]string, 0)
 	args := make([]interface{}, 0)

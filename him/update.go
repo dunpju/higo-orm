@@ -204,7 +204,7 @@ func (this *UpdateBuilder) Exec() (gormDB *gorm.DB, affected int64) {
 	return this.db, rowsAffected
 }
 
-func (this *UpdateBuilder) SetWheres(wheres *Wheres) *UpdateBuilder {
-	this.wheres = wheres
+func (this *UpdateBuilder) SetWheres(w *Wheres) *UpdateBuilder {
+	this.wheres.clone(w)
 	return this
 }

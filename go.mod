@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/dunpju/higo-utils v1.0.95
+		github.com/dunpju/higo-throw v1.0.16
 	github.com/golang/protobuf v1.5.2
 	github.com/spf13/cobra v1.2.1
 	golang.org/x/tools v0.1.2

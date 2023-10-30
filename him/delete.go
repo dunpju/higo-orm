@@ -164,7 +164,7 @@ func (this *DeleteBuilder) Exec() (*gorm.DB, int64) {
 	return this.db, rowsAffected
 }
 
-func (this *DeleteBuilder) SetWheres(wheres *Wheres) *DeleteBuilder {
-	this.wheres = wheres
+func (this *DeleteBuilder) SetWheres(w *Wheres) *DeleteBuilder {
+	this.wheres.clone(w)
 	return this
 }

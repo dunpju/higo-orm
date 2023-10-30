@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"github.com/dunpju/higo-orm/exception/DaoException"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/entity/SchoolEntity"
 	"github.com/dunpju/higo-orm/test/model/School"
@@ -37,7 +38,7 @@ func (this *SchoolDao) CheckError(gormDB *gorm.DB) {
 func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) *SchoolDao {
 	if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
 		if !this.GetBySchoolId(entity.SchoolId).Exist() {
-			//DaoException.Throw("不存在", 0)
+			DaoException.Throw("不存在", 0)
 		}
 		this.model.Where(School.SchoolId, "=", entity.SchoolId)
 		if SchoolEntity.FlagDelete == entity.Flag() {
@@ -75,9 +76,7 @@ func (this *SchoolDao) Update() *gorm.DB {
 // GetBySchoolId id查询
 func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
 	model := this.Model()
-	gormDB := this.model.Select().
-		Where(School.SchoolId, "=", schoolId).
-		First(&model)
+	gormDB := this.model.Select().Where(School.SchoolId, "=", schoolId).First(&model)
 	this.CheckError(gormDB)
 	return model
 }
@@ -85,34 +84,22 @@ func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
 // GetBySchoolIds id集查询
 func (this *SchoolDao) GetBySchoolIds(schoolIds []int64, fields ...string) []*School.Model {
 	models := this.Models()
-	gormDB := this.model.Select(fields...).
-		WhereIn(School.SchoolId, schoolIds).
-		Get(&models)
+	gormDB := this.model.Select(fields...).WhereIn(School.SchoolId, schoolIds).Get(&models)
 	this.CheckError(gormDB)
 	return models
 }
 
 // DeleteBySchoolId 硬删除
 func (this *SchoolDao) DeleteBySchoolId(schoolId int64) *gorm.DB {
-	gormDB, _ := this.model.Delete().
-		Where(School.SchoolId, "=", schoolId).
-		Exec()
+	gormDB, _ := this.model.Delete().Where(School.SchoolId, "=", schoolId).Exec()
 	this.CheckError(gormDB)
 	return gormDB
 }
 
-// List 列表
-func (this *SchoolDao) List(perPage, page uint64, where map[string]interface{}) him.Paginate {
-	var models []struct {
-		SchoolId   string `gorm:"column:schoolId" json:"schoolId"`
-		SchoolName string `gorm:"column:schoolName" json:"schoolName"`
-		Ip         string `gorm:"column:ip" json:"ip"`
-		Port       string `gorm:"column:port" json:"port"`
-		UserName   string `gorm:"column:userName" json:"userName"`
-		Password   string `gorm:"column:password" json:"password"`
-	}
-	gormDB, paginate := this.model.Select().
-		Paginate(page, perPage, &models)
+// Paginate 列表
+func (this *SchoolDao) Paginate(perPage, page uint64, where map[string]interface{}) him.Paginate {
+	models := this.Models()
+	gormDB, paginate := this.model.Select().Paginate(page, perPage, &models)
 	this.CheckError(gormDB)
 	return paginate
 }
