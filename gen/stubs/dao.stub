@@ -1,113 +1,99 @@
-package dao
+package %PACKAGE%
 
 import (
-    "github.com/dunpju/higo-orm/arm"
-    "github.com/dunpju/higo-orm/exception/DaoException"
-    "github.com/dunpju/higo-orm/him"
-    "github.com/dunpju/higo-orm/test/entity/SchoolEntity"
-    "github.com/dunpju/higo-orm/test/model/School"
-    "gorm.io/gorm"
+%IMPORT%
 )
 
-type SchoolDao struct {
+type %MODEL_PACKAGE%Dao struct {
     *arm.BaseDao
-    model *School.Model
+    model *%MODEL_PACKAGE%.Model
 }
 
-func NewSchoolDao() *SchoolDao {
-    schoolDao := &SchoolDao{model: School.New()}
-    schoolDao.BaseDao = arm.NewBaseDao(schoolDao)
-    return schoolDao
+func New%MODEL_PACKAGE%Dao() *%MODEL_PACKAGE%Dao {
+    dao := &%MODEL_PACKAGE%Dao{model: %MODEL_PACKAGE%.New()}
+    dao.BaseDao = arm.NewBaseDao(dao)
+    return dao
 }
 
-func (this *SchoolDao) SetModel(model arm.IModel) {
-    this.model = model.(*School.Model)
+func (this *%MODEL_PACKAGE%Dao) SetModel(model arm.IModel) {
+    this.model = model.(*%MODEL_PACKAGE%.Model)
 }
 
 func (this *SchoolDao) GetModel() arm.IModel {
     return this.model
 }
 
-func (this *SchoolDao) Model() *School.Model {
+func (this *%MODEL_PACKAGE%Dao) Model() *%MODEL_PACKAGE%.Model {
     return School.New()
 }
 
-func (this *SchoolDao) Models() []*School.Model {
-    return make([]*School.Model, 0)
+func (this *%MODEL_PACKAGE%Dao) Models() []*%MODEL_PACKAGE%.Model {
+    return make([]*%MODEL_PACKAGE%.Model, 0)
 }
 
-func (this *SchoolDao) TX(tx *gorm.DB) *SchoolDao {
+func (this *SchoolDao) TX(tx *gorm.DB) *%MODEL_PACKAGE%Dao {
     this.model.TX(tx)
     return this
 }
 
-func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
+func (this *%MODEL_PACKAGE%Dao) SetData(entity *%MODEL_PACKAGE%Entity.Entity) arm.IDao {
     return this.model.Builder(this, func() {
         if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
-            if !this.GetBySchoolId(entity.SchoolId).Exist() {
+            if !this.GetBy%UPPER_PRIMARY_KEY%(entity.%UPPER_PRIMARY_KEY%).Exist() {
                 DaoException.Throw("不存在", 0)
             }
-            this.model.Where(School.SchoolId, "=", entity.SchoolId)
-            if SchoolEntity.FlagDelete == entity.Flag() {
+            this.model.Where(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, "=", entity.%UPPER_PRIMARY_KEY%)
+            if %MODEL_PACKAGE%Entity.FlagDelete == entity.Flag() {
                 // todo::填充修改字段
-                this.model.Set(School.DeleteTime, entity.UpdateTime)
-            } else if SchoolEntity.FlagUpdate == entity.Flag() {
+            } else if %MODEL_PACKAGE%Entity.FlagUpdate == entity.Flag() {
                 // todo::填充修改字段
-                this.model.Set(School.SchoolName, "update_"+entity.SchoolName) //学校名称
-                this.model.Set(School.Ip, "update_"+entity.Ip)                 //海康存储ip地址
             }
-            this.model.Set(School.UpdateTime, entity.UpdateTime)
+            %ROW_UPDATE_TIME%
         } else { //新增
-            this.model.Set(School.SchoolName, entity.SchoolName) //学校名称
-            this.model.Set(School.Ip, entity.Ip)                 //海康存储ip地址
-            this.model.Set(School.Port, entity.Port)             //海康存储端口
-            this.model.Set(School.UserName, entity.UserName)     //海康存储用户名
-            this.model.Set(School.Password, entity.Password)     //海康存储用户密码
-            this.model.Set(School.CreateTime, entity.CreateTime) //创建时间
-            this.model.Set(School.UpdateTime, entity.UpdateTime) //更新时间
+%MODEL_PROPERTY%
         }
     })
 }
 
 // Add 添加
-func (this *SchoolDao) Add() (gormDB *gorm.DB, lastInsertId int64) {
+func (this *%MODEL_PACKAGE%Dao) Add() (gormDB *gorm.DB, lastInsertId int64) {
     gormDB, lastInsertId = this.model.Insert().LastInsertId()
     this.CheckError(gormDB)
     return
 }
 
 // Update 更新
-func (this *SchoolDao) Update() *gorm.DB {
+func (this *%MODEL_PACKAGE%Dao) Update() *gorm.DB {
     gormDB, _ := this.model.Update().Exec()
     this.CheckError(gormDB)
     return gormDB
 }
 
-// GetBySchoolId id查询
-func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
+// GetBy%UPPER_PRIMARY_KEY% %PRIMARY_KEY%查询
+func (this *%MODEL_PACKAGE%Dao) GetBy%UPPER_PRIMARY_KEY%(%PRIMARY_KEY% int64) *%MODEL_PACKAGE%.Model {
     model := this.Model()
-    gormDB := this.model.Select().Where(School.SchoolId, "=", schoolId).First(&model)
+    gormDB := this.model.Select().Where(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, "=", %PRIMARY_KEY%).First(&model)
     this.CheckError(gormDB)
     return model
 }
 
-// GetBySchoolIds id集查询
-func (this *SchoolDao) GetBySchoolIds(schoolIds []int64, fields ...string) []*School.Model {
+// GetBy%UPPER_PRIMARY_KEY%s %PRIMARY_KEY%集查询
+func (this *%MODEL_PACKAGE%Dao) GetBy%UPPER_PRIMARY_KEY%s(%PRIMARY_KEY%s []int64) []*%MODEL_PACKAGE%.Model {
     models := this.Models()
-    gormDB := this.model.Select(fields...).WhereIn(School.SchoolId, schoolIds).Get(&models)
+    gormDB := this.model.Select().WhereIn(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, %PRIMARY_KEY%s).Get(&models)
     this.CheckError(gormDB)
     return models
 }
 
-// DeleteBySchoolId 硬删除
-func (this *SchoolDao) DeleteBySchoolId(schoolId int64) *gorm.DB {
-    gormDB, _ := this.model.Delete().Where(School.SchoolId, "=", schoolId).Exec()
+// DeleteBy%UPPER_PRIMARY_KEY% 硬删除
+func (this *%MODEL_PACKAGE%Dao) DeleteBy%UPPER_PRIMARY_KEY%(%PRIMARY_KEY% int64) *gorm.DB {
+    gormDB, _ := this.model.Delete().Where(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, "=", %PRIMARY_KEY%).Exec()
     this.CheckError(gormDB)
     return gormDB
 }
 
 // Paginate 列表
-func (this *SchoolDao) Paginate(perPage, page uint64, where map[string]interface{}) him.Paginate {
+func (this *%MODEL_PACKAGE%Dao) Paginate(perPage, page uint64, where map[string]interface{}) him.Paginate {
     models := this.Models()
     gormDB, paginate := this.model.Select().Paginate(page, perPage, &models)
     this.CheckError(gormDB)
