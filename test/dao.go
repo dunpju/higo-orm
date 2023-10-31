@@ -52,5 +52,10 @@ func main() {
 	schoolEntity.Port = "Port" + time.Now().Format(time.DateTime)
 	schoolEntity.UserName = "UserName" + time.Now().Format(time.DateTime)
 	schoolEntity.Password = "Password" + time.Now().Format(time.DateTime)
-	schoolDao.SetData(schoolEntity).Add()
+	_, schoolEntity.SchoolId = schoolDao.SetData(schoolEntity).Add()
+
+	SchoolEntity.FlagUpdate.Apply(schoolEntity)
+	schoolEntity.SchoolName = "SchoolName" + time.Now().Format(time.DateTime)
+	schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
+	schoolDao.SetData(schoolEntity).Update()
 }

@@ -51,6 +51,8 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 				// todo::填充修改字段
 			} else if SchoolEntity.FlagUpdate == entity.Flag() {
 				// todo::填充修改字段
+				this.model.Set(School.SchoolName, "update_"+entity.SchoolName) //学校名称
+				this.model.Set(School.Ip, "update_"+entity.Ip)                 //海康存储ip地址
 			}
 			this.model.Set(School.UpdateTime, entity.UpdateTime)
 		} else { //新增
