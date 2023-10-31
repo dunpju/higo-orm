@@ -50,6 +50,10 @@ func (this *Model) New(properties ...him.IProperty) *Model {
 	return this
 }
 
+func (this *Model) IModel(properties ...him.IProperty) arm.IModel {
+	return this.New(properties...)
+}
+
 func (this *Model) TableName() *arm.TableName {
 	return TableName()
 }
@@ -60,12 +64,6 @@ func (this *Model) Apply(model *arm.Model) {
 
 func (this *Model) Exist() bool {
 	return this.SchoolId > 0
-}
-
-func (this *Model) Builder(dao arm.IDao, fn func()) arm.IDao {
-	this = this.New()
-	fn()
-	return dao
 }
 
 func WithSchoolId(schoolId int64) him.IProperty {

@@ -5,6 +5,7 @@ import (
 )
 
 type IModel interface {
+	IModel(properties ...him.IProperty) IModel
 	DB() *him.DB
 	Connection() string
 	TableName() *TableName

@@ -17,6 +17,10 @@ func NewSchoolDao() *SchoolDao {
 	return &SchoolDao{model: School.New()}
 }
 
+func (this *SchoolDao) SetModel(model arm.IModel) {
+	this.model = model.(*School.Model)
+}
+
 func (this *SchoolDao) Model() *School.Model {
 	return School.New()
 }

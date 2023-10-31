@@ -29,6 +29,12 @@ func newModel(db *him.DB, model IModel) *Model {
 	return &Model{db: db, model: model, table: model.TableName(), wheres: him.NewWheres(), sets: him.NewSets()}
 }
 
+func (this *Model) Builder(dao IDao, fn func()) IDao {
+	dao.SetModel(this.model.IModel())
+	fn()
+	return dao
+}
+
 func (this *Model) DB() *him.DB {
 	return this.db
 }

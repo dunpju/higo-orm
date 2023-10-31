@@ -31,6 +31,10 @@ func (this *Model) New(properties ...him.IProperty) *Model {
     return this
 }
 
+func (this *Model) IModel(properties ...him.IProperty) arm.IModel {
+    return this.New(properties...)
+}
+
 func (this *Model) Connection() string {
     return him.DefaultConnect
 }
