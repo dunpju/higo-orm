@@ -41,12 +41,6 @@ func (this *SchoolDao) TX(tx *gorm.DB) *SchoolDao {
 	return this
 }
 
-func (this *SchoolDao) CheckError(gormDB *gorm.DB) {
-	if gormDB.Error != nil {
-		panic(gormDB.Error)
-	}
-}
-
 func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 	return this.model.Builder(this, func() {
 		if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
@@ -56,6 +50,7 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 			this.model.Where(School.SchoolId, "=", entity.SchoolId)
 			if SchoolEntity.FlagDelete == entity.Flag() {
 				// todo::填充修改字段
+				this.model.Set(School.DeleteTime, entity.UpdateTime)
 			} else if SchoolEntity.FlagUpdate == entity.Flag() {
 				// todo::填充修改字段
 				this.model.Set(School.SchoolName, "update_"+entity.SchoolName) //学校名称

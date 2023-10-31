@@ -74,7 +74,13 @@ func main() {
 		schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
 		schoolDao.TX(tx).SetData(schoolEntity).Update()
 
-		return nil
+		SchoolEntity.FlagDelete.Apply(schoolEntity)
+		schoolDao.TX(tx).SetData(schoolEntity).Update()
+
+		schoolDao.TX(tx).DeleteBySchoolId(schoolEntity.SchoolId)
+		panic(fmt.Errorf("测试事务异常1"))
+
+		return fmt.Errorf("测试事务异常")
 	})
 	if err != nil {
 		fmt.Println(err)

@@ -7,4 +7,5 @@ type IDao interface {
 	IModel() IModel
 	Add() (gormDB *gorm.DB, lastInsertId int64)
 	Update() *gorm.DB
+	CheckError(gormDB *gorm.DB)
 }

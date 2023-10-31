@@ -14,6 +14,7 @@ type Model struct {
 	err     error
 	wheres  *him.Wheres
 	sets    *him.Sets
+	begin   bool
 }
 
 func Connect(model IModel) error {
@@ -27,12 +28,6 @@ func Connect(model IModel) error {
 
 func newModel(db *him.DB, model IModel) *Model {
 	return &Model{db: db, model: model, table: model.TableName(), wheres: him.NewWheres(), sets: him.NewSets()}
-}
-
-func (this *Model) Builder(dao IDao, fn func()) IDao {
-	dao.SetModel(this.model.IModel())
-	fn()
-	return dao
 }
 
 func (this *Model) DB() *him.DB {
@@ -82,8 +77,7 @@ func (this *Model) Update() *him.UpdateBuilder {
 }
 
 func (this *Model) Delete() *him.DeleteBuilder {
-	this.builder = this.db.Delete().From(this.table.String()).SetWheres(this.wheres)
-	this.wheres.Reset()
+	this.builder = this.db.Delete().From(this.table.String())
 	return this.builder.(*him.DeleteBuilder)
 }
 
@@ -97,10 +91,12 @@ func (this *Model) beginTX(opts ...*sql.TxOptions) *gorm.DB {
 }
 
 func (this *Model) Begin(opts ...*sql.TxOptions) *him.TX {
+	this.begin = true
 	return him.NewTX(this.beginTX(opts...))
 }
 
 func (this *Model) TX(tx *gorm.DB) *Model {
+	this.begin = true
 	this.db.TX(tx)
 	return this
 }
@@ -111,6 +107,16 @@ func (this *Model) Error() error {
 
 func (this *Model) GormDB() *gorm.DB {
 	return this.db.GormDB()
+}
+
+func (this *Model) Builder(dao IDao, fn func()) IDao {
+	model := this.model.IModel()
+	if this.begin {
+		model.TX(this.db.GormDB())
+	}
+	dao.SetModel(model)
+	fn()
+	return dao
 }
 
 func (this *Model) Set(column any, value interface{}) *Model {
