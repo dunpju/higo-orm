@@ -5,6 +5,7 @@ import (
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/dao"
 	"github.com/dunpju/higo-orm/test/entity/SchoolEntity"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -58,4 +59,24 @@ func main() {
 	schoolEntity.SchoolName = "SchoolName" + time.Now().Format(time.DateTime)
 	schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
 	schoolDao.SetData(schoolEntity).Update()
+
+	err = schoolDao.Begin().Transaction(func(tx *gorm.DB) error {
+		schoolEntity = SchoolEntity.New()
+		schoolEntity.SchoolName = "SchoolName" + time.Now().Format(time.DateTime)
+		schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
+		schoolEntity.Port = "Port" + time.Now().Format(time.DateTime)
+		schoolEntity.UserName = "UserName" + time.Now().Format(time.DateTime)
+		schoolEntity.Password = "Password" + time.Now().Format(time.DateTime)
+		_, schoolEntity.SchoolId = schoolDao.TX(tx).SetData(schoolEntity).Add()
+
+		SchoolEntity.FlagUpdate.Apply(schoolEntity)
+		schoolEntity.SchoolName = "SchoolName" + time.Now().Format(time.DateTime)
+		schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
+		schoolDao.TX(tx).SetData(schoolEntity).Update()
+
+		return nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
 }

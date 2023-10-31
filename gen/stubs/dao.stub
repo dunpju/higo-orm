@@ -14,11 +14,14 @@ import (
 )
 
 type SchoolDao struct {
+    *arm.BaseDao
     model *School.Model
 }
 
 func NewSchoolDao() *SchoolDao {
-    return &SchoolDao{model: School.New()}
+    schoolDao := &SchoolDao{model: School.New()}
+    schoolDao.BaseDao = arm.NewBaseDao(schoolDao)
+    return schoolDao
 }
 
 func (this *SchoolDao) SetModel(model arm.IModel) {
