@@ -15,7 +15,7 @@ func NewBaseDao(dao IDao) *BaseDao {
 }
 
 func (this *BaseDao) Begin(opts ...*sql.TxOptions) *him.TX {
-	return this.dao.IModel().Begin(opts...)
+	return this.dao.GetModel().Begin(opts...)
 }
 
 func (this *BaseDao) CheckError(gormDB *gorm.DB) {

@@ -24,7 +24,7 @@ func (this *SchoolDao) SetModel(model arm.IModel) {
 	this.model = model.(*School.Model)
 }
 
-func (this *SchoolDao) IModel() arm.IModel {
+func (this *SchoolDao) GetModel() arm.IModel {
 	return this.model
 }
 
