@@ -164,7 +164,7 @@ func (this *Dao) replaceRowProperty(upperProperty, blankFirst, tableFieldsCommen
 
 func (this *Dao) mergeProperty(rowProperty string) {
 	has := false
-	leftStrPad := LeftStrPad(rowProperty, 4, " ")
+	leftStrPad := LeftStrPad(rowProperty, 12, " ")
 	for _, s := range this.propertyString {
 		if s == leftStrPad {
 			has = true
