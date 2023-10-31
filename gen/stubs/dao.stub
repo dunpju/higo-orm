@@ -1,4 +1,4 @@
-package %PACKAGE%
+package dao
 
 import (
     "github.com/dunpju/higo-orm/arm"
@@ -7,10 +7,6 @@ import (
     "github.com/dunpju/higo-orm/test/entity/SchoolEntity"
     "github.com/dunpju/higo-orm/test/model/School"
     "gorm.io/gorm"
-)
-
-import (
-%IMPORT%
 )
 
 type SchoolDao struct {
@@ -28,6 +24,10 @@ func (this *SchoolDao) SetModel(model arm.IModel) {
     this.model = model.(*School.Model)
 }
 
+func (this *SchoolDao) GetModel() arm.IModel {
+    return this.model
+}
+
 func (this *SchoolDao) Model() *School.Model {
     return School.New()
 }
@@ -41,34 +41,32 @@ func (this *SchoolDao) TX(tx *gorm.DB) *SchoolDao {
     return this
 }
 
-func (this *SchoolDao) CheckError(gormDB *gorm.DB) {
-    if gormDB.Error != nil {
-        panic(gormDB.Error)
-    }
-}
-
 func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
-    if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
-        if !this.GetBySchoolId(entity.SchoolId).Exist() {
-            DaoException.Throw("不存在", 0)
+    return this.model.Builder(this, func() {
+        if !entity.PrimaryEmpty() || entity.IsEdit() { //编辑
+            if !this.GetBySchoolId(entity.SchoolId).Exist() {
+                DaoException.Throw("不存在", 0)
+            }
+            this.model.Where(School.SchoolId, "=", entity.SchoolId)
+            if SchoolEntity.FlagDelete == entity.Flag() {
+                // todo::填充修改字段
+                this.model.Set(School.DeleteTime, entity.UpdateTime)
+            } else if SchoolEntity.FlagUpdate == entity.Flag() {
+                // todo::填充修改字段
+                this.model.Set(School.SchoolName, "update_"+entity.SchoolName) //学校名称
+                this.model.Set(School.Ip, "update_"+entity.Ip)                 //海康存储ip地址
+            }
+            this.model.Set(School.UpdateTime, entity.UpdateTime)
+        } else { //新增
+            this.model.Set(School.SchoolName, entity.SchoolName) //学校名称
+            this.model.Set(School.Ip, entity.Ip)                 //海康存储ip地址
+            this.model.Set(School.Port, entity.Port)             //海康存储端口
+            this.model.Set(School.UserName, entity.UserName)     //海康存储用户名
+            this.model.Set(School.Password, entity.Password)     //海康存储用户密码
+            this.model.Set(School.CreateTime, entity.CreateTime) //创建时间
+            this.model.Set(School.UpdateTime, entity.UpdateTime) //更新时间
         }
-        this.model.Where(School.SchoolId, "=", entity.SchoolId)
-        if SchoolEntity.FlagDelete == entity.Flag() {
-            // todo::填充修改字段
-        } else if SchoolEntity.FlagUpdate == entity.Flag() {
-            // todo::填充修改字段
-        }
-        this.model.Set(School.UpdateTime, entity.UpdateTime)
-    } else { //新增
-        this.model.Set(School.SchoolName, entity.SchoolName) //学校名称
-        this.model.Set(School.Ip, entity.Ip)                 //海康存储ip地址
-        this.model.Set(School.Port, entity.Port)             //海康存储端口
-        this.model.Set(School.UserName, entity.UserName)     //海康存储用户名
-        this.model.Set(School.Password, entity.Password)     //海康存储用户密码
-        this.model.Set(School.CreateTime, entity.CreateTime) //创建时间
-        this.model.Set(School.UpdateTime, entity.UpdateTime) //更新时间
-    }
-    return this
+    })
 }
 
 // Add 添加
@@ -98,7 +96,7 @@ func (this *SchoolDao) GetBySchoolIds(schoolIds []int64, fields ...string) []*Sc
     models := this.Models()
     gormDB := this.model.Select(fields...).WhereIn(School.SchoolId, schoolIds).Get(&models)
     this.CheckError(gormDB)
-	return models
+    return models
 }
 
 // DeleteBySchoolId 硬删除
