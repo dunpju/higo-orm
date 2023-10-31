@@ -51,7 +51,7 @@ func (this *Model) New(properties ...him.IProperty) *Model {
 }
 
 func (this *Model) IModel(properties ...him.IProperty) arm.IModel {
-	return this.New(properties...)
+	return New(properties...)
 }
 
 func (this *Model) TableName() *arm.TableName {
