@@ -2,6 +2,7 @@ package gen
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-orm/him"
@@ -17,6 +18,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"regexp"
 	"strings"
 )
@@ -294,10 +296,11 @@ func (this *Model) gen(outDir string) {
 			this.oldAstEach(this.newAstEach())
 		}
 		fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
+		entityPackage := fmt.Sprintf("%sEntity", modelPackage)
 		if this.isGenerateDao.Bool() {
 			newEntity().
 				setOutDir(this.outEntityDir).
-				setPackage(fmt.Sprintf("%sEntity", modelPackage)).
+				setPackage(entityPackage).
 				setTable(t).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
@@ -305,11 +308,18 @@ func (this *Model) gen(outDir string) {
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				gen()
-			newDao().setOutDir(this.outDaoDir).
-				setPackage("dao").
+			goMod := GetModInfo()
+			pwd, _ := os.Getwd()
+			modelImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", utils.Dir.Basename(pwd), strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
+			entityImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", utils.Dir.Basename(pwd), strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
+			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
+			newDao().
+				setOutDir(this.outDaoDir).
+				setDaoFilename(daoFilename).
+				setPackage(utils.Dir.Basename(this.outDaoDir)).
 				setTable(t).
-				setModelInfo(newModelInfo(modelPackage)).
-				setEntityInfo(newEntityInfo()).
+				setModelInfo(newModelInfo(modelImport, modelPackage)).
+				setEntityInfo(newEntityInfo(entityImport, entityPackage)).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setPrimaryKey(primaryKey).
 				setProperties(properties).
@@ -320,7 +330,7 @@ func (this *Model) gen(outDir string) {
 		} else if this.isGenerateEntity.Bool() {
 			newEntity().
 				setOutDir(this.outEntityDir).
-				setPackage(fmt.Sprintf("%sEntity", modelPackage)).
+				setPackage(entityPackage).
 				setTable(t).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
@@ -935,4 +945,39 @@ func LeftStrPad(input string, padLength int, padString string) string {
 		output += padString
 	}
 	return output + input
+}
+
+func GetModInfo() *GoMod {
+	cmd := exec.Command("go", "mod", "edit", "-json")
+	buffer := bytes.NewBufferString("")
+	cmd.Stdout = buffer
+	cmd.Stderr = buffer
+
+	if err := cmd.Run(); err != nil {
+		panic(err)
+	}
+	goMod := &GoMod{}
+	err := json.Unmarshal(buffer.Bytes(), &goMod)
+	if err != nil {
+		panic(err)
+	}
+	return goMod
+}
+
+type GoMod struct {
+	Module  Module
+	Go      string
+	Require []Require
+	Exclude []Module
+}
+
+type Module struct {
+	Path    string
+	Version string
+}
+
+type Require struct {
+	Path     string
+	Version  string
+	Indirect bool
 }

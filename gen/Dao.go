@@ -6,6 +6,7 @@ import (
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-utils/utils"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -20,21 +21,21 @@ const (
 )
 
 type ModelInfo struct {
-	ipt          string
+	modelImport  string
 	modelPackage string
 }
 
-func newModelInfo(ipt string, modelPackage string) ModelInfo {
-	return ModelInfo{ipt: ipt, modelPackage: modelPackage}
+func newModelInfo(modelImport string, modelPackage string) ModelInfo {
+	return ModelInfo{modelImport: modelImport, modelPackage: modelPackage}
 }
 
 type EntityInfo struct {
-	ipt           string
+	entityImport  string
 	entityPackage string
 }
 
-func newEntityInfo(ipt string, entityPackage string) EntityInfo {
-	return EntityInfo{ipt: ipt, entityPackage: entityPackage}
+func newEntityInfo(entityImport string, entityPackage string) EntityInfo {
+	return EntityInfo{entityImport: entityImport, entityPackage: entityPackage}
 }
 
 type Dao struct {
@@ -65,6 +66,11 @@ func (this *Dao) setProperties(properties []property) *Dao {
 
 func (this *Dao) setOutDir(outDir string) *Dao {
 	this.outDir = outDir
+	return this
+}
+
+func (this *Dao) setDaoFilename(daoFilename string) *Dao {
+	this.daoFilename = daoFilename
 	return this
 }
 
@@ -144,9 +150,7 @@ func (this *Dao) gen() {
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
 	this.replaceModelPackage(this.modelInfo.modelPackage)
 	this.replaceRowUpdateTime(rowUpdateTime)
-	fmt.Println(this.stubContext)
-	return
-	this.outfile = this.outDir + string(os.PathSeparator) + this.daoPackage + string(os.PathSeparator) + this.daoFilename
+	this.outfile = this.outDir + string(os.PathSeparator) + this.daoFilename
 	if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 		this.write(this.outfile, this.stubContext)
 		fmt.Println(fmt.Sprintf("Dao IDE %s was created.", this.outfile))
@@ -203,9 +207,10 @@ func (this *Dao) replaceImport() {
 		LeftStrPad(`"github.com/dunpju/higo-orm/exception/DaoException"`, 4, " "),
 		LeftStrPad(`"github.com/dunpju/higo-orm/him"`, 4, " "),
 		LeftStrPad(`"gorm.io/gorm"`, 4, " "),
-		LeftStrPad(this.entityInfo.ipt, 4, " "),
-		LeftStrPad(this.modelInfo.ipt, 4, " "),
+		LeftStrPad(fmt.Sprintf(`"%s"`, this.entityInfo.entityImport), 4, " "),
+		LeftStrPad(fmt.Sprintf(`"%s"`, this.modelInfo.modelImport), 4, " "),
 	}
+	sort.Strings(imports)
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
 
