@@ -308,6 +308,8 @@ func (this *Model) gen(outDir string) {
 			newDao().setOutDir(this.outDaoDir).
 				setPackage("dao").
 				setTable(t).
+				setModelInfo(newModelInfo(modelPackage)).
+				setEntityInfo(newEntityInfo()).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setPrimaryKey(primaryKey).
 				setProperties(properties).

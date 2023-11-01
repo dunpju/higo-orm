@@ -47,8 +47,7 @@ func (this *%MODEL_PACKAGE%Dao) SetData(entity *%MODEL_PACKAGE%Entity.Entity) ar
                 // todo::填充修改字段
             } else if %MODEL_PACKAGE%Entity.FlagUpdate == entity.Flag() {
                 // todo::填充修改字段
-            }
-            %ROW_UPDATE_TIME%
+            }%ROW_UPDATE_TIME%
         } else { //新增
 %MODEL_PROPERTY%
         }
@@ -93,7 +92,7 @@ func (this *%MODEL_PACKAGE%Dao) DeleteBy%UPPER_PRIMARY_KEY%(%PRIMARY_KEY% int64)
 }
 
 // Paginate 列表
-func (this *%MODEL_PACKAGE%Dao) Paginate(perPage, page uint64, where map[string]interface{}) him.Paginate {
+func (this *%MODEL_PACKAGE%Dao) Paginate(perPage, page uint64) him.Paginate {
     models := this.Models()
     gormDB, paginate := this.model.Select().Paginate(page, perPage, &models)
     this.CheckError(gormDB)

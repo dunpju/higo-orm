@@ -24,9 +24,17 @@ type ModelInfo struct {
 	modelPackage string
 }
 
+func newModelInfo(ipt string, modelPackage string) ModelInfo {
+	return ModelInfo{ipt: ipt, modelPackage: modelPackage}
+}
+
 type EntityInfo struct {
 	ipt           string
 	entityPackage string
+}
+
+func newEntityInfo(ipt string, entityPackage string) EntityInfo {
+	return EntityInfo{ipt: ipt, entityPackage: entityPackage}
 }
 
 type Dao struct {
@@ -62,6 +70,11 @@ func (this *Dao) setOutDir(outDir string) *Dao {
 
 func (this *Dao) setModelInfo(modelInfo ModelInfo) *Dao {
 	this.modelInfo = modelInfo
+	return this
+}
+
+func (this *Dao) setEntityInfo(entityInfo EntityInfo) *Dao {
+	this.entityInfo = entityInfo
 	return this
 }
 
@@ -131,7 +144,8 @@ func (this *Dao) gen() {
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
 	this.replaceModelPackage(this.modelInfo.modelPackage)
 	this.replaceRowUpdateTime(rowUpdateTime)
-
+	fmt.Println(this.stubContext)
+	return
 	this.outfile = this.outDir + string(os.PathSeparator) + this.daoPackage + string(os.PathSeparator) + this.daoFilename
 	if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 		this.write(this.outfile, this.stubContext)
@@ -212,5 +226,8 @@ func (this *Dao) replaceModelPackage(modelPackage string) {
 }
 
 func (this *Dao) replaceRowUpdateTime(rowUpdateTime string) {
+	if rowUpdateTime != "" {
+		rowUpdateTime = "\n" + LeftStrPad(rowUpdateTime, 12, " ")
+	}
 	this.stubContext = strings.Replace(this.stubContext, "%ROW_UPDATE_TIME%", rowUpdateTime, 1)
 }
