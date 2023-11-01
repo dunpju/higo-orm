@@ -48,7 +48,7 @@ func (this *Model) Apply(model *arm.Model) {
 }
 
 func (this *Model) Exist() bool {
-    return this.%PRIMARY_KEY% > 0
+    return this.%UPPER_PRIMARY_KEY% > 0
 }
 
 %WITH_PROPERTY%

@@ -29,7 +29,7 @@ func newProperty(isPrimaryKey bool, upperProperty, propertyType, tableField, tab
 type Entity struct {
 	stubContext         string
 	table               Table
-	primaryKey          string
+	upperPrimaryKey     string
 	outDir              string
 	entityFilename      string
 	entityPackage       string
@@ -74,8 +74,8 @@ func (this *Entity) setUpperPropertyMaxLen(upperPropertyMaxLen int) *Entity {
 	return this
 }
 
-func (this *Entity) setPrimaryKey(primaryKey string) *Entity {
-	this.primaryKey = primaryKey
+func (this *Entity) setUpperPrimaryKey(upperPrimaryKey string) *Entity {
+	this.upperPrimaryKey = upperPrimaryKey
 	return this
 }
 
@@ -100,6 +100,11 @@ func (this *Entity) Write(p []byte) (n int, err error) {
 }
 
 func (this *Entity) gen() {
+	var (
+		rowTimeNow string
+		createTime string
+		updateTime string
+	)
 	for _, p := range this.properties {
 		if p.propertyType == "time.Time" {
 			this.mergeImport(`"time"`)
@@ -108,6 +113,14 @@ func (this *Entity) gen() {
 		blankSecond := LeftStrPad(" ", this.propertyTypeMaxLen-len(p.propertyType), " ")
 		blankThree := LeftStrPad(" ", this.fieldMaxLen-len(p.tableField), " ")
 		rowProperty := this.replaceRowProperty(p.upperProperty, blankFirst, p.propertyType, blankSecond, blankThree, p.tableField, p.tableFieldComment)
+		if p.upperProperty == UpperCreateTime {
+			rowTimeNow = "time.Now()"
+			createTime = rowProperty
+		}
+		if p.upperProperty == UpperUpdateTime {
+			rowTimeNow = "time.Now()"
+			updateTime = rowProperty
+		}
 		this.mergeProperty(rowProperty)
 	}
 	this.replacePackage(this.entityPackage)
@@ -115,7 +128,9 @@ func (this *Entity) gen() {
 	this.replaceFields()
 	this.replaceTableComment()
 	this.replaceProperty()
-	this.replacePrimaryKey(this.primaryKey)
+	this.replaceTimeNow(rowTimeNow)
+	this.replaceCreateUpdateTime(createTime, updateTime)
+	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
 	this.outfile = this.outDir + string(os.PathSeparator) + this.entityPackage + string(os.PathSeparator) + this.entityFilename
 	if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 		this.write(this.outfile, this.stubContext)
@@ -212,6 +227,27 @@ func (this *Entity) replaceRowProperty(upperProperty, blankFirst, propertyType, 
 	return stub
 }
 
-func (this *Entity) replacePrimaryKey(primaryKey string) {
-	this.stubContext = strings.Replace(this.stubContext, "%PRIMARY_KEY%", primaryKey, 1)
+func (this *Entity) replaceUpperPrimaryKey(upperPrimaryKey string) {
+	this.stubContext = strings.Replace(this.stubContext, "%UPPER_PRIMARY_KEY%", upperPrimaryKey, 1)
+}
+
+func (this *Entity) replaceTimeNow(timeNow string) {
+	if timeNow != "" {
+		timeNow = "\n" + LeftStrPad(fmt.Sprintf("%s", timeNow), 4, " ")
+	}
+	this.stubContext = strings.Replace(this.stubContext, "%TIME_NOW%", timeNow, 1)
+}
+
+func (this *Entity) replaceCreateUpdateTime(createTime, updateTime string) {
+	var row string
+	if createTime != "" {
+		row = fmt.Sprintf("%s: tn", createTime)
+	}
+	if updateTime != "" {
+		if row != "" {
+			row += ", "
+		}
+		row = fmt.Sprintf("%s: tn", updateTime)
+	}
+	this.stubContext = strings.Replace(this.stubContext, "%CREATE_UPDATE_TIME%", row, 1)
 }

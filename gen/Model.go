@@ -83,6 +83,7 @@ var model = &cobra.Command{
 			confirmBeginGenerate YesNo
 			isMatchCapitalBegan  string
 			outEntityDir         string
+			outDaoDir            string
 		)
 	loopDao:
 		fmt.Print("Whether Generate Dao [yes|no] (default:yes):")
@@ -103,7 +104,7 @@ var model = &cobra.Command{
 			if isMatchCapitalBegan != "" {
 				daoDir = stringutil.Ucfirst(daoDir)
 			}
-			outDaoDir := dirutil.Dirname(out) + `\` + daoDir
+			outDaoDir = dirutil.Dirname(out) + `\` + daoDir
 			fmt.Printf("Confirm Output Directory Of Dao Default (%s)? Enter/Input: ", outDaoDir)
 			n, err = fmt.Scanln(&outDaoDir)
 			if nil != err && n > 0 {
@@ -157,7 +158,7 @@ var model = &cobra.Command{
 		if prefix == "" {
 			prefix = db.DBC().Prefix()
 		}
-		model := newModel(db, prefix, isGenerateDao, isGenerateEntity).setOutEntityDir(outEntityDir)
+		model := newModel(db, prefix, isGenerateDao, isGenerateEntity).setOutEntityDir(outEntityDir).setOutDaoDir(outDaoDir)
 		if allTable == table {
 			model.getTables()
 		} else {
@@ -186,6 +187,7 @@ type Model struct {
 	isGenerateDao       YesNo
 	isGenerateEntity    YesNo
 	outEntityDir        string
+	outDaoDir           string
 }
 
 func newModel(db *him.DB, prefix string, isGenerateDao, isGenerateEntity YesNo) *Model {
@@ -214,6 +216,11 @@ func (this *Model) setOutEntityDir(outEntityDir string) *Model {
 	return this
 }
 
+func (this *Model) setOutDaoDir(outDaoDir string) *Model {
+	this.outDaoDir = outDaoDir
+	return this
+}
+
 func (this *Model) gen(outDir string) {
 	for _, t := range this.tables {
 		this.reset()
@@ -223,6 +230,7 @@ func (this *Model) gen(outDir string) {
 		fieldMaxLen := 0
 		propertyTypeMaxLen := 0
 		primaryKey := ""
+		upperPrimaryKey := ""
 		isPrimaryKey := false
 		properties := make([]property, 0)
 		isBreak := false
@@ -243,7 +251,8 @@ func (this *Model) gen(outDir string) {
 				continue
 			}
 			if field.Key == "PRI" {
-				primaryKey = upperProperty
+				upperPrimaryKey = upperProperty
+				primaryKey = utils.String.Lcfirst(upperProperty)
 				isPrimaryKey = true
 			}
 			if propertyType == "time.Time" {
@@ -269,15 +278,15 @@ func (this *Model) gen(outDir string) {
 			}
 		}
 		this.stubContext = this.originalStubContext
-		pkg := CamelCase(strings.Replace(t.Name, this.prefix, "", 1))
-		this.outfile = outDir + string(os.PathSeparator) + pkg + string(os.PathSeparator) + this.modelFilename
-		this.replacePackage(pkg)
+		modelPackage := CamelCase(strings.Replace(t.Name, this.prefix, "", 1))
+		this.outfile = outDir + string(os.PathSeparator) + modelPackage + string(os.PathSeparator) + this.modelFilename
+		this.replacePackage(modelPackage)
 		this.replaceImport()
 		this.replaceFields()
 		this.replaceTableComment()
 		this.replaceProperty()
 		this.replaceTableName(t.Name)
-		this.replacePrimaryKey(primaryKey)
+		this.replaceUpperPrimaryKey(upperPrimaryKey)
 		this.replaceWithProperty()
 		if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 			this.write(this.outfile, this.stubContext)
@@ -288,21 +297,30 @@ func (this *Model) gen(outDir string) {
 		if this.isGenerateDao.Bool() {
 			newEntity().
 				setOutDir(this.outEntityDir).
-				setPackage(fmt.Sprintf("%sEntity", pkg)).
+				setPackage(fmt.Sprintf("%sEntity", modelPackage)).
 				setTable(t).
+				setUpperPrimaryKey(upperPrimaryKey).
+				setProperties(properties).
+				setFieldMaxLen(fieldMaxLen).
+				setPropertyTypeMaxLen(propertyTypeMaxLen).
+				setUpperPropertyMaxLen(upperPropertyMaxLen).
+				gen()
+			newDao().setOutDir(this.outDaoDir).
+				setPackage("dao").
+				setTable(t).
+				setUpperPrimaryKey(upperPrimaryKey).
 				setPrimaryKey(primaryKey).
 				setProperties(properties).
 				setFieldMaxLen(fieldMaxLen).
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				gen()
-			//templates.NewDao(modelTool, genModel, *entity).Generate()
 		} else if this.isGenerateEntity.Bool() {
 			newEntity().
 				setOutDir(this.outEntityDir).
-				setPackage(fmt.Sprintf("%sEntity", pkg)).
+				setPackage(fmt.Sprintf("%sEntity", modelPackage)).
 				setTable(t).
-				setPrimaryKey(primaryKey).
+				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
 				setFieldMaxLen(fieldMaxLen).
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
@@ -456,8 +474,8 @@ func (this *Model) replaceTableName(tableName string) {
 	this.stubContext = strings.Replace(this.stubContext, "%TABLE_NAME%", tableName, 1)
 }
 
-func (this *Model) replacePrimaryKey(primaryKey string) {
-	this.stubContext = strings.Replace(this.stubContext, "%PRIMARY_KEY%", primaryKey, 1)
+func (this *Model) replaceUpperPrimaryKey(upperPrimaryKey string) {
+	this.stubContext = strings.Replace(this.stubContext, "%UPPER_PRIMARY_KEY%", upperPrimaryKey, 1)
 }
 
 func (this *Model) replaceWithProperty() {

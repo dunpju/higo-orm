@@ -13,9 +13,8 @@ type Entity struct {
 %PROPERTY%
 }
 
-func New() *Entity {
-	tn := time.Now()
-	return &Entity{CreateTime: tn, UpdateTime: tn}
+func New() *Entity {%TIME_NOW%
+	return &Entity{%CREATE_UPDATE_TIME%}
 }
 
 func (this *Entity) IsEdit() bool {
@@ -36,5 +35,5 @@ func (this *Entity) Flag() arm.Flag {
 }
 
 func (this *Entity) PrimaryEmpty() bool {
-	return this.%PRIMARY_KEY% == 0
+	return this.%UPPER_PRIMARY_KEY% == 0
 }

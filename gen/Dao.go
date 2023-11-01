@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-var UpperUpdateTime = "UpdateTime" // 大驼峰更新时间属性
+var (
+	UpperCreateTime = "CreateTime"
+	UpperUpdateTime = "UpdateTime"
+)
 
 const (
 	daoStubFilename         = "dao.stub"
