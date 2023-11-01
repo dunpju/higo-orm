@@ -19,12 +19,12 @@ func (this *%MODEL_PACKAGE%Dao) SetModel(model arm.IModel) {
     this.model = model.(*%MODEL_PACKAGE%.Model)
 }
 
-func (this *SchoolDao) GetModel() arm.IModel {
+func (this *%MODEL_PACKAGE%Dao) GetModel() arm.IModel {
     return this.model
 }
 
 func (this *%MODEL_PACKAGE%Dao) Model() *%MODEL_PACKAGE%.Model {
-    return School.New()
+    return %MODEL_PACKAGE%.New()
 }
 
 func (this *%MODEL_PACKAGE%Dao) Models() []*%MODEL_PACKAGE%.Model {
