@@ -14,7 +14,8 @@ begin:
 		panic(err)
 	}
 	if len(files) == 0 {
-		childPath = append(childPath, utils.Dir.Basename(targetPath))
+		path := []string{utils.Dir.Basename(targetPath)}
+		childPath = append(path, childPath...)
 		targetPath = abovePath
 		goto begin
 	}
