@@ -115,11 +115,10 @@ func (this *Entity) gen() {
 		rowProperty := this.replaceRowProperty(p.upperProperty, blankFirst, p.propertyType, blankSecond, blankThree, p.tableField, p.tableFieldComment)
 		if p.upperProperty == UpperCreateTime {
 			rowTimeNow = "time.Now()"
-			createTime = rowProperty
-		}
-		if p.upperProperty == UpperUpdateTime {
+			createTime = p.upperProperty
+		} else if p.upperProperty == UpperUpdateTime {
 			rowTimeNow = "time.Now()"
-			updateTime = rowProperty
+			updateTime = p.upperProperty
 		}
 		this.mergeProperty(rowProperty)
 	}
@@ -233,7 +232,7 @@ func (this *Entity) replaceUpperPrimaryKey(upperPrimaryKey string) {
 
 func (this *Entity) replaceTimeNow(timeNow string) {
 	if timeNow != "" {
-		timeNow = "\n" + LeftStrPad(fmt.Sprintf("%s", timeNow), 4, " ")
+		timeNow = "\n" + LeftStrPad(fmt.Sprintf("tn := %s", timeNow), 4, " ")
 	}
 	this.stubContext = strings.Replace(this.stubContext, "%TIME_NOW%", timeNow, 1)
 }
@@ -247,7 +246,7 @@ func (this *Entity) replaceCreateUpdateTime(createTime, updateTime string) {
 		if row != "" {
 			row += ", "
 		}
-		row = fmt.Sprintf("%s: tn", updateTime)
+		row += fmt.Sprintf("%s: tn", updateTime)
 	}
 	this.stubContext = strings.Replace(this.stubContext, "%CREATE_UPDATE_TIME%", row, 1)
 }

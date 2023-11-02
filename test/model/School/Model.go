@@ -50,7 +50,7 @@ func (this *Model) New(properties ...him.IProperty) *Model {
 	return this
 }
 
-func (this *Model) IModel(properties ...him.IProperty) arm.IModel {
+func (this *Model) NewModel(properties ...him.IProperty) arm.IModel {
 	return New(properties...)
 }
 
