@@ -309,20 +309,13 @@ func (this *Model) gen(outDir string) {
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				gen()
 			goMod := GetModInfo()
-			pwd, _ := os.Getwd()
-			fmt.Println(pwd)
-			GetGoModPath(pwd)
-			fmt.Println(goMod.Module)
-			fmt.Println(goMod.Module.Path)
-			for _, s := range Dirslice(pwd) {
-				colonRe := regexp.MustCompile(":")
-				if !colonRe.Match([]byte(s)) {
-
-				}
+			pwd, err := os.Getwd()
+			if err != nil {
+				panic(err)
 			}
-			return
-			modelImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", utils.Dir.Basename(pwd), strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
-			entityImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", utils.Dir.Basename(pwd), strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
+			childPath := GetGoModChildPath(pwd)
+			modelImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", strings.Join(childPath, "/"), strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
+			entityImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", strings.Join(childPath, "/"), strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
 			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
 			newDao().
 				setOutDir(this.outDaoDir).

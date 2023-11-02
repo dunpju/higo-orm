@@ -1,36 +1,22 @@
 package gen
 
 import (
-	"fmt"
-	"os"
+	"github.com/dunpju/higo-utils/utils"
 	"path/filepath"
 )
 
-var (
-	hasGoMod  bool
-	goModPath string
-)
-
-func seekGoMod(path string, info os.FileInfo, err error) error {
-	if !info.IsDir() {
-		fmt.Println("路径：", path)
-		if info.Name() == "go.mod" {
-			hasGoMod = true
-			goModPath = path
-		}
-		fmt.Println("是否为目录：", info.IsDir())
-		fmt.Println("文件名：", info.Name())
-		fmt.Println("大小：", info.Size())
-		fmt.Println("权限：", info.Mode())
-		fmt.Println("修改时间：", info.ModTime())
-		fmt.Println()
-	}
-	return err
-}
-
-func GetGoModPath(targetPath string) {
-	err := filepath.Walk(targetPath, seekGoMod)
+func GetGoModChildPath(targetPath string) []string {
+	childPath := make([]string, 0)
+begin:
+	abovePath := utils.Dir.Dirname(targetPath)
+	files, err := filepath.Glob(targetPath + "/go.mod")
 	if err != nil {
 		panic(err)
 	}
+	if len(files) == 0 {
+		childPath = append(childPath, utils.Dir.Basename(targetPath))
+		targetPath = abovePath
+		goto begin
+	}
+	return childPath
 }
