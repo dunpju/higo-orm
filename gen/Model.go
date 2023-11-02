@@ -310,6 +310,17 @@ func (this *Model) gen(outDir string) {
 				gen()
 			goMod := GetModInfo()
 			pwd, _ := os.Getwd()
+			fmt.Println(pwd)
+			GetGoModPath(pwd)
+			fmt.Println(goMod.Module)
+			fmt.Println(goMod.Module.Path)
+			for _, s := range Dirslice(pwd) {
+				colonRe := regexp.MustCompile(":")
+				if !colonRe.Match([]byte(s)) {
+
+				}
+			}
+			return
 			modelImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", utils.Dir.Basename(pwd), strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
 			entityImport := goMod.Module.Path + fmt.Sprintf("/%s/%s", utils.Dir.Basename(pwd), strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
 			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
@@ -980,4 +991,16 @@ type Require struct {
 	Path     string
 	Version  string
 	Indirect bool
+}
+
+func Dirslice(path string) []string {
+	pathSeparator := string(os.PathSeparator)
+	paths := strings.Split(path, pathSeparator)
+	if len(paths) == 1 {
+		re := regexp.MustCompile("/")
+		if re.Match([]byte(paths[0])) {
+			paths = strings.Split(path, pathSeparator)
+		}
+	}
+	return paths
 }
