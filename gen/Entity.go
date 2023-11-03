@@ -12,10 +12,6 @@ import (
 const (
 	entityStubFilename         = "entity.stub"
 	entityPropertyStubFilename = "entityProperty.stub"
-	armImport                  = `"github.com/dunpju/higo-orm/arm"`
-	himImport                  = `"github.com/dunpju/higo-orm/him"`
-	gormImport                 = `"gorm.io/gorm"`
-	daoExceptionImport         = `"github.com/dunpju/higo-orm/exception/DaoException"`
 )
 
 type property struct {
