@@ -78,7 +78,14 @@ func main() {
 		schoolDao.TX(tx).SetData(schoolEntity).Update()
 
 		schoolDao.TX(tx).DeleteBySchoolId(schoolEntity.SchoolId)
-		panic(fmt.Errorf("测试事务异常1"))
+
+		schoolEntity = SchoolEntity.New()
+		schoolEntity.SchoolName = "SchoolName" + time.Now().Format(time.DateTime)
+		schoolEntity.Ip = "Ip" + time.Now().Format(time.DateTime)
+		schoolEntity.Port = "Port" + time.Now().Format(time.DateTime)
+		schoolEntity.UserName = "UserName" + time.Now().Format(time.DateTime)
+		schoolEntity.Password = "Password" + time.Now().Format(time.DateTime)
+		_, schoolEntity.SchoolId = schoolDao.TX(tx).SetData(schoolEntity).Add()
 
 		return fmt.Errorf("测试事务异常")
 	})
