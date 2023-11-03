@@ -92,9 +92,9 @@ func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
 }
 
 // GetBySchoolIds id集查询
-func (this *SchoolDao) GetBySchoolIds(schoolIds []int64, fields ...string) []*School.Model {
+func (this *SchoolDao) GetBySchoolIds(schoolIds []int64) []*School.Model {
 	models := this.Models()
-	gormDB := this.model.Select(fields...).WhereIn(School.SchoolId, schoolIds).Get(&models)
+	gormDB := this.model.Select().WhereIn(School.SchoolId, schoolIds).Get(&models)
 	this.CheckError(gormDB)
 	return models
 }
@@ -107,7 +107,7 @@ func (this *SchoolDao) DeleteBySchoolId(schoolId int64) *gorm.DB {
 }
 
 // Paginate 列表
-func (this *SchoolDao) Paginate(perPage, page uint64, where map[string]interface{}) him.Paginate {
+func (this *SchoolDao) Paginate(perPage, page uint64) him.Paginate {
 	models := this.Models()
 	gormDB, paginate := this.model.Select().Paginate(page, perPage, &models)
 	this.CheckError(gormDB)
