@@ -37,6 +37,7 @@ type Entity struct {
 	propertyString      []string
 	imports             []string
 	flags               []string
+	upperProperties     []string
 	properties          []property
 	newFileBuf          *bytes.Buffer
 	fieldMaxLen         int
@@ -86,12 +87,13 @@ func (this *Entity) setTable(table Table) *Entity {
 
 func newEntity() *Entity {
 	return &Entity{
-		stubContext:    stubs.NewStub(entityStubFilename).Context(),
-		entityFilename: "Entity.go",
-		imports:        make([]string, 0),
-		flags:          make([]string, 0),
-		propertyString: make([]string, 0),
-		newFileBuf:     bytes.NewBufferString(""),
+		stubContext:     stubs.NewStub(entityStubFilename).Context(),
+		entityFilename:  "Entity.go",
+		imports:         make([]string, 0),
+		flags:           make([]string, 0),
+		upperProperties: make([]string, 0),
+		propertyString:  make([]string, 0),
+		newFileBuf:      bytes.NewBufferString(""),
 	}
 }
 
