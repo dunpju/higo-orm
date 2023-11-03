@@ -257,7 +257,7 @@ func (this *Model) gen(outDir string) {
 				primaryKey = utils.String.Lcfirst(upperProperty)
 				isPrimaryKey = true
 			}
-			if propertyType == "time.Time" {
+			if propertyType == timeImport {
 				this.mergeImport(`"time"`)
 			}
 			this.appendProperty(upperProperty)

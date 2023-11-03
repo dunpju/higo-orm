@@ -106,7 +106,7 @@ func (this *Entity) gen() {
 		updateTime string
 	)
 	for _, p := range this.properties {
-		if p.propertyType == "time.Time" {
+		if p.propertyType == timeImport {
 			this.mergeImport(`"time"`)
 		}
 		blankFirst := LeftStrPad(" ", this.upperPropertyMaxLen-len(p.upperProperty), " ")
@@ -114,10 +114,10 @@ func (this *Entity) gen() {
 		blankThree := LeftStrPad(" ", this.fieldMaxLen-len(p.tableField), " ")
 		rowProperty := this.replaceRowProperty(p.upperProperty, blankFirst, p.propertyType, blankSecond, blankThree, p.tableField, p.tableFieldComment)
 		if p.upperProperty == UpperCreateTime {
-			rowTimeNow = "time.Now()"
+			rowTimeNow = timeNow
 			createTime = p.upperProperty
 		} else if p.upperProperty == UpperUpdateTime {
-			rowTimeNow = "time.Now()"
+			rowTimeNow = timeNow
 			updateTime = p.upperProperty
 		}
 		this.mergeProperty(rowProperty)
