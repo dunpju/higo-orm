@@ -64,7 +64,7 @@ func (this *Entity) newAstEach() *AlternativeAst {
 															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
 																if ident, ok := starExpr.X.(*ast.Ident); ok {
 																	if ident.Name == modelStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
-																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, n))
+																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, fileSet, n))
 																	}
 																}
 															}
@@ -297,7 +297,7 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
 																if ident, ok := starExpr.X.(*ast.Ident); ok {
 																	if ident.Name == modelStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
-																		funcList.append(newFnDecl(selectorExpr.Sel.Name, n))
+																		funcList.append(newFnDecl(selectorExpr.Sel.Name, fileSet, n))
 																		isWithFunc = true
 																	}
 																}

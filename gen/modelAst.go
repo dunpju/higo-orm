@@ -64,7 +64,7 @@ func (this *Model) newAstEach() *AlternativeAst {
 															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
 																if ident, ok := starExpr.X.(*ast.Ident); ok {
 																	if ident.Name == modelStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
-																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, n))
+																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, fileSet, n))
 																	}
 																}
 															}
@@ -297,7 +297,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
 																if ident, ok := starExpr.X.(*ast.Ident); ok {
 																	if ident.Name == modelStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
-																		funcList.append(newFnDecl(selectorExpr.Sel.Name, n))
+																		funcList.append(newFnDecl(selectorExpr.Sel.Name, fileSet, n))
 																		isWithFunc = true
 																	}
 																}
@@ -330,7 +330,7 @@ func (this *Model) oldAstEach(alternativeAst *AlternativeAst) {
 
 	for _, fd := range funcList.collect {
 		funcDeclWrite := newFuncDeclWrite()
-		err = printer.Fprint(funcDeclWrite, fileSet, fd.Fd)
+		err = printer.Fprint(funcDeclWrite, fd.FileSet, fd.Fd)
 		if err != nil {
 			panic(err)
 		}

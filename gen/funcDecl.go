@@ -3,6 +3,7 @@ package gen
 import (
 	"bytes"
 	"go/ast"
+	"go/token"
 )
 
 type funcListCollect struct {
@@ -31,12 +32,13 @@ func (this *funcListCollect) append(fd FnDecl) {
 }
 
 type FnDecl struct {
-	Name string
-	Fd   *ast.FuncDecl
+	Name    string
+	FileSet *token.FileSet
+	Fd      *ast.FuncDecl
 }
 
-func newFnDecl(name string, fd *ast.FuncDecl) FnDecl {
-	return FnDecl{Name: name, Fd: fd}
+func newFnDecl(name string, fileSet *token.FileSet, fd *ast.FuncDecl) FnDecl {
+	return FnDecl{Name: name, FileSet: fileSet, Fd: fd}
 }
 
 type FuncDeclWrite struct {
