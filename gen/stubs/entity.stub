@@ -30,8 +30,8 @@ func (this *Entity) SetFlag(flag arm.Flag) {
 	this._edit = true
 }
 
-func (this *Entity) Flag() arm.Flag {
-	return this._flag
+func (this *Entity) IsFlag(flag arm.Flag) bool {
+	return this._flag == flag
 }
 
 func (this *Entity) PrimaryEmpty() bool {

@@ -48,10 +48,10 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 				DaoException.Throw("不存在", 0)
 			}
 			this.model.Where(School.SchoolId, "=", entity.SchoolId)
-			if SchoolEntity.FlagDelete == entity.Flag() {
+			if entity.IsFlag(SchoolEntity.FlagDelete) {
 				// todo::填充修改字段
 				this.model.Set(School.DeleteTime, entity.UpdateTime)
-			} else if SchoolEntity.FlagUpdate == entity.Flag() {
+			} else if entity.IsFlag(SchoolEntity.FlagUpdate) {
 				// todo::填充修改字段
 				this.model.Set(School.SchoolName, "update_"+entity.SchoolName) //学校名称
 				this.model.Set(School.Ip, "update_"+entity.Ip)                 //海康存储ip地址

@@ -43,9 +43,9 @@ func (this *%MODEL_PACKAGE%Dao) SetData(entity *%MODEL_PACKAGE%Entity.Entity) ar
                 DaoException.Throw("不存在", 0)
             }
             this.model.Where(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, "=", entity.%UPPER_PRIMARY_KEY%)
-            if %MODEL_PACKAGE%Entity.FlagDelete == entity.Flag() {
+            if entity.IsFlag(%MODEL_PACKAGE%Entity.FlagDelete) {
                 // todo::填充修改字段
-            } else if %MODEL_PACKAGE%Entity.FlagUpdate == entity.Flag() {
+            } else if entity.IsFlag(%MODEL_PACKAGE%Entity.FlagUpdate) {
                 // todo::填充修改字段
             }%ROW_UPDATE_TIME%
         } else { //新增

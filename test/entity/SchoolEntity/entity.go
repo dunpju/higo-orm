@@ -11,8 +11,8 @@ const (
 )
 
 type Entity struct {
-	isEdit     bool
-	flag       arm.Flag
+	_edit      bool
+	_flag      arm.Flag
 	SchoolId   int64     `json:"schoolId"   comment:"主键"`
 	SchoolName string    `json:"schoolName" comment:"学校名称"`
 	Ip         string    `json:"ip"         comment:"海康存储ip地址"`
@@ -32,20 +32,20 @@ func New() *Entity {
 }
 
 func (this *Entity) IsEdit() bool {
-	return this.isEdit
+	return this._edit
 }
 
 func (this *Entity) Edit(isEdit bool) {
-	this.isEdit = isEdit
+	this._edit = isEdit
 }
 
 func (this *Entity) SetFlag(flag arm.Flag) {
-	this.flag = flag
-	this.isEdit = true
+	this._flag = flag
+	this._edit = true
 }
 
-func (this *Entity) Flag() arm.Flag {
-	return this.flag
+func (this *Entity) IsFlag(flag arm.Flag) bool {
+	return this._flag == flag
 }
 
 func (this *Entity) PrimaryEmpty() bool {
