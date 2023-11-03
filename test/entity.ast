@@ -1,0 +1,396 @@
+     0  *ast.GenDecl {
+     1  .  TokPos: app\entity\SchoolEntity\Entity.go:3:1
+     2  .  Tok: import
+     3  .  Lparen: app\entity\SchoolEntity\Entity.go:3:8
+     4  .  Specs: []ast.Spec (len = 2) {
+     5  .  .  0: *ast.ImportSpec {
+     6  .  .  .  Path: *ast.BasicLit {
+     7  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:4:5
+     8  .  .  .  .  Kind: STRING
+     9  .  .  .  .  Value: "\"github.com/dunpju/higo-orm/arm\""
+    10  .  .  .  }
+    11  .  .  .  EndPos: -
+    12  .  .  }
+    13  .  .  1: *ast.ImportSpec {
+    14  .  .  .  Path: *ast.BasicLit {
+    15  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:5:5
+    16  .  .  .  .  Kind: STRING
+    17  .  .  .  .  Value: "\"time\""
+    18  .  .  .  }
+    19  .  .  .  EndPos: -
+    20  .  .  }
+    21  .  }
+    22  .  Rparen: app\entity\SchoolEntity\Entity.go:6:1
+    23  }
+     0  *ast.GenDecl {
+     1  .  TokPos: app\entity\SchoolEntity\Entity.go:8:1
+     2  .  Tok: const
+     3  .  Lparen: app\entity\SchoolEntity\Entity.go:8:7
+     4  .  Specs: []ast.Spec (len = 2) {
+     5  .  .  0: *ast.ValueSpec {
+     6  .  .  .  Names: []*ast.Ident (len = 1) {
+     7  .  .  .  .  0: *ast.Ident {
+     8  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:9:5
+     9  .  .  .  .  .  Name: "FlagDelete"
+    10  .  .  .  .  .  Obj: *ast.Object {
+    11  .  .  .  .  .  .  Kind: const
+    12  .  .  .  .  .  .  Name: "FlagDelete"
+    13  .  .  .  .  .  .  Decl: *(obj @ 5)
+    14  .  .  .  .  .  .  Data: 0
+    15  .  .  .  .  .  }
+    16  .  .  .  .  }
+    17  .  .  .  }
+    18  .  .  .  Type: *ast.SelectorExpr {
+    19  .  .  .  .  X: *ast.Ident {
+    20  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:9:16
+    21  .  .  .  .  .  Name: "arm"
+    22  .  .  .  .  }
+    23  .  .  .  .  Sel: *ast.Ident {
+    24  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:9:20
+    25  .  .  .  .  .  Name: "Flag"
+    26  .  .  .  .  }
+    27  .  .  .  }
+    28  .  .  .  Values: []ast.Expr (len = 1) {
+    29  .  .  .  .  0: *ast.BinaryExpr {
+    30  .  .  .  .  .  X: *ast.Ident {
+    31  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:9:27
+    32  .  .  .  .  .  .  Name: "iota"
+    33  .  .  .  .  .  }
+    34  .  .  .  .  .  OpPos: app\entity\SchoolEntity\Entity.go:9:32
+    35  .  .  .  .  .  Op: +
+    36  .  .  .  .  .  Y: *ast.BasicLit {
+    37  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:9:34
+    38  .  .  .  .  .  .  Kind: INT
+    39  .  .  .  .  .  .  Value: "1"
+    40  .  .  .  .  .  }
+    41  .  .  .  .  }
+    42  .  .  .  }
+    43  .  .  }
+    44  .  .  1: *ast.ValueSpec {
+    45  .  .  .  Names: []*ast.Ident (len = 1) {
+    46  .  .  .  .  0: *ast.Ident {
+    47  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:10:5
+    48  .  .  .  .  .  Name: "FlagUpdate"
+    49  .  .  .  .  .  Obj: *ast.Object {
+    50  .  .  .  .  .  .  Kind: const
+    51  .  .  .  .  .  .  Name: "FlagUpdate"
+    52  .  .  .  .  .  .  Decl: *(obj @ 44)
+    53  .  .  .  .  .  .  Data: 1
+    54  .  .  .  .  .  }
+    55  .  .  .  .  }
+    56  .  .  .  }
+    57  .  .  }
+    58  .  }
+    59  .  Rparen: app\entity\SchoolEntity\Entity.go:11:1
+    60  }
+     0  *ast.GenDecl {
+     1  .  Doc: *ast.CommentGroup {
+     2  .  .  List: []*ast.Comment (len = 1) {
+     3  .  .  .  0: *ast.Comment {
+     4  .  .  .  .  Slash: app\entity\SchoolEntity\Entity.go:13:1
+     5  .  .  .  .  Text: "// Entity 实体"
+     6  .  .  .  }
+     7  .  .  }
+     8  .  }
+     9  .  TokPos: app\entity\SchoolEntity\Entity.go:14:1
+    10  .  Tok: type
+    11  .  Lparen: -
+    12  .  Specs: []ast.Spec (len = 1) {
+    13  .  .  0: *ast.TypeSpec {
+    14  .  .  .  Name: *ast.Ident {
+    15  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:14:6
+    16  .  .  .  .  Name: "Entity"
+    17  .  .  .  .  Obj: *ast.Object {
+    18  .  .  .  .  .  Kind: type
+    19  .  .  .  .  .  Name: "Entity"
+    20  .  .  .  .  .  Decl: *(obj @ 13)
+    21  .  .  .  .  }
+    22  .  .  .  }
+    23  .  .  .  Assign: -
+    24  .  .  .  Type: *ast.StructType {
+    25  .  .  .  .  Struct: app\entity\SchoolEntity\Entity.go:14:13
+    26  .  .  .  .  Fields: *ast.FieldList {
+    27  .  .  .  .  .  Opening: app\entity\SchoolEntity\Entity.go:14:20
+    28  .  .  .  .  .  List: []*ast.Field (len = 12) {
+    29  .  .  .  .  .  .  0: *ast.Field {
+    30  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    31  .  .  .  .  .  .  .  .  0: *ast.Ident {
+    32  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:15:5
+    33  .  .  .  .  .  .  .  .  .  Name: "_edit"
+    34  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+    35  .  .  .  .  .  .  .  .  .  .  Kind: var
+    36  .  .  .  .  .  .  .  .  .  .  Name: "_edit"
+    37  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 29)
+    38  .  .  .  .  .  .  .  .  .  }
+    39  .  .  .  .  .  .  .  .  }
+    40  .  .  .  .  .  .  .  }
+    41  .  .  .  .  .  .  .  Type: *ast.Ident {
+    42  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:15:16
+    43  .  .  .  .  .  .  .  .  Name: "bool"
+    44  .  .  .  .  .  .  .  }
+    45  .  .  .  .  .  .  }
+    46  .  .  .  .  .  .  1: *ast.Field {
+    47  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    48  .  .  .  .  .  .  .  .  0: *ast.Ident {
+    49  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:16:5
+    50  .  .  .  .  .  .  .  .  .  Name: "_flag"
+    51  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+    52  .  .  .  .  .  .  .  .  .  .  Kind: var
+    53  .  .  .  .  .  .  .  .  .  .  Name: "_flag"
+    54  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 46)
+    55  .  .  .  .  .  .  .  .  .  }
+    56  .  .  .  .  .  .  .  .  }
+    57  .  .  .  .  .  .  .  }
+    58  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+    59  .  .  .  .  .  .  .  .  X: *ast.Ident {
+    60  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:16:16
+    61  .  .  .  .  .  .  .  .  .  Name: "arm"
+    62  .  .  .  .  .  .  .  .  }
+    63  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+    64  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:16:20
+    65  .  .  .  .  .  .  .  .  .  Name: "Flag"
+    66  .  .  .  .  .  .  .  .  }
+    67  .  .  .  .  .  .  .  }
+    68  .  .  .  .  .  .  }
+    69  .  .  .  .  .  .  2: *ast.Field {
+    70  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    71  .  .  .  .  .  .  .  .  0: *ast.Ident {
+    72  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:17:5
+    73  .  .  .  .  .  .  .  .  .  Name: "SchoolId"
+    74  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+    75  .  .  .  .  .  .  .  .  .  .  Kind: var
+    76  .  .  .  .  .  .  .  .  .  .  Name: "SchoolId"
+    77  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 69)
+    78  .  .  .  .  .  .  .  .  .  }
+    79  .  .  .  .  .  .  .  .  }
+    80  .  .  .  .  .  .  .  }
+    81  .  .  .  .  .  .  .  Type: *ast.Ident {
+    82  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:17:16
+    83  .  .  .  .  .  .  .  .  Name: "int64"
+    84  .  .  .  .  .  .  .  }
+    85  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+    86  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:17:26
+    87  .  .  .  .  .  .  .  .  Kind: STRING
+    88  .  .  .  .  .  .  .  .  Value: "`json:\"schoolId\"   comment:\"主键\"`"
+    89  .  .  .  .  .  .  .  }
+    90  .  .  .  .  .  .  }
+    91  .  .  .  .  .  .  3: *ast.Field {
+    92  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+    93  .  .  .  .  .  .  .  .  0: *ast.Ident {
+    94  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:18:5
+    95  .  .  .  .  .  .  .  .  .  Name: "SchoolName"
+    96  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+    97  .  .  .  .  .  .  .  .  .  .  Kind: var
+    98  .  .  .  .  .  .  .  .  .  .  Name: "SchoolName"
+    99  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 91)
+   100  .  .  .  .  .  .  .  .  .  }
+   101  .  .  .  .  .  .  .  .  }
+   102  .  .  .  .  .  .  .  }
+   103  .  .  .  .  .  .  .  Type: *ast.Ident {
+   104  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:18:16
+   105  .  .  .  .  .  .  .  .  Name: "string"
+   106  .  .  .  .  .  .  .  }
+   107  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   108  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:18:26
+   109  .  .  .  .  .  .  .  .  Kind: STRING
+   110  .  .  .  .  .  .  .  .  Value: "`json:\"schoolName\" comment:\"学校名称\"`"
+   111  .  .  .  .  .  .  .  }
+   112  .  .  .  .  .  .  }
+   113  .  .  .  .  .  .  4: *ast.Field {
+   114  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   115  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   116  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:19:5
+   117  .  .  .  .  .  .  .  .  .  Name: "Ip"
+   118  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   119  .  .  .  .  .  .  .  .  .  .  Kind: var
+   120  .  .  .  .  .  .  .  .  .  .  Name: "Ip"
+   121  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 113)
+   122  .  .  .  .  .  .  .  .  .  }
+   123  .  .  .  .  .  .  .  .  }
+   124  .  .  .  .  .  .  .  }
+   125  .  .  .  .  .  .  .  Type: *ast.Ident {
+   126  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:19:16
+   127  .  .  .  .  .  .  .  .  Name: "string"
+   128  .  .  .  .  .  .  .  }
+   129  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   130  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:19:26
+   131  .  .  .  .  .  .  .  .  Kind: STRING
+   132  .  .  .  .  .  .  .  .  Value: "`json:\"ip\"         comment:\"海康存储ip地址\"`"
+   133  .  .  .  .  .  .  .  }
+   134  .  .  .  .  .  .  }
+   135  .  .  .  .  .  .  5: *ast.Field {
+   136  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   137  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   138  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:20:5
+   139  .  .  .  .  .  .  .  .  .  Name: "Port"
+   140  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   141  .  .  .  .  .  .  .  .  .  .  Kind: var
+   142  .  .  .  .  .  .  .  .  .  .  Name: "Port"
+   143  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 135)
+   144  .  .  .  .  .  .  .  .  .  }
+   145  .  .  .  .  .  .  .  .  }
+   146  .  .  .  .  .  .  .  }
+   147  .  .  .  .  .  .  .  Type: *ast.Ident {
+   148  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:20:16
+   149  .  .  .  .  .  .  .  .  Name: "string"
+   150  .  .  .  .  .  .  .  }
+   151  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   152  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:20:26
+   153  .  .  .  .  .  .  .  .  Kind: STRING
+   154  .  .  .  .  .  .  .  .  Value: "`json:\"port\"       comment:\"海康存储端口\"`"
+   155  .  .  .  .  .  .  .  }
+   156  .  .  .  .  .  .  }
+   157  .  .  .  .  .  .  6: *ast.Field {
+   158  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   159  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   160  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:21:5
+   161  .  .  .  .  .  .  .  .  .  Name: "UserName"
+   162  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   163  .  .  .  .  .  .  .  .  .  .  Kind: var
+   164  .  .  .  .  .  .  .  .  .  .  Name: "UserName"
+   165  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 157)
+   166  .  .  .  .  .  .  .  .  .  }
+   167  .  .  .  .  .  .  .  .  }
+   168  .  .  .  .  .  .  .  }
+   169  .  .  .  .  .  .  .  Type: *ast.Ident {
+   170  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:21:16
+   171  .  .  .  .  .  .  .  .  Name: "string"
+   172  .  .  .  .  .  .  .  }
+   173  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   174  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:21:26
+   175  .  .  .  .  .  .  .  .  Kind: STRING
+   176  .  .  .  .  .  .  .  .  Value: "`json:\"userName\"   comment:\"海康存储用户名\"`"
+   177  .  .  .  .  .  .  .  }
+   178  .  .  .  .  .  .  }
+   179  .  .  .  .  .  .  7: *ast.Field {
+   180  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   181  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   182  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:22:5
+   183  .  .  .  .  .  .  .  .  .  Name: "Password"
+   184  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   185  .  .  .  .  .  .  .  .  .  .  Kind: var
+   186  .  .  .  .  .  .  .  .  .  .  Name: "Password"
+   187  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 179)
+   188  .  .  .  .  .  .  .  .  .  }
+   189  .  .  .  .  .  .  .  .  }
+   190  .  .  .  .  .  .  .  }
+   191  .  .  .  .  .  .  .  Type: *ast.Ident {
+   192  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:22:16
+   193  .  .  .  .  .  .  .  .  Name: "string"
+   194  .  .  .  .  .  .  .  }
+   195  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   196  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:22:26
+   197  .  .  .  .  .  .  .  .  Kind: STRING
+   198  .  .  .  .  .  .  .  .  Value: "`json:\"password\"   comment:\"海康存储用户密码\"`"
+   199  .  .  .  .  .  .  .  }
+   200  .  .  .  .  .  .  }
+   201  .  .  .  .  .  .  8: *ast.Field {
+   202  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   203  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   204  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:23:5
+   205  .  .  .  .  .  .  .  .  .  Name: "IsDelete"
+   206  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   207  .  .  .  .  .  .  .  .  .  .  Kind: var
+   208  .  .  .  .  .  .  .  .  .  .  Name: "IsDelete"
+   209  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 201)
+   210  .  .  .  .  .  .  .  .  .  }
+   211  .  .  .  .  .  .  .  .  }
+   212  .  .  .  .  .  .  .  }
+   213  .  .  .  .  .  .  .  Type: *ast.Ident {
+   214  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:23:16
+   215  .  .  .  .  .  .  .  .  Name: "int"
+   216  .  .  .  .  .  .  .  }
+   217  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   218  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:23:26
+   219  .  .  .  .  .  .  .  .  Kind: STRING
+   220  .  .  .  .  .  .  .  .  Value: "`json:\"isDelete\"   comment:\"是否删除:1-否,2-是\"`"
+   221  .  .  .  .  .  .  .  }
+   222  .  .  .  .  .  .  }
+   223  .  .  .  .  .  .  9: *ast.Field {
+   224  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   225  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   226  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:24:5
+   227  .  .  .  .  .  .  .  .  .  Name: "CreateTime"
+   228  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   229  .  .  .  .  .  .  .  .  .  .  Kind: var
+   230  .  .  .  .  .  .  .  .  .  .  Name: "CreateTime"
+   231  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 223)
+   232  .  .  .  .  .  .  .  .  .  }
+   233  .  .  .  .  .  .  .  .  }
+   234  .  .  .  .  .  .  .  }
+   235  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+   236  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   237  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:24:16
+   238  .  .  .  .  .  .  .  .  .  Name: "time"
+   239  .  .  .  .  .  .  .  .  }
+   240  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   241  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:24:21
+   242  .  .  .  .  .  .  .  .  .  Name: "Time"
+   243  .  .  .  .  .  .  .  .  }
+   244  .  .  .  .  .  .  .  }
+   245  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   246  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:24:26
+   247  .  .  .  .  .  .  .  .  Kind: STRING
+   248  .  .  .  .  .  .  .  .  Value: "`json:\"createTime\" comment:\"创建时间\"`"
+   249  .  .  .  .  .  .  .  }
+   250  .  .  .  .  .  .  }
+   251  .  .  .  .  .  .  10: *ast.Field {
+   252  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   253  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   254  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:25:5
+   255  .  .  .  .  .  .  .  .  .  Name: "UpdateTime"
+   256  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   257  .  .  .  .  .  .  .  .  .  .  Kind: var
+   258  .  .  .  .  .  .  .  .  .  .  Name: "UpdateTime"
+   259  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 251)
+   260  .  .  .  .  .  .  .  .  .  }
+   261  .  .  .  .  .  .  .  .  }
+   262  .  .  .  .  .  .  .  }
+   263  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+   264  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   265  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:25:16
+   266  .  .  .  .  .  .  .  .  .  Name: "time"
+   267  .  .  .  .  .  .  .  .  }
+   268  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   269  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:25:21
+   270  .  .  .  .  .  .  .  .  .  Name: "Time"
+   271  .  .  .  .  .  .  .  .  }
+   272  .  .  .  .  .  .  .  }
+   273  .  .  .  .  .  .  .  Tag: *ast.BasicLit {
+   274  .  .  .  .  .  .  .  .  ValuePos: app\entity\SchoolEntity\Entity.go:25:26
+   275  .  .  .  .  .  .  .  .  Kind: STRING
+   276  .  .  .  .  .  .  .  .  Value: "`json:\"updateTime\" comment:\"更新时间\"`"
+   277  .  .  .  .  .  .  .  }
+   278  .  .  .  .  .  .  }
+   279  .  .  .  .  .  .  11: *ast.Field {
+   280  .  .  .  .  .  .  .  Names: []*ast.Ident (len = 1) {
+   281  .  .  .  .  .  .  .  .  0: *ast.Ident {
+   282  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:26:5
+   283  .  .  .  .  .  .  .  .  .  Name: "DeleteTime"
+   284  .  .  .  .  .  .  .  .  .  Obj: *ast.Object {
+   285  .  .  .  .  .  .  .  .  .  .  Kind: var
+   286  .  .  .  .  .  .  .  .  .  .  Name: "DeleteTime"
+   287  .  .  .  .  .  .  .  .  .  .  Decl: *(obj @ 279)
+   288  .  .  .  .  .  .  .  .  .  }
+   289  .  .  .  .  .  .  .  .  }
+   290  .  .  .  .  .  .  .  }
+   291  .  .  .  .  .  .  .  Type: *ast.SelectorExpr {
+   292  .  .  .  .  .  .  .  .  X: *ast.Ident {
+   293  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:26:16
+   294  .  .  .  .  .  .  .  .  .  Name: "time"
+   295  .  .  .  .  .  .  .  .  }
+   296  .  .  .  .  .  .  .  .  Sel: *ast.Ident {
+   297  .  .  .  .  .  .  .  .  .  NamePos: app\entity\SchoolEntity\Entity.go:26:21
+   298  .  .  .  .  .  .  .  .  .  Name: "Time"
+   299  .  .  .  .  .  .  .  .  }
+   300  .  .  .  .  .  .  .  }
+   306  .  .  .  .  .  .  }
+   307  .  .  .  .  .  }
+   308  .  .  .  .  .  Closing: app\entity\SchoolEntity\Entity.go:27:1
+   309  .  .  .  .  }
+   310  .  .  .  .  Incomplete: false
+   311  .  .  .  }
+   312  .  .  }
+   313  .  }
+   314  .  Rparen: -
+   315  }
