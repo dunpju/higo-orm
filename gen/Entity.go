@@ -12,6 +12,10 @@ import (
 const (
 	entityStubFilename         = "entity.stub"
 	entityPropertyStubFilename = "entityProperty.stub"
+	armImport                  = `"github.com/dunpju/higo-orm/arm"`
+	himImport                  = `"github.com/dunpju/higo-orm/him"`
+	gormImport                 = `"gorm.io/gorm"`
+	daoExceptionImport         = `"github.com/dunpju/higo-orm/exception/DaoException"`
 )
 
 type property struct {
@@ -187,7 +191,7 @@ func (this *Entity) replacePackage(pkg string) {
 
 func (this *Entity) replaceImport() {
 	imports := []string{
-		LeftStrPad(`"github.com/dunpju/higo-orm/arm"`, 4, " "),
+		LeftStrPad(armImport, 4, " "),
 	}
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }

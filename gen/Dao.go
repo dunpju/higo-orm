@@ -203,10 +203,10 @@ func (this *Dao) replacePackage(pkg string) {
 
 func (this *Dao) replaceImport() {
 	imports := []string{
-		LeftStrPad(`"github.com/dunpju/higo-orm/arm"`, 4, " "),
-		LeftStrPad(`"github.com/dunpju/higo-orm/exception/DaoException"`, 4, " "),
-		LeftStrPad(`"github.com/dunpju/higo-orm/him"`, 4, " "),
-		LeftStrPad(`"gorm.io/gorm"`, 4, " "),
+		LeftStrPad(armImport, 4, " "),
+		LeftStrPad(daoExceptionImport, 4, " "),
+		LeftStrPad(himImport, 4, " "),
+		LeftStrPad(gormImport, 4, " "),
 		LeftStrPad(fmt.Sprintf(`"%s"`, this.entityInfo.entityImport), 4, " "),
 		LeftStrPad(fmt.Sprintf(`"%s"`, this.modelInfo.modelImport), 4, " "),
 	}

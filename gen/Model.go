@@ -472,8 +472,8 @@ func (this *Model) replacePackage(pkg string) {
 
 func (this *Model) replaceImport() {
 	imports := []string{
-		LeftStrPad(`"github.com/dunpju/higo-orm/arm"`, 4, " "),
-		LeftStrPad(`"github.com/dunpju/higo-orm/him"`, 4, " "),
+		LeftStrPad(armImport, 4, " "),
+		LeftStrPad(himImport, 4, " "),
 	}
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
