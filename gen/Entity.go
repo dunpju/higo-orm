@@ -127,7 +127,7 @@ func (this *Entity) gen() {
 	}
 	this.replacePackage(this.entityPackage)
 	this.replaceImport()
-	this.replaceFields()
+	this.replaceFlags()
 	this.replaceTableComment()
 	this.replaceProperty()
 	this.replaceTimeNow(rowTimeNow)
@@ -136,11 +136,11 @@ func (this *Entity) gen() {
 	this.outfile = this.outDir + string(os.PathSeparator) + this.entityPackage + string(os.PathSeparator) + this.entityFilename
 	if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 		this.write(this.outfile, this.stubContext)
+		fmt.Println(fmt.Sprintf("Entity IDE %s was created.", this.outfile))
 	} else {
-		this.newAstEach()
-		//this.oldAstEach(this.newAstEach())
+		this.oldAstEach(this.newAstEach())
+		fmt.Println(fmt.Sprintf("Entity IDE %s was updated.", this.outfile))
 	}
-	fmt.Println(fmt.Sprintf("Entity IDE %s was created.", this.outfile))
 }
 
 func (this *Entity) write(file, fileContext string) {
@@ -196,7 +196,7 @@ func (this *Entity) replaceImport() {
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
 
-func (this *Entity) replaceFields() {
+func (this *Entity) replaceFlags() {
 	flags := []string{
 		LeftStrPad(`FlagDelete arm.Flag = iota + 1`, 4, " "),
 		LeftStrPad(`FlagUpdate`, 4, " "),

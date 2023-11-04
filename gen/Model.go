@@ -2,7 +2,6 @@ package gen
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-orm/him"
@@ -11,10 +10,8 @@ import (
 	"github.com/dunpju/higo-utils/utils/stringutil"
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
-	"go/ast"
 	"log"
 	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 )
@@ -288,10 +285,12 @@ func (this *Model) gen(outDir string) {
 		this.replaceWithProperty()
 		if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 			this.write(this.outfile, this.stubContext)
+			fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
 		} else {
 			this.oldAstEach(this.newAstEach())
+			fmt.Println(fmt.Sprintf("Model IDE %s was updated.", this.outfile))
 		}
-		fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
+
 		entityPackage := fmt.Sprintf("%sEntity", modelPackage)
 		if this.isGenerateDao.Bool() {
 			newEntity().
@@ -524,19 +523,6 @@ func (this *Model) getTableFields(tableName string) []TableField {
 	return fields
 }
 
-type AlternativeAst struct {
-	imports    []string
-	constNode  *ast.GenDecl
-	structNode *ast.GenDecl
-	starExprs  []*ast.StarExpr
-	fieldsList []*ast.Field
-	funcList   []FnDecl
-}
-
-func newAlternativeAst() *AlternativeAst {
-	return &AlternativeAst{imports: make([]string, 0), starExprs: make([]*ast.StarExpr, 0), fieldsList: make([]*ast.Field, 0), funcList: make([]FnDecl, 0)}
-}
-
 func (this *Model) Write(p []byte) (n int, err error) {
 	return this.newFileBuf.Write(p)
 }
@@ -562,108 +548,4 @@ type TableField struct {
 	Extra      string `gorm:"column:Extra"`
 	Privileges string `gorm:"column:Privileges"`
 	Comment    string `gorm:"column:Comment"`
-}
-
-// 转换字段类型
-func convertFiledType(field TableField) string {
-	types := strings.Split(field.Type, "(")
-	switch types[0] {
-	case "int":
-		return "int"
-	case "integer":
-		return "int"
-	case "mediumint":
-		return "int"
-	case "bit":
-		return "int"
-	case "year":
-		return "int"
-	case "smallint":
-		return "int"
-	case "tinyint":
-		return "int"
-	case "bigint":
-		return "int64"
-	case "decimal":
-		return "float32"
-	case "double":
-		return "float32"
-	case "float":
-		return "float32"
-	case "real":
-		return "float32"
-	case "numeric":
-		return "float32"
-	case "timestamp":
-		return "time.Time"
-	case "datetime":
-		return "time.Time"
-	case "time":
-		return "time.Time"
-	case "binary":
-		return "[]byte"
-	case "varchar":
-		return "string"
-	default:
-		return "interface{}"
-	}
-}
-
-// LeftStrPad
-// input string 原字符串
-// padLength int 规定补齐后的字符串位数
-// padString string 自定义填充字符串
-func LeftStrPad(input string, padLength int, padString string) string {
-	output := ""
-	for i := 1; i <= padLength; i++ {
-		output += padString
-	}
-	return output + input
-}
-
-func GetModInfo() *GoMod {
-	cmd := exec.Command("go", "mod", "edit", "-json")
-	buffer := bytes.NewBufferString("")
-	cmd.Stdout = buffer
-	cmd.Stderr = buffer
-
-	if err := cmd.Run(); err != nil {
-		panic(err)
-	}
-	goMod := &GoMod{}
-	err := json.Unmarshal(buffer.Bytes(), &goMod)
-	if err != nil {
-		panic(err)
-	}
-	return goMod
-}
-
-type GoMod struct {
-	Module  Module
-	Go      string
-	Require []Require
-	Exclude []Module
-}
-
-type Module struct {
-	Path    string
-	Version string
-}
-
-type Require struct {
-	Path     string
-	Version  string
-	Indirect bool
-}
-
-func Dirslice(path string) []string {
-	pathSeparator := string(os.PathSeparator)
-	paths := strings.Split(path, pathSeparator)
-	if len(paths) == 1 {
-		re := regexp.MustCompile("/")
-		if re.Match([]byte(paths[0])) {
-			paths = strings.Split(path, pathSeparator)
-		}
-	}
-	return paths
 }

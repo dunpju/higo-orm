@@ -9,7 +9,6 @@ import (
 	"go/token"
 	"io"
 	"os"
-	"regexp"
 )
 
 // astForeach 遍历
@@ -23,7 +22,6 @@ func (this *Entity) newAstEach() *AlternativeAst {
 	ast.Inspect(astFile, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
-			ast.Print(fileSet, n)
 			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
 				for _, spec := range n.Specs {
 					alternativeAst.imports = append(alternativeAst.imports, spec.(*ast.ImportSpec).Path.Value)
@@ -75,30 +73,6 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 	for _, fd := range alternativeAst.funcList {
 		funcList.append(fd)
 	}
-	hasStarExprArmModel := false
-	ast.Inspect(astFile, func(node ast.Node) bool {
-		switch n := node.(type) {
-		case *ast.GenDecl:
-			if n.Specs != nil && len(n.Specs) > 0 {
-				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
-					structType, structTypeOk := typeSpec.Type.(*ast.StructType)
-					if structTypeOk && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() {
-						for _, field := range structType.Fields.List {
-							if starExpr, starExprOk := field.Type.(*ast.StarExpr); starExprOk {
-								after := fmt.Sprintf("%s.%s", starExpr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
-									starExpr.X.(*ast.SelectorExpr).Sel.String())
-								if starExprArmModel == after {
-									hasStarExprArmModel = true
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return true
-	})
-
 	newFileBuf := bytes.NewBufferString("")
 	ast.Inspect(astFile, func(node ast.Node) bool {
 		switch n := node.(type) {
@@ -119,49 +93,13 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 				newFileBuf.WriteString("\n")
 			} else if n.Tok.IsKeyword() && n.Tok.String() == token.CONST.String() {
-				constNode := newConstNodeCollect()
-				for _, spec := range alternativeAst.constNode.Specs {
-					constNode.append(spec.(*ast.ValueSpec))
+				genDeclWrite := newGenDeclWrite()
+				err = printer.Fprint(genDeclWrite, fileSet, n)
+				if err != nil {
+					panic(err)
 				}
-				for _, spec := range n.Specs {
-					constNode.append(spec.(*ast.ValueSpec))
-				}
-				upperPropertyMaxLen := 0
-				for _, spec := range constNode.collect {
-					for _, ident := range spec.Names {
-						if upperPropertyMaxLen < len(ident.Name) {
-							upperPropertyMaxLen = len(ident.Name)
-						}
-					}
-				}
-				newFileBuf.WriteString(fmt.Sprintf("%s ", token.CONST.String()))
-				if n.Lparen.IsValid() {
-					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.LPAREN.String()))
-				}
-				for _, spec := range constNode.collect {
-					blank := ""
-					for _, ident := range spec.Names {
-						newFileBuf.WriteString(fmt.Sprintf("%s", LeftStrPad(ident.Name, 4, " ")))
-						blank = fmt.Sprintf("%s", LeftStrPad(" ", upperPropertyMaxLen-len(ident.Name), " "))
-						newFileBuf.WriteString(blank)
-					}
-					selectorExpr := spec.Type.(*ast.SelectorExpr)
-					newFileBuf.WriteString(fmt.Sprintf("%s.%s ", selectorExpr.X.(*ast.Ident).Name, selectorExpr.Sel.Name))
-					for _, expr := range spec.Values {
-						newFileBuf.WriteString(fmt.Sprintf("%s %s", token.ASSIGN, expr.(*ast.BasicLit).Value))
-						newFileBuf.WriteString(blank)
-					}
-					newFileBuf.WriteString(fmt.Sprintf("%s%s%s", token.QUO, token.QUO, spec.Comment.Text()))
-					pattern := `\n$`
-					reg, _ := regexp.Compile(pattern)
-					matched := reg.Match([]byte(newFileBuf.String()))
-					if !matched {
-						newFileBuf.WriteString("\n")
-					}
-				}
-				if n.Rparen.IsValid() {
-					newFileBuf.WriteString(fmt.Sprintf("%s\n", token.RPAREN.String()))
-				}
+				genDeclWrite.buf.WriteString("\n")
+				newFileBuf.WriteString(genDeclWrite.buf.String())
 				newFileBuf.WriteString("\n")
 			} else if n.Specs != nil && len(n.Specs) > 0 {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
@@ -178,7 +116,7 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 						fieldsList := newFieldsListCollect()
 						upperPropertyMaxLen := 0
 						propertyTypeMaxLen := 0
-						if typeSpec.Name.String() == modelStructName {
+						if typeSpec.Name.String() == entityStructName {
 							for _, expr := range alternativeAst.starExprs {
 								before := fmt.Sprintf("%s.%s", expr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
 									expr.X.(*ast.SelectorExpr).Sel.String())
@@ -199,7 +137,10 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 								if propertyTypeMaxLen < len(propertyType) {
 									propertyTypeMaxLen = len(propertyType)
 								}
-								propertyTag := field.Tag.Value
+								var propertyTag string
+								if field.Tag != nil {
+									propertyTag = field.Tag.Value
+								}
 								fieldsList.append(upperProperty, propertyType, propertyTag)
 							}
 						}
@@ -226,18 +167,15 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 								if propertyTypeMaxLen < len(propertyType) {
 									propertyTypeMaxLen = len(propertyType)
 								}
-								propertyTag := field.Tag.Value
+								var propertyTag string
+								if field.Tag != nil {
+									propertyTag = field.Tag.Value
+								}
 								fieldsList.append(upperProperty, propertyType, propertyTag)
 							}
 						}
 						for _, starExpr := range starExprList.collect {
-							if starExprArmModel == starExpr {
-								if hasStarExprArmModel {
-									newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
-								}
-							} else {
-								newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
-							}
+							newFileBuf.WriteString(LeftStrPad(fmt.Sprintf("%s%s\n", token.MUL, starExpr), 4, " "))
 						}
 						for _, fr := range fieldsList.collect {
 							upperProperty := fmt.Sprintf("%s%s", fr.upperProperty, LeftStrPad(" ", upperPropertyMaxLen-len(fr.upperProperty), " "))
@@ -250,7 +188,7 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 				}
 			}
 		case *ast.FuncDecl:
-			isWithFunc := false
+			isEntityFunc := false
 			if len(n.Body.List) > 0 {
 				for _, stmt := range n.Body.List {
 					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
@@ -265,9 +203,9 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 														if typeAssertExpr, ok := selectorExpr.X.(*ast.TypeAssertExpr); ok {
 															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
 																if ident, ok := starExpr.X.(*ast.Ident); ok {
-																	if ident.Name == modelStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
+																	if ident.Name == entityStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
 																		funcList.append(newFnDecl(selectorExpr.Sel.Name, fileSet, n))
-																		isWithFunc = true
+																		isEntityFunc = true
 																	}
 																}
 															}
@@ -283,7 +221,7 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 					}
 				}
 			}
-			if !isWithFunc {
+			if !isEntityFunc {
 				funcDeclWrite := newFuncDeclWrite()
 				err = printer.Fprint(funcDeclWrite, fileSet, n)
 				if err != nil {
@@ -298,7 +236,7 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 	})
 	for _, fd := range funcList.collect {
 		funcDeclWrite := newFuncDeclWrite()
-		err = printer.Fprint(funcDeclWrite, fileSet, fd.Fd)
+		err = printer.Fprint(funcDeclWrite, fd.FileSet, fd.Fd)
 		if err != nil {
 			panic(err)
 		}
