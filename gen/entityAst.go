@@ -23,6 +23,7 @@ func (this *Entity) newAstEach() *AlternativeAst {
 	ast.Inspect(astFile, func(node ast.Node) bool {
 		switch n := node.(type) {
 		case *ast.GenDecl:
+			ast.Print(fileSet, n)
 			if n.Tok.IsKeyword() && n.Tok.String() == token.IMPORT.String() {
 				for _, spec := range n.Specs {
 					alternativeAst.imports = append(alternativeAst.imports, spec.(*ast.ImportSpec).Path.Value)
@@ -32,7 +33,7 @@ func (this *Entity) newAstEach() *AlternativeAst {
 			} else if n.Specs != nil && len(n.Specs) > 0 {
 				if typeSpec, ok := n.Specs[0].(*ast.TypeSpec); ok {
 					structType, ok := typeSpec.Type.(*ast.StructType)
-					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == modelStructName {
+					if ok && typeSpec.Name.Obj.Kind.String() == token.TYPE.String() && typeSpec.Name.String() == entityStructName {
 						alternativeAst.structNode = n //找到struct node
 						fieldsList := structType.Fields.List
 						if fieldsList != nil && len(fieldsList) > 0 {
@@ -42,38 +43,6 @@ func (this *Entity) newAstEach() *AlternativeAst {
 									alternativeAst.starExprs = append(alternativeAst.starExprs, starExpr)
 								} else if len(field.Names) > 0 && !ok {
 									alternativeAst.fieldsList = append(alternativeAst.fieldsList, field)
-								}
-							}
-						}
-					}
-				}
-			}
-		case *ast.FuncDecl:
-			if len(n.Body.List) > 0 {
-				for _, stmt := range n.Body.List {
-					if returnStmt, ok := stmt.(*ast.ReturnStmt); ok {
-						for _, result := range returnStmt.Results {
-							if callExpr, ok := result.(*ast.CallExpr); ok {
-								for _, arg := range callExpr.Args {
-									if funcLit, ok := arg.(*ast.FuncLit); ok {
-										for _, s := range funcLit.Body.List {
-											if assignStmt, ok := s.(*ast.AssignStmt); ok {
-												for _, lh := range assignStmt.Lhs {
-													if selectorExpr, ok := lh.(*ast.SelectorExpr); ok {
-														if typeAssertExpr, ok := selectorExpr.X.(*ast.TypeAssertExpr); ok {
-															if starExpr, ok := typeAssertExpr.Type.(*ast.StarExpr); ok {
-																if ident, ok := starExpr.X.(*ast.Ident); ok {
-																	if ident.Name == modelStructName && findProperty(selectorExpr.Sel.Name, this.upperProperties) {
-																		alternativeAst.funcList = append(alternativeAst.funcList, newFnDecl(selectorExpr.Sel.Name, fileSet, n))
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
 								}
 							}
 						}

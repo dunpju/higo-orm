@@ -12,6 +12,7 @@ import (
 const (
 	entityStubFilename         = "entity.stub"
 	entityPropertyStubFilename = "entityProperty.stub"
+	entityStructName           = "Entity"
 )
 
 type property struct {
@@ -136,6 +137,7 @@ func (this *Entity) gen() {
 	if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 		this.write(this.outfile, this.stubContext)
 	} else {
+		this.newAstEach()
 		//this.oldAstEach(this.newAstEach())
 	}
 	fmt.Println(fmt.Sprintf("Entity IDE %s was created.", this.outfile))

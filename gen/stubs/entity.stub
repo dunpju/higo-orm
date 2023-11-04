@@ -25,12 +25,12 @@ func (this *Entity) Edit(isEdit bool) {
 	this._edit = isEdit
 }
 
-func (this *Entity) SetFlag(flag arm.Flag) {
+func (this *Entity) Flag(flag arm.Flag) {
 	this._flag = flag
 	this._edit = true
 }
 
-func (this *Entity) IsFlag(flag arm.Flag) bool {
+func (this *Entity) Equals(flag arm.Flag) bool {
 	return this._flag == flag
 }
 
