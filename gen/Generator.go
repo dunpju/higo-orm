@@ -6,10 +6,10 @@ import (
 	"os"
 )
 
-var generator = &cobra.Command{
+var ModelGenerator = &cobra.Command{
 	Use:   "",
-	Short: "构建工具",
-	Long:  `构建工具`,
+	Short: "Model 构建工具",
+	Long:  `Model 构建工具`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("build tools")
 	},
@@ -20,7 +20,7 @@ func init() {
 }
 
 func Execute() {
-	if err := generator.Execute(); err != nil {
+	if err := ModelGenerator.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

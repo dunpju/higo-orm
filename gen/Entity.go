@@ -116,10 +116,10 @@ func (this *Entity) gen() {
 		blankSecond := LeftStrPad(" ", this.propertyTypeMaxLen-len(p.propertyType), " ")
 		blankThree := LeftStrPad(" ", this.fieldMaxLen-len(p.tableField), " ")
 		rowProperty := this.replaceRowProperty(p.upperProperty, blankFirst, p.propertyType, blankSecond, blankThree, p.tableField, p.tableFieldComment)
-		if p.upperProperty == UpperCreateTime {
+		if p.upperProperty == upperCreateTime {
 			rowTimeNow = timeNow
 			createTime = p.upperProperty
-		} else if p.upperProperty == UpperUpdateTime {
+		} else if p.upperProperty == upperUpdateTime {
 			rowTimeNow = timeNow
 			updateTime = p.upperProperty
 		}

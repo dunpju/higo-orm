@@ -21,6 +21,8 @@ var (
 	conn            string
 	prefix          string
 	out             string
+	upperCreateTime string
+	upperUpdateTime string
 	capitalBeganReg = regexp.MustCompile(`^[A-Z].*`) //匹配大写字母开头
 )
 
@@ -54,14 +56,16 @@ func initModel() {
 	if err != nil {
 		panic(err)
 	}
-	model.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接,默认值:Default")
-	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据库前缀,如:fm_")
+	model.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接")
+	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据表前缀,如:fm_")
 	model.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
 	err = model.MarkFlagRequired("out")
 	if err != nil {
 		panic(err)
 	}
-	generator.AddCommand(model)
+	model.Flags().StringVarP(&upperCreateTime, "CreateTime", "C", "CreateTime", "数据表创建时间")
+	model.Flags().StringVarP(&upperUpdateTime, "UpdateTime", "U", "UpdateTime", "数据表更新时间")
+	ModelGenerator.AddCommand(model)
 }
 
 // go run .\bin\generator.go model --table=school --conn=Default --prefix=ts_ --out=app\models

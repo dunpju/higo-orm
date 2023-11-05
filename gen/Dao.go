@@ -10,11 +10,6 @@ import (
 	"strings"
 )
 
-var (
-	UpperCreateTime = "CreateTime"
-	UpperUpdateTime = "UpdateTime"
-)
-
 const (
 	daoStubFilename         = "dao.stub"
 	daoPropertyStubFilename = "daoProperty.stub"
@@ -138,7 +133,7 @@ func (this *Dao) gen() {
 	for _, p := range this.properties {
 		blankFirst := LeftStrPad(" ", (this.upperPropertyMaxLen-len(p.upperProperty))*2, " ")
 		rowProperty := this.replaceRowProperty(p.upperProperty, blankFirst, p.tableFieldComment)
-		if p.upperProperty == UpperUpdateTime {
+		if p.upperProperty == upperUpdateTime {
 			rowUpdateTime = rowProperty
 		}
 		this.mergeProperty(rowProperty)
