@@ -110,7 +110,7 @@ func (this *Model) GormDB() *gorm.DB {
 }
 
 func (this *Model) Builder(dao IDao, fn func()) IDao {
-	model := this.model.NewModel()
+	model := this.model.Mutate()
 	if this.begin {
 		model.TX(this.db.GormDB())
 	}

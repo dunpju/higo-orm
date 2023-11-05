@@ -13,7 +13,7 @@ type IModel interface {
 	TableName() *TableName
 	Apply(model *Model)
 	Exist() bool
-	NewModel(properties ...him.IProperty) IModel
+	Mutate(properties ...him.IProperty) IModel
 	Begin(opts ...*sql.TxOptions) *him.TX
 	TX(tx *gorm.DB) *Model
 }
