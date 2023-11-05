@@ -38,18 +38,6 @@ const (
 	no                            = "no"
 )
 
-type YesNo string
-
-func (this YesNo) Bool() bool {
-	lower := strings.ToLower(string(this))
-	if lower == "yes" {
-		return true
-	} else if lower == "no" {
-		return false
-	}
-	panic(fmt.Errorf("undefined Constant"))
-}
-
 func initModel() {
 	model.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
 	err := model.MarkFlagRequired("table")

@@ -3,6 +3,7 @@ package gen
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/dunpju/higo-utils/utils"
 	"os"
 	"os/exec"
@@ -10,6 +11,18 @@ import (
 	"regexp"
 	"strings"
 )
+
+type YesNo string
+
+func (this YesNo) Bool() bool {
+	lower := strings.ToLower(string(this))
+	if lower == yes {
+		return true
+	} else if lower == no {
+		return false
+	}
+	panic(fmt.Errorf("undefined Constant"))
+}
 
 // 转换字段类型
 func convertFiledType(field TableField) string {
