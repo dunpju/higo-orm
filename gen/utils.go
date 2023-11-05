@@ -16,9 +16,9 @@ type YesNo string
 
 func (this YesNo) Bool() bool {
 	lower := strings.ToLower(string(this))
-	if lower == yes {
+	if lower == Yes {
 		return true
-	} else if lower == no {
+	} else if lower == No {
 		return false
 	}
 	panic(fmt.Errorf("undefined Constant"))

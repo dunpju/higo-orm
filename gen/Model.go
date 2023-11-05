@@ -34,8 +34,8 @@ const (
 	modelWithPropertyStubFilename = "modelWithProperty.stub"
 	modelStructName               = "Model"
 	starExprArmModel              = "arm.Model"
-	yes                           = "yes"
-	no                            = "no"
+	Yes                           = "yes"
+	No                            = "no"
 )
 
 func initModel() {
@@ -65,7 +65,7 @@ var model = &cobra.Command{
 	Example: "model",
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
-			isGenerateDao        YesNo = yes
+			isGenerateDao        YesNo = Yes
 			isGenerateEntity     YesNo
 			confirmBeginGenerate YesNo
 			isMatchCapitalBegan  string
@@ -78,7 +78,7 @@ var model = &cobra.Command{
 		if nil != err && n > 0 {
 			panic(err)
 		}
-		if (yes != isGenerateDao && no != isGenerateDao) && n > 0 {
+		if (Yes != isGenerateDao && No != isGenerateDao) && n > 0 {
 			goto loopDao
 		}
 		fmt.Printf("Choice Generate Dao: %s\n", isGenerateDao)
@@ -99,7 +99,7 @@ var model = &cobra.Command{
 			}
 			fmt.Printf("Confirmed Output Directory Of Dao: %s\n", outDaoDir)
 			//确认构建dao，默认必须构建entity
-			isGenerateEntity = yes
+			isGenerateEntity = Yes
 			goto loopChoiceGenerateEntity
 		}
 	loopEntity:
@@ -108,7 +108,7 @@ var model = &cobra.Command{
 		if nil != err && n > 0 {
 			panic(err)
 		}
-		if (yes != isGenerateEntity && no != isGenerateEntity) && n > 0 {
+		if (Yes != isGenerateEntity && No != isGenerateEntity) && n > 0 {
 			goto loopEntity
 		}
 	loopChoiceGenerateEntity:
@@ -131,10 +131,10 @@ var model = &cobra.Command{
 	loopConfirmBeginGenerate:
 		fmt.Print("Whether Start Generate [yes|no] (default:yes):")
 		n, err = fmt.Scanln(&confirmBeginGenerate)
-		if (yes != confirmBeginGenerate && no != confirmBeginGenerate) && n > 0 {
+		if (Yes != confirmBeginGenerate && No != confirmBeginGenerate) && n > 0 {
 			goto loopConfirmBeginGenerate
 		}
-		if (yes != confirmBeginGenerate) && n > 0 {
+		if (Yes != confirmBeginGenerate) && n > 0 {
 			goto loopDao
 		}
 		fmt.Print("Start Generate ......\n")
