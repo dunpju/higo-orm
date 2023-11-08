@@ -61,8 +61,8 @@ func initModel() {
 // go run .\bin\generator.go model --table=all --conn=Default --prefix=ts_ --out=app\models
 var ModelCommand = &cobra.Command{
 	Use:     "model",
-	Short:   "m",
-	Long:    "model",
+	Short:   "Model构建工具",
+	Long:    "Model构建工具",
 	Example: "model -t=school -o=app\\models",
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
