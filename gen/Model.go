@@ -38,7 +38,7 @@ const (
 	No                            = "no"
 )
 
-func initModel() {
+func InitModel() {
 	ModelCommand.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
 	err := ModelCommand.MarkFlagRequired("table")
 	if err != nil {
@@ -53,7 +53,6 @@ func initModel() {
 	}
 	ModelCommand.Flags().StringVarP(&upperCreateTime, "CreateTime", "C", "CreateTime", "数据表创建时间")
 	ModelCommand.Flags().StringVarP(&upperUpdateTime, "UpdateTime", "U", "UpdateTime", "数据表更新时间")
-	ModelGenerator.AddCommand(ModelCommand)
 }
 
 // ModelCommand

@@ -15,11 +15,9 @@ var ModelGenerator = &cobra.Command{
 	},
 }
 
-func init() {
-	initModel()
-}
-
 func Execute() {
+	InitModel()
+	ModelGenerator.AddCommand(ModelCommand)
 	if err := ModelGenerator.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
