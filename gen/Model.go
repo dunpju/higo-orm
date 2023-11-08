@@ -39,30 +39,31 @@ const (
 )
 
 func initModel() {
-	model.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
-	err := model.MarkFlagRequired("table")
+	ModelCommand.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
+	err := ModelCommand.MarkFlagRequired("table")
 	if err != nil {
 		panic(err)
 	}
-	model.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接")
-	model.Flags().StringVarP(&prefix, "prefix", "p", "", "数据表前缀,如:fm_")
-	model.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
-	err = model.MarkFlagRequired("out")
+	ModelCommand.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接")
+	ModelCommand.Flags().StringVarP(&prefix, "prefix", "p", "", "数据表前缀,如:fm_")
+	ModelCommand.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
+	err = ModelCommand.MarkFlagRequired("out")
 	if err != nil {
 		panic(err)
 	}
-	model.Flags().StringVarP(&upperCreateTime, "CreateTime", "C", "CreateTime", "数据表创建时间")
-	model.Flags().StringVarP(&upperUpdateTime, "UpdateTime", "U", "UpdateTime", "数据表更新时间")
-	ModelGenerator.AddCommand(model)
+	ModelCommand.Flags().StringVarP(&upperCreateTime, "CreateTime", "C", "CreateTime", "数据表创建时间")
+	ModelCommand.Flags().StringVarP(&upperUpdateTime, "UpdateTime", "U", "UpdateTime", "数据表更新时间")
+	ModelGenerator.AddCommand(ModelCommand)
 }
 
+// ModelCommand
 // go run .\bin\generator.go model --table=school --conn=Default --prefix=ts_ --out=app\models
 // go run .\bin\generator.go model --table=all --conn=Default --prefix=ts_ --out=app\models
-var model = &cobra.Command{
+var ModelCommand = &cobra.Command{
 	Use:     "model",
-	Short:   "模型构建工具",
-	Long:    `模型构建工具`,
-	Example: "model",
+	Short:   "m",
+	Long:    "model",
+	Example: "model -t=school -o=app\\models",
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
 			isGenerateDao        YesNo = Yes
