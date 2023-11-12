@@ -32,29 +32,33 @@ func (this *SelectBuilder) Get(dest interface{}) *gorm.DB {
 	return this.db.GormDB().Raw(sql, args...).Scan(dest)
 }
 
-func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, Paginate) {
+func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, IPaginate) {
+	paginate, ok := dest.(IPaginate)
+	if !ok {
+		paginate = NewPaginate()
+	}
 	countStatement := this.count().Limit(1)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err
-		return this.db.GormDB(), Paginate{}
+		return this.db.GormDB(), paginate
 	}
 	count_ := counter{}
 	this.db.GormDB().Raw(countSql, args...).Scan(&count_)
 	if this.db.GormDB().Error != nil {
-		return this.db.GormDB(), Paginate{}
+		return this.db.GormDB(), paginate
 	}
 	offset := (page - 1) * perPage
 	sql, args, err := this.Offset(offset).Limit(perPage).ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err
-		return this.db.GormDB(), Paginate{}
+		return this.db.GormDB(), paginate
 	}
-	this.db.GormDB().Raw(sql, args...).Scan(dest)
+	this.db.GormDB().Raw(sql, args...).Scan(paginate.GetItems())
 	if this.db.GormDB().Error != nil {
-		return this.db.GormDB(), Paginate{}
+		return this.db.GormDB(), paginate
 	}
-	return this.db.GormDB(), Paginate{Total: uint64(count_.Count_), PerPage: perPage, CurrentPage: page, Items: dest}
+	return this.db.GormDB(), paginate.SetTotal(uint64(count_.Count_)).SetPerPage(perPage).SetCurrentPage(page)
 }
 
 func (this *SelectBuilder) Count() (*gorm.DB, int64) {

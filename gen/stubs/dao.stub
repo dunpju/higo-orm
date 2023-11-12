@@ -92,7 +92,7 @@ func (this *%MODEL_PACKAGE%Dao) DeleteBy%UPPER_PRIMARY_KEY%(%PRIMARY_KEY% int64)
 }
 
 // Paginate 列表
-func (this *%MODEL_PACKAGE%Dao) Paginate(perPage, page uint64) him.Paginate {
+func (this *%MODEL_PACKAGE%Dao) Paginate(perPage, page uint64) him.IPaginate {
     models := this.Models()
     gormDB, paginate := this.model.Select().Paginate(page, perPage, &models)
     this.CheckError(gormDB)
