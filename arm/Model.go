@@ -47,7 +47,7 @@ func (this *Model) Alias(alias string) *Model {
 	return this
 }
 
-func (this *Model) Select(columns ...string) *him.SelectBuilder {
+func (this *Model) Select(columns ...any) *him.SelectBuilder {
 	return this.db.Query().Select(columns...).From(this.table.String())
 }
 

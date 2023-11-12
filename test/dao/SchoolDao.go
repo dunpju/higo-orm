@@ -94,7 +94,7 @@ func (this *SchoolDao) GetBySchoolId(schoolId int64) *School.Model {
 // GetBySchoolIds id集查询
 func (this *SchoolDao) GetBySchoolIds(schoolIds []int64) []*School.Model {
 	models := this.Models()
-	gormDB := this.model.Select().WhereIn(School.SchoolId, schoolIds).Get(&models)
+	gormDB := this.model.Select(School.SchoolId, School.SchoolName).WhereIn(School.SchoolId, schoolIds).Get(&models)
 	this.CheckError(gormDB)
 	return models
 }

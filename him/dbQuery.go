@@ -39,11 +39,11 @@ func (this *Select) Distinct() *Select {
 	return this
 }
 
-func (this *Select) Select(columns ...string) *SelectFrom {
+func (this *Select) Select(columns ...any) *SelectFrom {
 	if len(columns) == 0 {
 		columns = append(columns, "*")
 	}
-	this.db.Builder = this.selectBuilder()._select(columns...)
+	this.db.Builder = this.selectBuilder()._select(ColumnsToString(columns...)...)
 	return newSelectFrom(this.db, this.gormDB)
 }
 

@@ -16,6 +16,10 @@ func columnToString(column any) string {
 	}
 }
 
+func ColumnsToString(columns ...any) []string {
+	return columnsToString(columns...)
+}
+
 func columnsToString(columns ...any) []string {
 	ret := make([]string, 0)
 	for _, column := range columns {
