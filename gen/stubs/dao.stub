@@ -31,7 +31,7 @@ func (this *%MODEL_PACKAGE%Dao) Models() []*%MODEL_PACKAGE%.Model {
     return make([]*%MODEL_PACKAGE%.Model, 0)
 }
 
-func (this *SchoolDao) TX(tx *gorm.DB) *%MODEL_PACKAGE%Dao {
+func (this *%MODEL_PACKAGE%Dao) TX(tx *gorm.DB) *%MODEL_PACKAGE%Dao {
     this.model.TX(tx)
     return this
 }
