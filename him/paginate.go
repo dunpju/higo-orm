@@ -6,6 +6,10 @@ type IPaginate interface {
 	SetCurrentPage(currentPage uint64) IPaginate
 	SetLastPage(lastPage uint64) IPaginate
 	SetItems(items interface{}) IPaginate
+	GetTotal() uint64
+	GetPerPage() uint64
+	GetCurrentPage() uint64
+	GetLastPage() uint64
 	GetItems() interface{}
 }
 
@@ -51,6 +55,18 @@ func (this *Paginate) SetItems(items interface{}) IPaginate {
 	return this
 }
 
+func (this *Paginate) GetTotal() uint64 {
+	return this.Total
+}
+func (this *Paginate) GetPerPage() uint64 {
+	return this.PerPage
+}
+func (this *Paginate) GetCurrentPage() uint64 {
+	return this.CurrentPage
+}
+func (this *Paginate) GetLastPage() uint64 {
+	return this.LastPage
+}
 func (this *Paginate) GetItems() interface{} {
 	return this.Items
 }

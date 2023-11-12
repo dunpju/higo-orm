@@ -35,9 +35,10 @@ func (this *SelectBuilder) Get(dest interface{}) *gorm.DB {
 func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, IPaginate) {
 	paginate, ok := dest.(IPaginate)
 	if !ok {
-		paginate = NewPaginate()
+		paginate = NewPaginate(WithItems(dest))
 	}
-	countStatement := this.count().Limit(1)
+	cloneSelectBuilder := this.clone()
+	countStatement := cloneSelectBuilder.count().Limit(1)
 	countSql, args, err := countStatement.ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err

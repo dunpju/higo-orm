@@ -73,6 +73,37 @@ func (this *SelectBuilder) DB() *gorm.DB {
 	return this.db.GormDB()
 }
 
+func (this *SelectBuilder) clone() *SelectBuilder {
+	return &SelectBuilder{
+		db:          this.db,
+		connect:     this.connect,
+		isCount:     this.isCount,
+		countColumn: this.countColumn,
+		isSum:       this.isSum,
+		sumColumn:   this.sumColumn,
+		isRaw:       this.isRaw,
+		isWhereRaw:  this.isWhereRaw,
+		columns:     this.columns,
+		from:        this.from,
+		joins:       this.joins,
+		wheres:      this.wheres,
+		hasOffset:   this.hasOffset,
+		offset:      this.offset,
+		hasLimit:    this.hasLimit,
+		limit:       this.limit,
+		hasOrderBy:  this.hasOrderBy,
+		orderBy:     this.orderBy,
+		hasGroupBys: this.hasGroupBys,
+		groupBys:    this.groupBys,
+		hasHaving:   this.hasHaving,
+		havings:     this.havings,
+		hasColumn:   this.hasColumn,
+		column:      this.column,
+		hasDistinct: this.hasDistinct,
+		Error:       this.Error,
+	}
+}
+
 func (this *SelectBuilder) begin(db *gorm.DB) *SelectBuilder {
 	this.db.gormDB = db
 	return this

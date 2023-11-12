@@ -43,6 +43,14 @@ func main() {
 	select66.Where("user_id", "=", 9)
 	select66.First(&users66)
 	fmt.Println("users66-2:", users66)
+
+	select121, sum1 := connect.Query().
+		Select("*").
+		From("users").
+		Where("user_name", "=", "gh1111").
+		Sum("is_delete")
+	fmt.Println(select121, sum1)
+
 	return
 
 	userNames := make([]string, 0)

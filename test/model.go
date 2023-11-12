@@ -60,6 +60,12 @@ func main() {
 	res = make(map[string]interface{})
 	School.New().Raw("select * from ts_user").Get(&res)
 	fmt.Println(res)
+	var res1 []map[string]interface{}
+	_, paginate := School.New().Select().Paginate(4, 2, &res1)
+	fmt.Println(paginate.GetItems())
+	fmt.Println(paginate.GetTotal())
+	fmt.Println(paginate.GetCurrentPage())
+	fmt.Println(paginate.GetPerPage())
 	school := School.New(School.WithSchoolId(130), School.WithSchoolName("小学"))
 	fmt.Println(school)
 	School.New().Alias("A").Select().Where(School.SchoolId, "=", 1).Get(&res)
