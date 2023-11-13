@@ -57,7 +57,7 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	if this.db.GormDB().Error != nil {
 		return this.db.GormDB(), paginate
 	}
-	return this.db.GormDB(), paginate.SetTotal(uint64(count_.Count_)).SetPerPage(perPage).SetCurrentPage(page).SetLastPage(uint64(math.Ceil(float64(uint64(count_.Count_) / perPage))))
+	return this.db.GormDB(), paginate.SetTotal(uint64(count_.Count_)).SetPerPage(perPage).SetCurrentPage(page).SetLastPage(uint64(math.Ceil(float64(count_.Count_) / float64(perPage))))
 }
 
 func (this *SelectBuilder) Count() (*gorm.DB, int64) {
