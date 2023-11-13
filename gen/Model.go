@@ -10,6 +10,7 @@ import (
 	"github.com/dunpju/higo-utils/utils/stringutil"
 	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
+	"go/token"
 	"log"
 	"os"
 	"regexp"
@@ -445,6 +446,9 @@ func (this *Model) replaceRowProperty(upperProperty, blankFirst, propertyType, b
 }
 
 func (this *Model) replaceRowWithProperty(upperProperty, lowerProperty, propertyType, tableFieldsComment string) string {
+	if token.IsKeyword(lowerProperty) {
+		lowerProperty = fmt.Sprintf("_%s", lowerProperty)
+	}
 	stub := stubs.NewStub(modelWithPropertyStubFilename).Context()
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 3)
 	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 2)
