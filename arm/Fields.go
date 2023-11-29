@@ -12,56 +12,56 @@ var (
 type Fields string
 
 func (this Fields) Pre(pre string) Fields {
-	isMatch := backQuoteReg.Match([]byte(this.String()))
-	if isMatch {
-		return Fields(fmt.Sprintf("%s.%s", pre, this))
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return Fields(fmt.Sprintf("%s.%s", pre, string(this)))
 	}
-	return Fields(fmt.Sprintf("`%s`.`%s`", pre, this))
+	return Fields(fmt.Sprintf("`%s`.`%s`", pre, string(this)))
 }
 
 func (this Fields) AS(as string) string {
-	isMatch := backQuoteReg.Match([]byte(this.String()))
-	if isMatch {
-		return fmt.Sprintf("%s AS %s", this, as)
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s AS %s", string(this), as)
 	}
-	return fmt.Sprintf("`%s` AS `%s`", this, as)
+	return fmt.Sprintf("`%s` AS `%s`", string(this), as)
 }
 
 func (this Fields) ASC() string {
-	isMatch := backQuoteReg.Match([]byte(this.String()))
-	if isMatch {
-		return fmt.Sprintf("%s ASC", this)
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s ASC", string(this))
 	}
-	return fmt.Sprintf("`%s` ASC", this)
+	return fmt.Sprintf("`%s` ASC", string(this))
 }
 
 func (this Fields) DESC() string {
-	isMatch := backQuoteReg.Match([]byte(this.String()))
-	if isMatch {
-		return fmt.Sprintf("%s DESC", this)
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s DESC", string(this))
 	}
-	return fmt.Sprintf("`%s` DESC", this)
+	return fmt.Sprintf("`%s` DESC", string(this))
 }
 
 func (this Fields) COUNT() Fields {
-	isMatch := backQuoteReg.Match([]byte(this.String()))
-	if isMatch {
-		return Fields(fmt.Sprintf("COUNT(%s)", this))
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return Fields(fmt.Sprintf("COUNT(%s)", string(this)))
 	}
-	return Fields(fmt.Sprintf("COUNT(`%s`)", this))
+	return Fields(fmt.Sprintf("COUNT(`%s`)", string(this)))
 }
 
 func (this Fields) SUM() Fields {
-	isMatch := backQuoteReg.Match([]byte(this.String()))
-	if isMatch {
-		return Fields(fmt.Sprintf("SUM(%s)", this))
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return Fields(fmt.Sprintf("SUM(%s)", string(this)))
 	}
-	return Fields(fmt.Sprintf("SUM(`%s`)", this))
+	return Fields(fmt.Sprintf("SUM(`%s`)", string(this)))
 }
 
 func (this Fields) String() string {
-	isMatch := backQuoteReg.Match([]byte(this))
-	if isMatch {
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
 		return string(this)
 	}
 	return fmt.Sprintf("`%s`", string(this))
