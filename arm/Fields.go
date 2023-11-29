@@ -16,7 +16,7 @@ func (this Fields) Pre(pre string) Fields {
 }
 
 func (this Fields) AS(as string) string {
-	return fmt.Sprintf("`%s` AS %s", this, as)
+	return fmt.Sprintf("`%s` AS `%s`", this, as)
 }
 
 func (this Fields) ASC() string {
