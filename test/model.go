@@ -50,7 +50,7 @@ func main() {
 	fmt.Println(School.SchoolName.Pre("A").DESC())
 	fmt.Println(School.SchoolName.Pre("A").AS("sn"))
 	fmt.Println(School.SchoolName.COUNT())
-	fmt.Println(School.SchoolName.COUNT().Pre("B"))
+	fmt.Println(School.SchoolName.Pre("B").COUNT())
 	fmt.Println(School.SchoolName.COUNT().AS("G"))
 	fmt.Println(School.SchoolName.SUM().String())
 	fmt.Println(&YY{})
