@@ -150,7 +150,7 @@ func (this *SelectBuilder) OrderBy(orderBys ...any) *SelectBuilder {
 
 func (this *SelectBuilder) GroupBy(groupBys ...any) *SelectBuilder {
 	this.hasGroupBys = true
-	this.groupBys = append(this.groupBys, columnsToString(groupBys)...)
+	this.groupBys = append(this.groupBys, columnsToString(groupBys...)...)
 	return this
 }
 
