@@ -30,12 +30,16 @@ func asHandle(this string, as string) string {
 type Fields string
 
 func (this Fields) Pre(pre string) Fields {
-	field := string(this)
-	hasBackQuote := backQuoteReg.FindString(field)
-	if hasBackQuote != "" {
-		return Fields(fmt.Sprintf("%s.%s", pre, field))
+	hasBackQuote := backQuoteReg.FindString(pre)
+	if hasBackQuote == "" {
+		pre = fmt.Sprintf("`%s`", pre)
 	}
-	return Fields(fmt.Sprintf("`%s`.`%s`", pre, field))
+	field := string(this)
+	hasBackQuote = backQuoteReg.FindString(field)
+	if hasBackQuote == "" {
+		field = fmt.Sprintf("`%s`", field)
+	}
+	return Fields(fmt.Sprintf("%s.%s", pre, field))
 }
 
 func (this Fields) AS(as string) string {
@@ -79,8 +83,8 @@ func (this Fields) SUM() AsField {
 func (this Fields) String() string {
 	field := string(this)
 	hasBackQuote := backQuoteReg.FindString(field)
-	if hasBackQuote != "" {
-		return field
+	if hasBackQuote == "" {
+		field = fmt.Sprintf("`%s`", field)
 	}
-	return fmt.Sprintf("`%s`", field)
+	return field
 }
