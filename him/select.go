@@ -142,15 +142,15 @@ func (this *SelectBuilder) Limit(limit uint64) *SelectBuilder {
 	return this
 }
 
-func (this *SelectBuilder) OrderBy(orderBys ...string) *SelectBuilder {
+func (this *SelectBuilder) OrderBy(orderBys ...any) *SelectBuilder {
 	this.hasOrderBy = true
-	this.orderBy = orderBys
+	this.orderBy = columnsToString(orderBys...)
 	return this
 }
 
-func (this *SelectBuilder) GroupBy(groupBys ...string) *SelectBuilder {
+func (this *SelectBuilder) GroupBy(groupBys ...any) *SelectBuilder {
 	this.hasGroupBys = true
-	this.groupBys = append(this.groupBys, groupBys...)
+	this.groupBys = append(this.groupBys, columnsToString(groupBys...)...)
 	return this
 }
 

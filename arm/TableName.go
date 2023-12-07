@@ -22,8 +22,15 @@ func (this *TableName) GetAlias() string {
 }
 
 func (this *TableName) String() string {
+	isMatch := backQuoteReg.Match([]byte(this.table))
 	if this.alias != "" {
+		if !isMatch {
+			return fmt.Sprintf("`%s` AS `%s`", this.table, this.alias)
+		}
 		return fmt.Sprintf("%s AS %s", this.table, this.alias)
+	}
+	if !isMatch {
+		return fmt.Sprintf("`%s`", this.table)
 	}
 	return this.table
 }

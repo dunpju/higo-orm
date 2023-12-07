@@ -1,33 +1,90 @@
 package arm
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
+
+var (
+	backQuoteReg = regexp.MustCompile("`")
+)
+
+type AsField string
+
+func (this AsField) AS(as string) string {
+	return asHandle(string(this), as)
+}
+
+func (this AsField) String() string {
+	return string(this)
+}
+
+func asHandle(this string, as string) string {
+	hasBackQuote := backQuoteReg.FindString(this)
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s AS `%s`", this, as)
+	}
+	return fmt.Sprintf("`%s` AS `%s`", this, as)
+}
 
 type Fields string
 
 func (this Fields) Pre(pre string) Fields {
-	return Fields(fmt.Sprintf("%s.%s", pre, this))
+	hasBackQuote := backQuoteReg.FindString(pre)
+	if hasBackQuote == "" {
+		pre = fmt.Sprintf("`%s`", pre)
+	}
+	field := string(this)
+	hasBackQuote = backQuoteReg.FindString(field)
+	if hasBackQuote == "" {
+		field = fmt.Sprintf("`%s`", field)
+	}
+	return Fields(fmt.Sprintf("%s.%s", pre, field))
 }
 
 func (this Fields) AS(as string) string {
-	return fmt.Sprintf("%s AS %s", this, as)
+	return asHandle(string(this), as)
 }
 
 func (this Fields) ASC() string {
-	return fmt.Sprintf("%s ASC", this)
+	field := string(this)
+	hasBackQuote := backQuoteReg.FindString(field)
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s ASC", field)
+	}
+	return fmt.Sprintf("`%s` ASC", field)
 }
 
 func (this Fields) DESC() string {
-	return fmt.Sprintf("%s DESC", this)
+	field := string(this)
+	hasBackQuote := backQuoteReg.FindString(field)
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s DESC", field)
+	}
+	return fmt.Sprintf("`%s` DESC", field)
 }
 
-func (this Fields) COUNT() Fields {
-	return Fields(fmt.Sprintf("COUNT(%s)", this))
+func (this Fields) COUNT() AsField {
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return AsField(fmt.Sprintf("COUNT(%s)", string(this)))
+	}
+	return AsField(fmt.Sprintf("COUNT(`%s`)", string(this)))
 }
 
-func (this Fields) SUM() Fields {
-	return Fields(fmt.Sprintf("SUM(%s)", this))
+func (this Fields) SUM() AsField {
+	hasBackQuote := backQuoteReg.FindString(string(this))
+	if hasBackQuote != "" {
+		return AsField(fmt.Sprintf("SUM(%s)", string(this)))
+	}
+	return AsField(fmt.Sprintf("SUM(`%s`)", string(this)))
 }
 
 func (this Fields) String() string {
-	return string(this)
+	field := string(this)
+	hasBackQuote := backQuoteReg.FindString(field)
+	if hasBackQuote == "" {
+		field = fmt.Sprintf("`%s`", field)
+	}
+	return field
 }
