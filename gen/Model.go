@@ -8,7 +8,6 @@ import (
 	"github.com/dunpju/higo-utils/utils"
 	"github.com/dunpju/higo-utils/utils/dirutil"
 	"github.com/dunpju/higo-utils/utils/stringutil"
-	. "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/spf13/cobra"
 	"go/token"
 	"log"
@@ -224,7 +223,7 @@ func (this *Model) gen(outDir string) {
 		isBreak := false
 	begin:
 		for _, field := range tableFields {
-			upperProperty := CamelCase(field.Field)
+			upperProperty := utils.String.CaseToCamel(field.Field)
 			if upperPropertyMaxLen < len(upperProperty) {
 				upperPropertyMaxLen = len(upperProperty)
 			}
@@ -266,7 +265,7 @@ func (this *Model) gen(outDir string) {
 			}
 		}
 		this.stubContext = this.originalStubContext
-		modelPackage := CamelCase(strings.Replace(t.Name, this.prefix, "", 1))
+		modelPackage := utils.String.CaseToCamel(strings.Replace(t.Name, this.prefix, "", 1))
 		this.outfile = outDir + string(os.PathSeparator) + modelPackage + string(os.PathSeparator) + this.modelFilename
 		this.replacePackage(modelPackage)
 		this.replaceImport()
