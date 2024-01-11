@@ -22,6 +22,12 @@ func (this *DB) Connect() string {
 	return this.connect
 }
 
+func (this *DB) Rest() *DB {
+	this.gormDB.Error = nil
+	this.Error = nil
+	return this
+}
+
 func (this *DB) DBC() *DBConfig {
 	return this.dbc
 }

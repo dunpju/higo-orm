@@ -38,7 +38,7 @@ type connect struct {
 }
 
 func newConnect(dbc *DBConfig, db *DB) *connect {
-	return &connect{dbc: dbc, db: db}
+	return &connect{dbc: dbc, db: db.Rest()}
 }
 
 func (c connect) Dbc() *DBConfig {
