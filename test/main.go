@@ -1,10 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
 func main() {
+	var value interface{}
+	value = "111111111111122222222222222222222222"
+	switch value.(type) {
+	case string:
+		fmt.Println(fmt.Sprintf("%v", value))
+	case int, int64:
+		fmt.Println(fmt.Sprintf("%v", value))
+	case float32, float64:
+		fmt.Println(fmt.Sprintf("%v", value))
+	}
+
 	/*
 		sql, args, err := orm.Query().Select("*").
 			From("tl_privilege_admin").
@@ -40,7 +52,7 @@ func main() {
 
 		// SELECT * FROM tt WHERE a = ? OR b = ? [a b ] <nil>
 		fmt.Println(squirrel.Select("*").From("tt").Where("a = ? OR b = ?", "a", "b ").ToSql())*/
-	
+
 	// select_run(db)
 
 	/*
