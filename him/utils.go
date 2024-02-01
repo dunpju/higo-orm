@@ -46,3 +46,7 @@ func valuesToString[T ValueToStringInterface](values ...T) []string {
 	}
 	return ret
 }
+
+func Values[T ValueToStringInterface](values ...T) []string {
+	return valuesToString(values...)
+}
