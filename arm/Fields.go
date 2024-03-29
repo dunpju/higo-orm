@@ -38,12 +38,10 @@ func (this Fields) string() string {
 	return string(this)
 }
 
-func (this Fields) FIELD(value string, moreValue ...interface {
-	string | int | int8 | int16 | int32 | int64 | float32 | float64
-}) string {
-	values := []string{value}
+func (this Fields) FIELD(value string, moreValue ...interface{}) string {
+	values := []string{fmt.Sprintf("'%s'", value)}
 	for _, value := range moreValue {
-		values = append(values, fmt.Sprintf("%v", value))
+		values = append(values, fmt.Sprintf("'%v'", value))
 	}
 	field := this.string()
 	hasBackQuote := backQuoteReg.FindString(field)
@@ -53,14 +51,10 @@ func (this Fields) FIELD(value string, moreValue ...interface {
 	return fmt.Sprintf("FIELD(`%s`, %s)", field, strings.Join(values, ","))
 }
 
-func (this Fields) IN(value interface {
-	string | int | int8 | int16 | int32 | int64 | float32 | float64
-}, moreValue ...interface {
-	string | int | int8 | int16 | int32 | int64 | float32 | float64
-}) string {
-	values := []string{fmt.Sprintf("%v", value)}
+func (this Fields) IN(value interface{}, moreValue ...interface{}) string {
+	values := []string{fmt.Sprintf("'%v'", value)}
 	for _, value := range moreValue {
-		values = append(values, fmt.Sprintf("%v", value))
+		values = append(values, fmt.Sprintf("'%v'", value))
 	}
 	field := this.string()
 	hasBackQuote := backQuoteReg.FindString(field)
@@ -70,14 +64,10 @@ func (this Fields) IN(value interface {
 	return fmt.Sprintf("`%s` IN(%s)", field, strings.Join(values, ","))
 }
 
-func (this Fields) NotIn(value interface {
-	string | int | int8 | int16 | int32 | int64 | float32 | float64
-}, moreValue ...interface {
-	string | int | int8 | int16 | int32 | int64 | float32 | float64
-}) string {
-	values := []string{fmt.Sprintf("%v", value)}
+func (this Fields) NotIn(value interface{}, moreValue ...interface{}) string {
+	values := []string{fmt.Sprintf("'%v'", value)}
 	for _, value := range moreValue {
-		values = append(values, fmt.Sprintf("%v", value))
+		values = append(values, fmt.Sprintf("'%v'", value))
 	}
 	field := this.string()
 	hasBackQuote := backQuoteReg.FindString(field)

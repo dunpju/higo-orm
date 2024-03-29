@@ -53,6 +53,7 @@ func main() {
 	fmt.Println(School.SchoolName.Pre("B").COUNT())
 	fmt.Println(School.SchoolName.COUNT().AS("G"))
 	fmt.Println(School.SchoolName.SUM().String())
+	fmt.Println(School.SchoolName.IN(1, "g"))
 	fmt.Println(&YY{})
 	res := make(map[string]interface{})
 	School.New().Select().Where("schoolId", "=", 1).First(&res)
