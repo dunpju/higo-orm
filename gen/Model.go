@@ -305,8 +305,14 @@ func (this *Model) gen(outDir string) {
 			if len(childPath) > 0 {
 				childPathStr = fmt.Sprintf("/%s/", strings.Join(childPath, "/"))
 			}
-			modelImport := goMod.Module.Path + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
-			entityImport := goMod.Module.Path + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
+			var goModModulePath = goMod.Module.Path
+			regex := regexp.MustCompile(`/$`)
+			matched := regex.MatchString(goModModulePath)
+			if !matched {
+				goModModulePath += "/"
+			}
+			modelImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
+			entityImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
 			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
 			newDao().
 				setOutDir(this.outDaoDir).
