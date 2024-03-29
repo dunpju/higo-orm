@@ -28,42 +28,22 @@ func (this YesNo) Bool() bool {
 func convertFiledType(field TableField) string {
 	types := strings.Split(field.Type, "(")
 	switch types[0] {
-	case "int":
-		return "int"
-	case "integer":
-		return "int"
-	case "mediumint":
+	case "int", "smallint", "tinyint", "mediumint", "year":
 		return "int"
 	case "bit":
-		return "int"
-	case "year":
-		return "int"
-	case "smallint":
-		return "int"
-	case "tinyint":
-		return "int"
+		return "byte"
 	case "bigint":
 		return "int64"
-	case "decimal":
+	case "decimal", "double", "float", "real", "numeric":
 		return "float32"
-	case "double":
-		return "float32"
-	case "float":
-		return "float32"
-	case "real":
-		return "float32"
-	case "numeric":
-		return "float32"
-	case "timestamp":
+	case "timestamp", "time", "datetime", "date":
 		return "time.Time"
-	case "datetime":
-		return "time.Time"
-	case "time":
-		return "time.Time"
-	case "binary":
+	case "binary", "varbinary":
 		return "[]byte"
-	case "varchar":
+	case "char", "varchar", "text", "longtext", "mediumtext", "set", "enum":
 		return "string"
+	case "boolean":
+		return "bool"
 	default:
 		return "interface{}"
 	}
