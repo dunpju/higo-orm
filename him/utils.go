@@ -34,3 +34,19 @@ func columnsToString(columns ...any) []string {
 	}
 	return ret
 }
+
+type ValueToStringInterface interface {
+	string | int | int8 | int16 | int32 | int64 | float32 | float64
+}
+
+func valuesToString[T ValueToStringInterface](values ...T) []string {
+	ret := make([]string, 0)
+	for _, value := range values {
+		ret = append(ret, fmt.Sprintf("%v", value))
+	}
+	return ret
+}
+
+func Values[T ValueToStringInterface](values ...T) []string {
+	return valuesToString(values...)
+}
