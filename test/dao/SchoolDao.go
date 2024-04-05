@@ -1,7 +1,9 @@
 package dao
 
 import (
+	"fmt"
 	"github.com/dunpju/higo-orm/arm"
+	"github.com/dunpju/higo-orm/event"
 	"github.com/dunpju/higo-orm/exception/DaoException"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/entity/SchoolEntity"
@@ -71,6 +73,10 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 
 // Add 添加
 func (this *SchoolDao) Add() (gormDB *gorm.DB, lastInsertId int64) {
+	event.AddEvent(event.BeforeInsert, func(data event.EventData) {
+		fmt.Println(data.Table)
+		fmt.Println(this.model.TableName())
+	})
 	gormDB, lastInsertId = this.model.Insert().LastInsertId()
 	this.CheckError(gormDB)
 	return
@@ -107,7 +113,7 @@ func (this *SchoolDao) DeleteBySchoolId(schoolId int64) *gorm.DB {
 }
 
 // Paginate 列表
-func (this *SchoolDao) Paginate(perPage, page uint64) him.Paginate {
+func (this *SchoolDao) Paginate(perPage, page uint64) him.IPaginate {
 	models := this.Models()
 	gormDB, paginate := this.model.Select().Paginate(page, perPage, &models)
 	this.CheckError(gormDB)

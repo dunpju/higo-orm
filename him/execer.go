@@ -3,6 +3,7 @@ package him
 import (
 	"context"
 	"github.com/Masterminds/squirrel"
+	"github.com/dunpju/higo-orm/event"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"time"
@@ -20,6 +21,17 @@ func newExecer(sqlizer squirrel.Sqlizer, gormDB *gorm.DB) *Execer {
 func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
 	gormDB = this.gormDB
 	sql, args, err := this.sqlizer.ToSql()
+
+	switch this.sqlizer.(type) {
+	case *InsertBuilder:
+		event.EventPoint(event.BeforeInsert, event.NewEventData(this.sqlizer.(*InsertBuilder).table, sql, args, err, 0, 0))
+	case *UpdateBuilder:
+		event.EventPoint(event.BeforeUpdate, event.NewEventData(this.sqlizer.(*UpdateBuilder).table, sql, args, err, 0, 0))
+	case *DeleteBuilder:
+		event.EventPoint(event.BeforeDelete, event.NewEventData(this.sqlizer.(*DeleteBuilder).table, sql, args, err, 0, 0))
+	default:
+	}
+
 	if err != nil {
 		gormDB.Error = err
 		return
@@ -39,6 +51,17 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 	stmt.Vars = args
 
 	result, err := gormDB.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
+
+	switch this.sqlizer.(type) {
+	case *InsertBuilder:
+		event.EventPoint(event.AfterInsert, event.NewEventData(this.sqlizer.(*InsertBuilder).table, sql, args, err, 0, 0))
+	case *UpdateBuilder:
+		event.EventPoint(event.AfterUpdate, event.NewEventData(this.sqlizer.(*UpdateBuilder).table, sql, args, err, 0, 0))
+	case *DeleteBuilder:
+		event.EventPoint(event.AfterDelete, event.NewEventData(this.sqlizer.(*DeleteBuilder).table, sql, args, err, 0, 0))
+	default:
+	}
+
 	if err != nil {
 		gormDB.Error = err
 		return

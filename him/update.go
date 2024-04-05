@@ -10,6 +10,7 @@ type UpdateBuilder struct {
 	connect *connect
 	builder squirrel.UpdateBuilder
 	wheres  *Wheres
+	table   string
 	Error   error
 }
 
@@ -31,6 +32,7 @@ func newUpdateBuilder(connect string) *UpdateBuilder {
 
 func (this *UpdateBuilder) update(table string) *UpdateBuilder {
 	this.builder = squirrel.Update(table)
+	this.table = table
 	return this
 }
 

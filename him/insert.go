@@ -14,6 +14,7 @@ type InsertBuilder struct {
 	setValues  []*insertValue
 	affected   int64
 	builder    squirrel.InsertBuilder
+	table      string
 	Error      error
 }
 
@@ -51,6 +52,7 @@ func (this *InsertBuilder) begin(db *gorm.DB) *InsertBuilder {
 
 func (this *InsertBuilder) insert(into string) *InsertBuilder {
 	this.builder = squirrel.Insert(into)
+	this.table = into
 	return this
 }
 

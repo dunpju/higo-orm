@@ -10,6 +10,7 @@ type DeleteBuilder struct {
 	connect *connect
 	builder squirrel.DeleteBuilder
 	wheres  *Wheres
+	table   string
 	Error   error
 }
 
@@ -31,6 +32,7 @@ func newDeleteBuilder(connect string) *DeleteBuilder {
 
 func (this *DeleteBuilder) delete(from string) *DeleteBuilder {
 	this.builder = squirrel.Delete(from)
+	this.table = from
 	return this
 }
 
