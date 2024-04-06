@@ -22,15 +22,7 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 	gormDB = this.gormDB
 	sql, args, err := this.sqlizer.ToSql()
 
-	switch this.sqlizer.(type) {
-	case *InsertBuilder:
-		event.EventPoint(event.BeforeInsert, event.NewEventData(this.sqlizer.(*InsertBuilder).table, sql, args, err, 0, 0))
-	case *UpdateBuilder:
-		event.EventPoint(event.BeforeUpdate, event.NewEventData(this.sqlizer.(*UpdateBuilder).table, sql, args, err, 0, 0))
-	case *DeleteBuilder:
-		event.EventPoint(event.BeforeDelete, event.NewEventData(this.sqlizer.(*DeleteBuilder).table, sql, args, err, 0, 0))
-	default:
-	}
+	this.eventBefore(sql, args, err)
 
 	if err != nil {
 		gormDB.Error = err
@@ -52,15 +44,7 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 
 	result, err := gormDB.Statement.ConnPool.ExecContext(stmt.Context, sql, args...)
 
-	switch this.sqlizer.(type) {
-	case *InsertBuilder:
-		event.EventPoint(event.AfterInsert, event.NewEventData(this.sqlizer.(*InsertBuilder).table, sql, args, err, 0, 0))
-	case *UpdateBuilder:
-		event.EventPoint(event.AfterUpdate, event.NewEventData(this.sqlizer.(*UpdateBuilder).table, sql, args, err, 0, 0))
-	case *DeleteBuilder:
-		event.EventPoint(event.AfterDelete, event.NewEventData(this.sqlizer.(*DeleteBuilder).table, sql, args, err, 0, 0))
-	default:
-	}
+	this.eventAfter(sql, args, err, 0, 0)
 
 	if err != nil {
 		gormDB.Error = err
@@ -80,17 +64,48 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 	}, gormDB.Error)
 
 	id, err := result.LastInsertId()
+
+	this.eventAfter(sql, args, err, id, 0)
+
 	if err != nil {
 		gormDB.Error = err
 		return
 	}
 
 	affected, err := result.RowsAffected()
+
+	this.eventAfter(sql, args, err, id, affected)
+
 	if err != nil {
 		gormDB.Error = err
 		return
 	}
+
 	insertID = id
 	rowsAffected = affected
 	return
+}
+
+func (this Execer) eventBefore(sql string, args []interface{}, err error) {
+	switch this.sqlizer.(type) {
+	case *InsertBuilder:
+		event.Point(event.BeforeInsert, event.NewEventData(this.sqlizer.(*InsertBuilder).table, sql, args, err, 0, 0))
+	case *UpdateBuilder:
+		event.Point(event.BeforeUpdate, event.NewEventData(this.sqlizer.(*UpdateBuilder).table, sql, args, err, 0, 0))
+	case *DeleteBuilder:
+		event.Point(event.BeforeDelete, event.NewEventData(this.sqlizer.(*DeleteBuilder).table, sql, args, err, 0, 0))
+	default:
+	}
+}
+
+func (this Execer) eventAfter(sql string, args []interface{}, err error, lastInsertId int64, rowsAffected int64) {
+	switch this.sqlizer.(type) {
+	case *InsertBuilder:
+		event.Point(event.AfterInsert, event.NewEventData(this.sqlizer.(*InsertBuilder).table, sql, args, err, lastInsertId, rowsAffected))
+	case *UpdateBuilder:
+		event.Point(event.AfterUpdate, event.NewEventData(this.sqlizer.(*UpdateBuilder).table, sql, args, err, lastInsertId, rowsAffected))
+	case *DeleteBuilder:
+		event.Point(event.AfterDelete, event.NewEventData(this.sqlizer.(*DeleteBuilder).table, sql, args, err, lastInsertId, rowsAffected))
+	default:
+	}
 }

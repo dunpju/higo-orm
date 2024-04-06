@@ -71,12 +71,15 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 	})
 }
 
+func init() {
+	event.AddEvent(event.BeforeInsert, School.New().TableName().String(), func(data event.EventData) {
+		fmt.Println(111)
+		fmt.Println(data.Sql)
+	})
+}
+
 // Add 添加
 func (this *SchoolDao) Add() (gormDB *gorm.DB, lastInsertId int64) {
-	event.AddEvent(event.BeforeInsert, func(data event.EventData) {
-		fmt.Println(data.Table)
-		fmt.Println(this.model.TableName())
-	})
 	gormDB, lastInsertId = this.model.Insert().LastInsertId()
 	this.CheckError(gormDB)
 	return

@@ -1,6 +1,7 @@
 package event
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -27,8 +28,8 @@ func eventRegister(iEvent IEvent) {
 	events.add(iEvent.Event(), iEvent)
 }
 
-func EventPoint(event EventType, data EventData) {
-	e := events.get(event)
+func Point(event EventType, data EventData) {
+	e := events.get(event, data.Table)
 	if e != nil {
 		e.Handle(data)
 	}
@@ -36,26 +37,25 @@ func EventPoint(event EventType, data EventData) {
 
 type IEvent interface {
 	Event() EventType
+	Table() string
 	Handle(data EventData)
 }
 
 type EventType int
 
 type EventRepository struct {
-	sort    []EventType
 	syncMap sync.Map
 }
 
 func newEventRepository() *EventRepository {
-	return &EventRepository{sort: []EventType{}}
+	return &EventRepository{}
 }
 
-func (this *EventRepository) Len() int {
-	return len(this.sort)
-}
+const keyFormat = "event:%d-table:%s"
 
-func (this *EventRepository) get(event EventType) IEvent {
-	e, ok := this.syncMap.Load(event)
+func (this *EventRepository) get(event EventType, table string) IEvent {
+	key := fmt.Sprintf(keyFormat, int(event), table)
+	e, ok := this.syncMap.Load(key)
 	if ok {
 		return e.(IEvent)
 	}
@@ -63,11 +63,11 @@ func (this *EventRepository) get(event EventType) IEvent {
 }
 
 func (this *EventRepository) add(event EventType, iEvent IEvent) {
-	_, ok := this.syncMap.Load(event)
+	key := fmt.Sprintf(keyFormat, int(event), iEvent.Table())
+	_, ok := this.syncMap.Load(key)
 	if !ok {
-		this.sort = append(this.sort, event)
+		this.syncMap.Store(key, iEvent)
 	}
-	this.syncMap.Store(event, iEvent)
 }
 
 type EventData struct {
@@ -87,15 +87,20 @@ type EventHandle func(data EventData)
 
 type Event struct {
 	eventType EventType
+	table     string
 	handle    EventHandle
 }
 
-func AddEvent(eventType EventType, handle EventHandle) {
-	eventRegister(&Event{eventType: eventType, handle: handle})
+func AddEvent(eventType EventType, table string, handle EventHandle) {
+	eventRegister(&Event{eventType: eventType, table: table, handle: handle})
 }
 
 func (this *Event) Event() EventType {
 	return this.eventType
+}
+
+func (this *Event) Table() string {
+	return this.table
 }
 
 func (this *Event) Handle(data EventData) {
