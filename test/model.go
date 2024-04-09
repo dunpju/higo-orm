@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/dunpju/higo-orm/event"
 	"github.com/dunpju/higo-orm/him"
 	"github.com/dunpju/higo-orm/test/model/School"
 	"gorm.io/gorm"
@@ -42,6 +43,57 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// 测试事件
+	event.AddEvent(event.BeforeInsert, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("BeforeInsert")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.BeforeUpdate, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("BeforeUpdate")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.BeforeDelete, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("BeforeDelete")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.BeforeRaw, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("BeforeRaw")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.AfterInsert, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("AfterInsert")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.AfterUpdate, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("AfterUpdate")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.AfterDelete, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("AfterDelete")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.AfterRaw, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("AfterRaw")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.BeforeSelect, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("BeforeSelect")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.BeforeCount, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("BeforeSelect")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.AfterSelect, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("AfterSelect")
+		fmt.Println(data.Sql)
+	})
+	event.AddEvent(event.AfterCount, School.New().TableName().String(), func(data event.EventRecord) {
+		fmt.Println("AfterCount")
+		fmt.Println(data.Sql)
+	})
+
 	fmt.Println(School.TableName())
 	fmt.Println(School.TableName().Alias("a"))
 	fmt.Println(School.SchoolName)
@@ -55,35 +107,50 @@ func main() {
 	fmt.Println(School.SchoolName.SUM().String())
 	fmt.Println(School.SchoolName.IN(1, "g"))
 	fmt.Println(&YY{})
-	res := make(map[string]interface{})
-	School.New().Select().Where("schoolId", "=", 1).First(&res)
-	fmt.Println(res)
-	res = make(map[string]interface{})
-	School.New().Raw("select * from ts_user").Get(&res)
-	fmt.Println(res)
-	var res1 []map[string]interface{}
-	_, paginate := School.New().Select().Paginate(4, 2, &res1)
-	fmt.Println(paginate.GetItems())
-	fmt.Println(paginate.GetTotal())
-	fmt.Println(paginate.GetCurrentPage())
-	fmt.Println(paginate.GetPerPage())
+
 	school := School.New(School.WithSchoolId(130), School.WithSchoolName("小学"))
 	fmt.Println(school)
-	School.New().Alias("A").Select().Where(School.SchoolId, "=", 1).Get(&res)
+
 	err = School.New().Begin().Transaction(func(tx *gorm.DB) error {
-		gormDB, rowsAffected := School.New().
+		fmt.Printf("tx %p\n", tx)
+		res := make(map[string]interface{})
+		tx1 := School.New().TX(tx).Select().Where("schoolId", "=", 1).First(&res)
+		fmt.Printf("tx1 %p\n", tx1)
+		fmt.Println(res)
+		tx1_1 := School.New().TX(tx).Select().Raw("SELECT * FROM `school` WHERE (schoolId = ?) LIMIT 1", 2).First(&res)
+		fmt.Printf("tx1_1 %p\n", tx1_1)
+		fmt.Println(res)
+		res = make(map[string]interface{})
+		tx2 := School.New().TX(tx).Raw("select * from ts_user").Get(&res)
+		fmt.Printf("tx2 %p\n", tx2)
+		fmt.Println(res)
+		var res1 []map[string]interface{}
+		tx3, paginate := School.New().TX(tx).Select().Paginate(4, 2, &res1)
+		fmt.Printf("tx3 %p\n", tx3)
+		fmt.Println(paginate.GetItems())
+		fmt.Println(paginate.GetTotal())
+		fmt.Println(paginate.GetCurrentPage())
+		fmt.Println(paginate.GetPerPage())
+
+		tx4 := School.New().TX(tx).Alias("A").Select().Where(School.SchoolId, "=", 1).Get(&res)
+		fmt.Printf("tx4 %p\n", tx4)
+		fmt.Println(res)
+
+		tx5, rowsAffected := School.New().
 			TX(tx).
 			Update().
 			Set(School.UserName, "33").
 			Where(School.SchoolId, "=", 1).
 			Exec()
-		checkError(gormDB)
+		fmt.Printf("tx5 %p\n", tx5)
+		checkError(tx5)
 		fmt.Println(rowsAffected)
 		school1 := School.New().TX(tx).Update().Where(School.SchoolId, "=", 2)
 		school1.Set(School.UserName, "22333")
 		school1.Set(School.Ip, "22111")
-		gormDB, rowsAffected = school1.Exec()
-		checkError(gormDB)
+		tx6, rowsAffected := school1.Exec()
+		fmt.Printf("tx6 %p\n", tx6)
+		checkError(tx6)
 		fmt.Println(rowsAffected)
 		school := School.New().
 			TX(tx).
@@ -91,10 +158,11 @@ func main() {
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime)
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
-		gormDB, affected := school.Save()
-		checkError(gormDB)
+		tx7, affected := school.Save()
+		fmt.Printf("tx7 %p\n", tx7)
+		checkError(tx7)
 		fmt.Println(affected)
-		gormDB, affected1 := School.New().
+		tx8, affected1 := School.New().
 			TX(tx).
 			Insert().
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime).
@@ -102,9 +170,10 @@ func main() {
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
 			Save()
-		checkError(gormDB)
+		fmt.Printf("tx8 %p\n", tx8)
+		checkError(tx8)
 		fmt.Println(affected1)
-		gormDB, lastInsertId := School.New().
+		tx9, lastInsertId := School.New().
 			TX(tx).
 			Insert().
 			Column(School.SchoolName, rand.Intn(6)).
@@ -115,13 +184,17 @@ func main() {
 			Column(School.CreateTime, time.Now()).
 			Column(School.UpdateTime, time.Now()).
 			LastInsertId()
-		checkError(gormDB)
+		fmt.Printf("tx9 %p\n", tx9)
+		checkError(tx9)
 		fmt.Println(lastInsertId)
-		gormDB, _, _ = School.New().TX(tx).Raw("UPDATE school SET userName = '33ff' WHERE (schoolId = ?)", lastInsertId).Exec()
-		checkError(gormDB)
-		//School.Delete().TX(tx).Where(School.SchoolId, "=", lastInsertId).Exec()
-		//return fmt.Errorf("测试事务")
-		return nil
+		tx10, _, _ := School.New().TX(tx).Raw("UPDATE school SET userName = '33ff' WHERE (schoolId = ?)", lastInsertId).Exec()
+		fmt.Printf("tx10 %p\n", tx10)
+		checkError(tx10)
+		tx11, _ := School.New().TX(tx).Delete().Where(School.SchoolId, "=", lastInsertId).Exec()
+		fmt.Printf("tx11 %p\n", tx11)
+		checkError(tx11)
+		return fmt.Errorf("测试事务")
+		// return nil
 	})
 	fmt.Println(err)
 }

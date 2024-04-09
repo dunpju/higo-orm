@@ -22,13 +22,17 @@ const (
 	AfterDelete
 	BeforeSelect
 	AfterSelect
+	BeforeCount
+	AfterCount
+	BeforeRaw
+	AfterRaw
 )
 
 func eventRegister(iEvent IEvent) {
 	events.add(iEvent.Event(), iEvent)
 }
 
-func Point(event EventType, data EventData) {
+func Point(event EventType, data EventRecord) {
 	e := events.get(event, data.Table)
 	if e != nil {
 		e.Handle(data)
@@ -38,7 +42,7 @@ func Point(event EventType, data EventData) {
 type IEvent interface {
 	Event() EventType
 	Table() string
-	Handle(data EventData)
+	Handle(data EventRecord)
 }
 
 type EventType int
@@ -70,20 +74,25 @@ func (this *EventRepository) add(event EventType, iEvent IEvent) {
 	}
 }
 
-type EventData struct {
+type EventRecord struct {
 	Table        string
 	Sql          string
 	Args         []interface{}
 	Err          error
 	LastInsertId int64
 	RowsAffected int64
+	Result       interface{}
 }
 
-func NewEventData(table string, sql string, args []interface{}, err error, lastInsertId int64, rowsAffected int64) EventData {
-	return EventData{Table: table, Sql: sql, Args: args, Err: err, LastInsertId: lastInsertId, RowsAffected: rowsAffected}
+func NewEventRecord(table string, sql string, args []interface{}, err error, lastInsertId int64, rowsAffected int64) EventRecord {
+	return EventRecord{Table: table, Sql: sql, Args: args, Err: err, LastInsertId: lastInsertId, RowsAffected: rowsAffected}
 }
 
-type EventHandle func(data EventData)
+func NewEventRecordResult(table string, sql string, args []interface{}, err error, result interface{}) EventRecord {
+	return EventRecord{Table: table, Sql: sql, Args: args, Err: err, Result: result}
+}
+
+type EventHandle func(data EventRecord)
 
 type Event struct {
 	eventType EventType
@@ -103,6 +112,6 @@ func (this *Event) Table() string {
 	return this.table
 }
 
-func (this *Event) Handle(data EventData) {
+func (this *Event) Handle(data EventRecord) {
 	this.handle(data)
 }

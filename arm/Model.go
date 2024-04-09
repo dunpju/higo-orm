@@ -52,7 +52,7 @@ func (this *Model) Select(columns ...any) *him.SelectBuilder {
 }
 
 func (this *Model) Raw(pred string, args ...interface{}) him.RawBuilder {
-	return him.NewRawBuilder(this.db, pred, args)
+	return him.NewRawBuilder(this.db, pred, args, this.table.String())
 }
 
 func (this *Model) Insert() *him.InsertBuilder {

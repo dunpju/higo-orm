@@ -3,13 +3,14 @@ package him
 import "gorm.io/gorm"
 
 type RawBuilder struct {
-	db   *DB
-	pred string
-	args []interface{}
+	db    *DB
+	pred  string
+	args  []interface{}
+	table string
 }
 
-func NewRawBuilder(db *DB, pred string, args []interface{}) RawBuilder {
-	return RawBuilder{db: db, pred: pred, args: args}
+func NewRawBuilder(db *DB, pred string, args []interface{}, table string) RawBuilder {
+	return RawBuilder{db: db, pred: pred, args: args, table: table}
 }
 
 func (this RawBuilder) ToSql() (string, []interface{}, error) {
