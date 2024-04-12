@@ -122,6 +122,36 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 									expr.X.(*ast.SelectorExpr).Sel.String())
 								starExprList.append(before)
 							}
+							for _, field := range structType.Fields.List {
+								starExpr, starExprOk := field.Type.(*ast.StarExpr)
+								if starExprOk && len(field.Names) == 0 {
+									after := fmt.Sprintf("%s.%s", starExpr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
+										starExpr.X.(*ast.SelectorExpr).Sel.String())
+									starExprList.append(after)
+								} else if len(field.Names) > 0 && !starExprOk {
+									upperProperty := field.Names[0].Name
+									if upperPropertyMaxLen < len(upperProperty) {
+										upperPropertyMaxLen = len(upperProperty)
+									}
+									var propertyType string
+									ident, identOK := field.Type.(*ast.Ident)
+									if identOK {
+										propertyType = ident.String()
+									} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
+										propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
+									} else if _, interfaceTypeOK := field.Type.(*ast.InterfaceType); interfaceTypeOK {
+										propertyType = fmt.Sprintf("%s%s%s", token.INTERFACE, token.LBRACE, token.RBRACE)
+									}
+									if propertyTypeMaxLen < len(propertyType) {
+										propertyTypeMaxLen = len(propertyType)
+									}
+									var propertyTag string
+									if field.Tag != nil {
+										propertyTag = field.Tag.Value
+									}
+									fieldsList.append(upperProperty, propertyType, propertyTag)
+								}
+							}
 							for _, field := range alternativeAst.fieldsList {
 								upperProperty := field.Names[0].Name
 								if upperPropertyMaxLen < len(upperProperty) {
@@ -133,36 +163,6 @@ func (this *Entity) oldAstEach(alternativeAst *AlternativeAst) {
 									propertyType = ident.String()
 								} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
 									propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
-								}
-								if propertyTypeMaxLen < len(propertyType) {
-									propertyTypeMaxLen = len(propertyType)
-								}
-								var propertyTag string
-								if field.Tag != nil {
-									propertyTag = field.Tag.Value
-								}
-								fieldsList.append(upperProperty, propertyType, propertyTag)
-							}
-						}
-						for _, field := range structType.Fields.List {
-							starExpr, starExprOk := field.Type.(*ast.StarExpr)
-							if starExprOk && len(field.Names) == 0 {
-								after := fmt.Sprintf("%s.%s", starExpr.X.(*ast.SelectorExpr).X.(*ast.Ident).String(),
-									starExpr.X.(*ast.SelectorExpr).Sel.String())
-								starExprList.append(after)
-							} else if len(field.Names) > 0 && !starExprOk {
-								upperProperty := field.Names[0].Name
-								if upperPropertyMaxLen < len(upperProperty) {
-									upperPropertyMaxLen = len(upperProperty)
-								}
-								var propertyType string
-								ident, identOK := field.Type.(*ast.Ident)
-								if identOK {
-									propertyType = ident.String()
-								} else if selectorExpr, selectorExprOK := field.Type.(*ast.SelectorExpr); selectorExprOK {
-									propertyType = fmt.Sprintf("%s.%s", selectorExpr.X.(*ast.Ident).String(), selectorExpr.Sel.String())
-								} else if _, interfaceTypeOK := field.Type.(*ast.InterfaceType); interfaceTypeOK {
-									propertyType = fmt.Sprintf("%s%s%s", token.INTERFACE, token.LBRACE, token.RBRACE)
 								}
 								if propertyTypeMaxLen < len(propertyType) {
 									propertyTypeMaxLen = len(propertyType)
