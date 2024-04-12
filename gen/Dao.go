@@ -52,6 +52,7 @@ type Dao struct {
 	fieldMaxLen         int
 	propertyTypeMaxLen  int
 	upperPropertyMaxLen int
+	force               bool
 }
 
 func (this *Dao) setProperties(properties []property) *Dao {
@@ -114,6 +115,11 @@ func (this *Dao) setTable(table Table) *Dao {
 	return this
 }
 
+func (this *Dao) setForce(force bool) *Dao {
+	this.force = force
+	return this
+}
+
 func newDao() *Dao {
 	return &Dao{
 		stubContext:    stubs.NewStub(daoStubFilename).Context(),
@@ -150,7 +156,12 @@ func (this *Dao) gen() {
 		this.write(this.outfile, this.stubContext)
 		fmt.Println(fmt.Sprintf("Dao IDE %s was created.", this.outfile))
 	} else {
-		fmt.Println(fmt.Sprintf("Dao IDE %s was existent.", this.outfile))
+		if this.force {
+			this.write(this.outfile, this.stubContext)
+			fmt.Println(fmt.Sprintf("Dao IDE %s was forced updated.", this.outfile))
+		} else {
+			fmt.Println(fmt.Sprintf("Dao IDE %s was existent.", this.outfile))
+		}
 	}
 }
 

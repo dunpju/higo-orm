@@ -44,6 +44,7 @@ type Entity struct {
 	fieldMaxLen         int
 	propertyTypeMaxLen  int
 	upperPropertyMaxLen int
+	force               bool
 }
 
 func (this *Entity) setProperties(properties []property) *Entity {
@@ -83,6 +84,11 @@ func (this *Entity) setUpperPrimaryKey(upperPrimaryKey string) *Entity {
 
 func (this *Entity) setTable(table Table) *Entity {
 	this.table = table
+	return this
+}
+
+func (this *Entity) setForce(force bool) *Entity {
+	this.force = force
 	return this
 }
 
@@ -138,8 +144,13 @@ func (this *Entity) gen() {
 		this.write(this.outfile, this.stubContext)
 		fmt.Println(fmt.Sprintf("Entity IDE %s was created.", this.outfile))
 	} else {
-		this.oldAstEach(this.newAstEach())
-		fmt.Println(fmt.Sprintf("Entity IDE %s was updated.", this.outfile))
+		if this.force {
+			this.write(this.outfile, this.stubContext)
+			fmt.Println(fmt.Sprintf("Entity IDE %s was forced updated.", this.outfile))
+		} else {
+			this.oldAstEach(this.newAstEach())
+			fmt.Println(fmt.Sprintf("Entity IDE %s was updated.", this.outfile))
+		}
 	}
 }
 

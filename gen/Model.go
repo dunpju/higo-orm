@@ -22,6 +22,8 @@ var (
 	prefix          string
 	out             string
 	force           bool
+	forceEntity     bool
+	forceDao        bool
 	all             bool
 	upperCreateTime string
 	upperUpdateTime string
@@ -50,6 +52,8 @@ func InitModel() {
 		panic(err)
 	}
 	ModelCommand.Flags().BoolVarP(&force, "force", "f", false, "强制更新")
+	ModelCommand.Flags().BoolVarP(&forceEntity, "ForceEntity", "E", false, "强制更新Entity")
+	ModelCommand.Flags().BoolVarP(&forceDao, "ForceDao", "D", false, "强制更新Dao")
 	ModelCommand.Flags().BoolVarP(&all, "all", "a", false, "生成全部表")
 	ModelCommand.Flags().StringVarP(&upperCreateTime, "CreateTime", "C", "CreateTime", "数据表创建时间")
 	ModelCommand.Flags().StringVarP(&upperUpdateTime, "UpdateTime", "U", "UpdateTime", "数据表更新时间")
@@ -60,12 +64,12 @@ func InitModel() {
 // go run .\bin\generator.go model --table=all --conn=Default --prefix=ts_ --out=app\models
 var ModelCommand = &cobra.Command{
 	Use:     "model",
-	Short:   "Model构建工具",
-	Long:    "Model构建工具",
+	Short:   "Model Build Tool",
+	Long:    "Model Build Tool",
 	Example: "model -t=school -o=app\\models",
 	Run: func(cmd *cobra.Command, args []string) {
 		if table == "" && !all {
-			fmt.Println("请指定表名或全部, -t=table name Or --all")
+			fmt.Println("Please specify table name or all, eg: -t=table name Or --all")
 			err := cmd.Help()
 			if err != nil {
 				panic(err)
@@ -156,13 +160,15 @@ var ModelCommand = &cobra.Command{
 		model := newModel(db, prefix, isGenerateDao, isGenerateEntity).
 			setOutEntityDir(outEntityDir).
 			setOutDaoDir(outDaoDir).
-			setForce(force)
+			setForce(force).
+			setForceEntity(forceEntity).
+			setForceDao(forceDao)
 		if table != "" {
 			model.getTable(table)
 		} else if all {
 			model.getTables()
 		} else {
-			panic("请指定表名或全部")
+			panic("Please specify table name or all")
 		}
 		model.gen(out)
 	},
@@ -189,6 +195,8 @@ type Model struct {
 	outEntityDir        string
 	outDaoDir           string
 	force               bool
+	forceEntity         bool
+	forceDao            bool
 }
 
 func newModel(db *him.DB, prefix string, isGenerateDao, isGenerateEntity YesNo) *Model {
@@ -224,6 +232,16 @@ func (this *Model) setOutDaoDir(outDaoDir string) *Model {
 
 func (this *Model) setForce(force bool) *Model {
 	this.force = force
+	return this
+}
+
+func (this *Model) setForceEntity(forceEntity bool) *Model {
+	this.forceEntity = forceEntity
+	return this
+}
+
+func (this *Model) setForceDao(forceDao bool) *Model {
+	this.forceDao = forceDao
 	return this
 }
 
@@ -298,8 +316,13 @@ func (this *Model) gen(outDir string) {
 			this.write(this.outfile, this.stubContext)
 			fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
 		} else {
-			this.oldAstEach(this.newAstEach())
-			fmt.Println(fmt.Sprintf("Model IDE %s was updated.", this.outfile))
+			if this.force {
+				this.write(this.outfile, this.stubContext)
+				fmt.Println(fmt.Sprintf("Model IDE %s was forced updated.", this.outfile))
+			} else {
+				this.oldAstEach(this.newAstEach())
+				fmt.Println(fmt.Sprintf("Model IDE %s was updated.", this.outfile))
+			}
 		}
 
 		entityPackage := fmt.Sprintf("%sEntity", modelPackage)
@@ -313,6 +336,7 @@ func (this *Model) gen(outDir string) {
 				setFieldMaxLen(fieldMaxLen).
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
+				setForce(this.forceEntity).
 				gen()
 			goMod := GetModInfo()
 			pwd, err := os.Getwd()
@@ -333,6 +357,9 @@ func (this *Model) gen(outDir string) {
 			modelImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
 			entityImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
 			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
+			modelImport = strings.ReplaceAll(modelImport, "//", "/")
+			entityImport = strings.ReplaceAll(entityImport, "//", "/")
+
 			newDao().
 				setOutDir(this.outDaoDir).
 				setDaoFilename(daoFilename).
@@ -346,6 +373,7 @@ func (this *Model) gen(outDir string) {
 				setFieldMaxLen(fieldMaxLen).
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
+				setForce(this.forceDao).
 				gen()
 		} else if this.isGenerateEntity.Bool() {
 			newEntity().
@@ -357,6 +385,7 @@ func (this *Model) gen(outDir string) {
 				setFieldMaxLen(fieldMaxLen).
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
+				setForce(this.forceEntity).
 				gen()
 		}
 	}
