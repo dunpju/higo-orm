@@ -21,6 +21,8 @@ var (
 	conn            string
 	prefix          string
 	out             string
+	force           bool
+	all             bool
 	upperCreateTime string
 	upperUpdateTime string
 	capitalBeganReg = regexp.MustCompile(`^[A-Z].*`) //匹配大写字母开头
@@ -39,18 +41,16 @@ const (
 )
 
 func InitModel() {
-	ModelCommand.Flags().StringVarP(&table, "table", "t", "", "表名,all生成所有表模型")
-	err := ModelCommand.MarkFlagRequired("table")
-	if err != nil {
-		panic(err)
-	}
+	ModelCommand.Flags().StringVarP(&table, "table", "t", "", "表名")
 	ModelCommand.Flags().StringVarP(&conn, "conn", "c", "Default", "数据库连接")
 	ModelCommand.Flags().StringVarP(&prefix, "prefix", "p", "", "数据表前缀,如:fm_")
 	ModelCommand.Flags().StringVarP(&out, "out", "o", "", "模型生成目录,如:app\\models")
-	err = ModelCommand.MarkFlagRequired("out")
+	err := ModelCommand.MarkFlagRequired("out")
 	if err != nil {
 		panic(err)
 	}
+	ModelCommand.Flags().BoolVarP(&force, "force", "f", false, "强制更新")
+	ModelCommand.Flags().BoolVarP(&all, "all", "a", false, "生成全部表")
 	ModelCommand.Flags().StringVarP(&upperCreateTime, "CreateTime", "C", "CreateTime", "数据表创建时间")
 	ModelCommand.Flags().StringVarP(&upperUpdateTime, "UpdateTime", "U", "UpdateTime", "数据表更新时间")
 }
@@ -64,6 +64,14 @@ var ModelCommand = &cobra.Command{
 	Long:    "Model构建工具",
 	Example: "model -t=school -o=app\\models",
 	Run: func(cmd *cobra.Command, args []string) {
+		if table == "" && !all {
+			fmt.Println("请指定表名或全部, -t=table name Or --all")
+			err := cmd.Help()
+			if err != nil {
+				panic(err)
+			}
+			return
+		}
 		var (
 			isGenerateDao        YesNo = Yes
 			isGenerateEntity     YesNo
@@ -145,11 +153,16 @@ var ModelCommand = &cobra.Command{
 		if prefix == "" {
 			prefix = db.DBC().Prefix()
 		}
-		model := newModel(db, prefix, isGenerateDao, isGenerateEntity).setOutEntityDir(outEntityDir).setOutDaoDir(outDaoDir)
-		if allTable == table {
+		model := newModel(db, prefix, isGenerateDao, isGenerateEntity).
+			setOutEntityDir(outEntityDir).
+			setOutDaoDir(outDaoDir).
+			setForce(force)
+		if table != "" {
+			model.getTable(table)
+		} else if all {
 			model.getTables()
 		} else {
-			model.getTable(table)
+			panic("请指定表名或全部")
 		}
 		model.gen(out)
 	},
@@ -175,6 +188,7 @@ type Model struct {
 	isGenerateEntity    YesNo
 	outEntityDir        string
 	outDaoDir           string
+	force               bool
 }
 
 func newModel(db *him.DB, prefix string, isGenerateDao, isGenerateEntity YesNo) *Model {
@@ -205,6 +219,11 @@ func (this *Model) setOutEntityDir(outEntityDir string) *Model {
 
 func (this *Model) setOutDaoDir(outDaoDir string) *Model {
 	this.outDaoDir = outDaoDir
+	return this
+}
+
+func (this *Model) setForce(force bool) *Model {
+	this.force = force
 	return this
 }
 
