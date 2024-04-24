@@ -3,7 +3,6 @@ package arm
 import (
 	"database/sql"
 	"github.com/dunpju/higo-orm/him"
-	"github.com/dunpju/higo-orm/utils"
 	"gorm.io/gorm"
 )
 
@@ -136,5 +135,5 @@ func (this *Model) Where(column any, operator string, value interface{}) *Model 
 }
 
 func (this *Model) IsEmpty(m IModel) bool {
-	return utils.IsEmpty(m)
+	return IsEmpty(m)
 }
