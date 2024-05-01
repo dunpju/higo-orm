@@ -74,7 +74,12 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	if count_.Count_ == 0 {
 		return this.db.GormDB(), paginate
 	}
-	sql, args, err := this.Offset((page - 1) * perPage).Limit(perPage).ToSql()
+
+	var offset uint64
+	if page > 0 {
+		offset = (page - 1) * perPage
+	}
+	sql, args, err := this.Offset(offset).Limit(perPage).ToSql()
 
 	this.eventBefore(countSql, args, err, nil)
 
