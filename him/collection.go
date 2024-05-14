@@ -55,6 +55,9 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	if !ok {
 		paginate = NewPaginate(WithItems(dest))
 	}
+
+	paginate.SetPerPage(perPage).SetCurrentPage(page)
+
 	countSql, args, err := this.clone().count().Limit(1).ToSql()
 
 	this.eventBeforeCount(countSql, args, err, nil)
@@ -93,8 +96,6 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	}
 
 	paginate.SetTotal(uint64(count_.Count_)).
-		SetPerPage(perPage).
-		SetCurrentPage(page).
 		SetLastPage(uint64(math.Ceil(float64(count_.Count_) / float64(perPage))))
 
 	this.eventAfter(sql, args, this.db.GormDB().Error, paginate)
