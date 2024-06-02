@@ -103,6 +103,11 @@ func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
 	return this
 }
 
+func (this *ValuesBuilder) OnDuplicateKeyUpdate(values ...interface{}) *ValuesBuilder {
+	this.insertBuilder.setValues = append(this.insertBuilder.setValues, newInsertValue(values...))
+	return this
+}
+
 func (this *ValuesBuilder) Save() (gormDB *gorm.DB, affected int64) {
 	return this.insertBuilder.Save()
 }
