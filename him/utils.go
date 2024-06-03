@@ -35,6 +35,21 @@ func columnsToString(columns ...any) []string {
 	return ret
 }
 
+func columnValue(values ...any) []string {
+	ret := make([]string, 0)
+	for _, value := range values {
+		if c, ok := value.(string); ok {
+			ret = append(ret, c)
+		} else if c, ok := value.(fmt.Stringer); ok {
+			ret = append(ret, c.String())
+		} else {
+			ret = append(ret, fmt.Errorf("column cannot convert to string").Error())
+			break
+		}
+	}
+	return ret
+}
+
 type ValueToStringInterface interface {
 	string | int | int8 | int16 | int32 | int64 | float32 | float64
 }

@@ -12,7 +12,7 @@ type InsertBuilder struct {
 	connect                 *connect
 	setColumns              *insertColumn
 	setValues               []*insertValue
-	setOnDuplicateKeyUpdate []*insertValue
+	setOnDuplicateKeyUpdate []string
 	affected                int64
 	builder                 squirrel.InsertBuilder
 	table                   string
@@ -105,7 +105,7 @@ func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
 }
 
 func (this *ValuesBuilder) OnDuplicateKeyUpdate(values ...interface{}) *ValuesBuilder {
-	this.insertBuilder.setOnDuplicateKeyUpdate = append(this.insertBuilder.setOnDuplicateKeyUpdate, newInsertValue(values...))
+	this.insertBuilder.setOnDuplicateKeyUpdate = append(this.insertBuilder.setOnDuplicateKeyUpdate, columnValue(values...)...)
 	return this
 }
 
