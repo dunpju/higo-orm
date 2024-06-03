@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Masterminds/squirrel"
 	"gorm.io/gorm"
+	"strings"
 	"sync"
 )
 
@@ -104,6 +105,7 @@ func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
 	return this
 }
 
+// OnDuplicateKeyUpdate age = values(age) 或者 age = 10 注意: values()括号里是字段名称
 func (this *ValuesBuilder) OnDuplicateKeyUpdate(values ...interface{}) *ValuesBuilder {
 	this.insertBuilder.setOnDuplicateKeyUpdate = append(this.insertBuilder.setOnDuplicateKeyUpdate, columnValue(values...)...)
 	return this
@@ -165,6 +167,10 @@ func (this *InsertBuilder) toBuilder() *InsertBuilder {
 
 func (this *InsertBuilder) ToSql() (string, []interface{}, error) {
 	this.builder = this.toBuilder().builder
+	if len(this.setOnDuplicateKeyUpdate) > 0 {
+		sql, args, err := this.builder.ToSql()
+		return fmt.Sprintf("%s ON DUPLICATE KEY UPDATE %s", sql, strings.Join(this.setOnDuplicateKeyUpdate, ",")), args, err
+	}
 	return this.builder.ToSql()
 }
 
