@@ -8,14 +8,15 @@ import (
 )
 
 type InsertBuilder struct {
-	db         *DB
-	connect    *connect
-	setColumns *insertColumn
-	setValues  []*insertValue
-	affected   int64
-	builder    squirrel.InsertBuilder
-	table      string
-	Error      error
+	db                      *DB
+	connect                 *connect
+	setColumns              *insertColumn
+	setValues               []*insertValue
+	setOnDuplicateKeyUpdate []*insertValue
+	affected                int64
+	builder                 squirrel.InsertBuilder
+	table                   string
+	Error                   error
 }
 
 func newDBInsertBuilder(db *DB, connect *connect) *InsertBuilder {
@@ -104,7 +105,7 @@ func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
 }
 
 func (this *ValuesBuilder) OnDuplicateKeyUpdate(values ...interface{}) *ValuesBuilder {
-	this.insertBuilder.setValues = append(this.insertBuilder.setValues, newInsertValue(values...))
+	this.insertBuilder.setOnDuplicateKeyUpdate = append(this.insertBuilder.setOnDuplicateKeyUpdate, newInsertValue(values...))
 	return this
 }
 

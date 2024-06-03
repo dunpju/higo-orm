@@ -38,6 +38,15 @@ func (this Fields) string() string {
 	return string(this)
 }
 
+func (this Fields) Eq(value interface{}) string {
+	field := this.string()
+	hasBackQuote := backQuoteReg.FindString(field)
+	if hasBackQuote != "" {
+		return fmt.Sprintf("%s = %s", field, fmt.Sprintf("'%v'", value))
+	}
+	return fmt.Sprintf("`%s` = %s", field, fmt.Sprintf("'%v'", value))
+}
+
 func (this Fields) FIELD(value string, moreValue ...interface{}) string {
 	values := []string{fmt.Sprintf("'%s'", value)}
 	for _, value := range moreValue {
