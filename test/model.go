@@ -158,6 +158,7 @@ func main() {
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime)
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
 		school.Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now())
+		school.OnDuplicateKeyUpdate(School.UpdateTime.VALUES())
 		tx7, affected := school.Save()
 		fmt.Printf("tx7 %p\n", tx7)
 		checkError(tx7)
@@ -166,9 +167,10 @@ func main() {
 			TX(tx).
 			Insert().
 			Columns(School.SchoolName, School.Ip, School.Port, School.UserName, School.Password, School.CreateTime, School.UpdateTime).
-			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
-			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
-			Values(rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			Values(1, rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			Values(1, rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			Values(1, rand.Intn(6), rand.Intn(6), rand.Intn(6), rand.Intn(6), time.Now(), time.Now()).
+			OnDuplicateKeyUpdate(School.UpdateTime.VALUES()).
 			Save()
 		fmt.Printf("tx8 %p\n", tx8)
 		checkError(tx8)
@@ -183,6 +185,7 @@ func main() {
 			Column(School.Password, rand.Intn(6)).
 			Column(School.CreateTime, time.Now()).
 			Column(School.UpdateTime, time.Now()).
+			OnDuplicateKeyUpdate(School.UpdateTime.VALUES()).
 			LastInsertId()
 		fmt.Printf("tx9 %p\n", tx9)
 		checkError(tx9)
@@ -190,11 +193,11 @@ func main() {
 		tx10, _, _ := School.New().TX(tx).Raw("UPDATE school SET userName = '33ff' WHERE (schoolId = ?)", lastInsertId).Exec()
 		fmt.Printf("tx10 %p\n", tx10)
 		checkError(tx10)
-		tx11, _ := School.New().TX(tx).Delete().Where(School.SchoolId, "=", lastInsertId).Exec()
+		tx11, _ := School.New().TX(tx).Delete().Where(School.SchoolId, "=", lastInsertId+1).Exec()
 		fmt.Printf("tx11 %p\n", tx11)
 		checkError(tx11)
-		return fmt.Errorf("测试事务")
-		// return nil
+		//return fmt.Errorf("测试事务")
+		return nil
 	})
 	fmt.Println(err)
 }

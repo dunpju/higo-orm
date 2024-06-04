@@ -129,6 +129,14 @@ func (this *Model) Set(column any, value interface{}) *Model {
 	return this
 }
 
+func (this *Model) CaseWhen(column him.CaseWhen) *Model {
+	field := column.Field()
+	value := column.End()
+	this.sets.Append(field, value)
+	this.builder = this.builder.(*him.UpdateBuilder).Set(column, value)
+	return this
+}
+
 func (this *Model) Where(column any, operator string, value interface{}) *Model {
 	this.wheres.And().Where(him.ColumnToString(column), operator, value)
 	return this

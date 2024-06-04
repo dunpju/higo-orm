@@ -35,19 +35,26 @@ func columnsToString(columns ...any) []string {
 	return ret
 }
 
-func columnValue(values ...any) []string {
+func toStrings(values ...any) []string {
 	ret := make([]string, 0)
 	for _, value := range values {
-		if c, ok := value.(string); ok {
-			ret = append(ret, c)
-		} else if c, ok := value.(fmt.Stringer); ok {
-			ret = append(ret, c.String())
-		} else {
-			ret = append(ret, fmt.Errorf("column cannot convert to string").Error())
-			break
-		}
+		ret = append(ret, toString(value))
 	}
 	return ret
+}
+
+func toString(value any) string {
+	if s, ok := value.(string); ok {
+		return s
+	} else if s, ok := value.(fmt.Stringer); ok {
+		return s.String()
+	} else {
+		return fmt.Errorf("column cannot convert to string").Error()
+	}
+}
+
+func ToString(value any) string {
+	return toString(value)
 }
 
 type ValueToStringInterface interface {

@@ -2,6 +2,7 @@ package arm
 
 import (
 	"fmt"
+	"github.com/dunpju/higo-orm/him"
 	"regexp"
 	"strings"
 )
@@ -36,6 +37,100 @@ type Fields string
 
 func (this Fields) string() string {
 	return string(this)
+}
+
+func (this Fields) Case(c, when, then any) *Case {
+	return newCase(this.string(), c, when, then)
+}
+
+func (this Fields) When(when, then any) *When {
+	return newWhen(this.string(), when, then)
+}
+
+type whenThen struct {
+	when, then string
+}
+
+func newWhenThen(when, then any) *whenThen {
+	return &whenThen{when: him.ToString(when), then: him.ToString(then)}
+}
+
+type ELSE struct {
+	v string
+}
+
+type Case struct {
+	field, c string
+	whens    []*whenThen
+	e        *ELSE
+}
+
+func (this *Case) Field() string {
+	return this.field
+}
+
+func newCase(field string, c, when, then any) *Case {
+	whens := make([]*whenThen, 0)
+	whens = append(whens, newWhenThen(when, then))
+	return &Case{field: field, c: him.ToString(c), whens: whens}
+}
+
+func (this *Case) When(when, then any) *Case {
+	this.whens = append(this.whens, newWhenThen(when, then))
+	return this
+}
+
+func (this *Case) Else(value any) *Case {
+	this.e = &ELSE{v: him.ToString(value)}
+	return this
+}
+
+func (this *Case) End() string {
+	collect := make([]string, 0)
+	collect = append(collect, "CASE")
+	collect = append(collect, this.c)
+	for _, w := range this.whens {
+		collect = append(collect, fmt.Sprintf("WHEN %s THEN %s", w.when, w.then))
+	}
+	if this.e != nil {
+		collect = append(collect, fmt.Sprintf("ELSE %s", this.e.v))
+	}
+	collect = append(collect, "END")
+	return strings.Join(collect, " ")
+}
+
+type When struct {
+	field string
+	whens []*whenThen
+	e     *ELSE
+}
+
+func newWhen(field string, when, then any) *When {
+	whens := make([]*whenThen, 0)
+	whens = append(whens, newWhenThen(when, then))
+	return &When{field: field, whens: whens}
+}
+
+func (this *When) When(when, then any) *When {
+	this.whens = append(this.whens, newWhenThen(when, then))
+	return this
+}
+
+func (this *When) Field() string {
+	return this.field
+}
+
+func (this *When) End() string {
+	collect := make([]string, 0)
+	collect = append(collect, "CASE")
+	for _, w := range this.whens {
+		collect = append(collect, fmt.Sprintf("WHEN %s THEN %s", w.when, w.then))
+	}
+	if this.e != nil {
+		collect = append(collect, fmt.Sprintf("ELSE %s", this.e.v))
+	}
+	collect = append(collect, "END")
+	return strings.Join(collect, " ")
 }
 
 func (this Fields) Eq(value interface{}) string {

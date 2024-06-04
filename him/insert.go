@@ -107,7 +107,7 @@ func (this *ValuesBuilder) Values(values ...interface{}) *ValuesBuilder {
 
 // OnDuplicateKeyUpdate age = values(age) 或者 age = 10 注意: values()括号里是字段名称
 func (this *ValuesBuilder) OnDuplicateKeyUpdate(values ...interface{}) *ValuesBuilder {
-	this.insertBuilder.setOnDuplicateKeyUpdate = append(this.insertBuilder.setOnDuplicateKeyUpdate, columnValue(values...)...)
+	this.insertBuilder.OnDuplicateKeyUpdate(values...)
 	return this
 }
 
@@ -154,6 +154,12 @@ func (this *InsertBuilder) Set(column any, value interface{}) *InsertBuilder {
 		this.setValues = append(this.setValues, newInsertValue(value))
 	}
 	this.db.Builder = this
+	return this
+}
+
+// OnDuplicateKeyUpdate age = values(age) 或者 age = 10 注意: values()括号里是字段名称
+func (this *InsertBuilder) OnDuplicateKeyUpdate(values ...interface{}) *InsertBuilder {
+	this.setOnDuplicateKeyUpdate = append(this.setOnDuplicateKeyUpdate, toStrings(values...)...)
 	return this
 }
 
