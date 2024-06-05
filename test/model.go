@@ -196,6 +196,20 @@ func main() {
 		tx11, _ := School.New().TX(tx).Delete().Where(School.SchoolId, "=", lastInsertId+1).Exec()
 		fmt.Printf("tx11 %p\n", tx11)
 		checkError(tx11)
+		tx12, _ := School.New().TX(tx).Update().
+			CaseWhen(School.Ip.Case(School.SchoolId).When(21, 21).When(22, 22)).
+			CaseWhen(School.Port.Case(School.SchoolId).When(21, 21).When(22, 22)).
+			WhereIn(School.SchoolId, []int64{21, 22}).
+			Exec()
+		fmt.Printf("tx12 %p\n", tx12)
+		checkError(tx12)
+		tx13, _ := School.New().TX(tx).Update().
+			CaseWhen(School.Ip.Case().When(School.SchoolId.Eq(23), 23).When(School.SchoolId.Eq(24), 24).Else(`'w11'`)).
+			CaseWhen(School.Port.Case().When(School.SchoolId.Eq(23), 23).When(School.SchoolId.Eq(24), 24).Else(School.Port)).
+			WhereIn(School.SchoolId, []int64{23, 24, 25}).
+			Exec()
+		fmt.Printf("tx13 %p\n", tx13)
+		checkError(tx13)
 		//return fmt.Errorf("测试事务")
 		return nil
 	})

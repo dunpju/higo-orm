@@ -49,7 +49,7 @@ func toString(value any) string {
 	} else if s, ok := value.(fmt.Stringer); ok {
 		return s.String()
 	} else {
-		return fmt.Errorf("column cannot convert to string").Error()
+		return fmt.Sprintf("%v", value)
 	}
 }
 

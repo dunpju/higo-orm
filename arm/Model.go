@@ -130,10 +130,8 @@ func (this *Model) Set(column any, value interface{}) *Model {
 }
 
 func (this *Model) CaseWhen(column him.CaseWhen) *Model {
-	field := column.Field()
-	value := column.End()
-	this.sets.Append(field, value)
-	this.builder = this.builder.(*him.UpdateBuilder).Set(column, value)
+	this.sets.Append(column.Field(), him.CaseBuilder(column))
+	this.builder = this.builder.(*him.UpdateBuilder).CaseWhen(column)
 	return this
 }
 

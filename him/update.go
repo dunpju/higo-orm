@@ -60,6 +60,22 @@ func (this *UpdateBuilder) Set(column any, value interface{}) *UpdateBuilder {
 	return this
 }
 
+func (this *UpdateBuilder) CaseWhen(column CaseWhen) *UpdateBuilder {
+	this.builder = this.builder.Set(columnToString(column.Field()), CaseBuilder(column))
+	return this
+}
+
+func CaseBuilder(column CaseWhen) squirrel.CaseBuilder {
+	caseBuilder := squirrel.Case(column.Case())
+	for _, w := range column.WhenThen() {
+		caseBuilder = caseBuilder.When(w.when, w.then)
+	}
+	if column.ELSE() != nil {
+		caseBuilder = caseBuilder.Else(column.ELSE().value)
+	}
+	return caseBuilder
+}
+
 func (this *UpdateBuilder) SetMap(clauses map[string]interface{}) *UpdateBuilder {
 	this.builder = this.builder.SetMap(clauses)
 	return this
