@@ -39,8 +39,8 @@ func (this Fields) string() string {
 	return string(this)
 }
 
-func (this Fields) Case(c, when, then any) *Case {
-	return newCase(this.string(), c, when, then)
+func (this Fields) Case(field, when, then any) *Case {
+	return newCase(this.string(), field, when, then)
 }
 
 func (this Fields) When(when, then any) *When {
