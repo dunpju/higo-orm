@@ -68,6 +68,35 @@ func (this *%MODEL_PACKAGE%Dao) Update() *gorm.DB {
     return gormDB
 }
 
+// BatchInsert 批量插入
+func (this *%MODEL_PACKAGE%Dao) BatchInsert(entityList []*%MODEL_PACKAGE%Entity.Entity) (gormDB *gorm.DB, affected int64) {
+	// TODO::根据业务修改
+	/*model := this.model.Insert().Columns(
+		%MODEL_PACKAGE%.UpdateTime)
+	for _, entity := range entityList {
+		model.Values(entity.UpdateTime)
+	}
+	model.OnDuplicateKeyUpdate(%MODEL_PACKAGE%.UpdateTime.VALUES())
+	gormDB, affected = model.Save()
+	this.CheckError(gormDB)*/
+	return
+}
+
+// BatchUpdate 批量更新
+func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.Entity) (gormDB *gorm.DB, affected int64) {
+	// TODO::根据业务修改
+	/*model := this.model.Update()
+	idList := make([]int64, 0)
+	for _, entity := range entityList {
+		idList = append(idList, entity.%UPPER_PRIMARY_KEY%)
+		model.CaseWhen(%MODEL_PACKAGE%.UpdateTime.Case())
+	}
+	model.WhereIn(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, idList)
+	gormDB, affected = model.Exec()
+	this.CheckError(gormDB)*/
+	return
+}
+
 // GetBy%UPPER_PRIMARY_KEY% %PRIMARY_KEY%查询
 func (this *%MODEL_PACKAGE%Dao) GetBy%UPPER_PRIMARY_KEY%(%PRIMARY_KEY% int64) *%MODEL_PACKAGE%.Model {
     model := this.Model()
