@@ -39,49 +39,8 @@ func (this Fields) string() string {
 	return string(this)
 }
 
-func (this Fields) Case(field ...any) *Case {
-	return newCase(this.string(), field...)
-}
-
-type Case struct {
-	field, c string
-	whens    []*him.WhenThen
-	e        *him.Else
-}
-
-func (this *Case) Field() string {
-	return this.field
-}
-
-func (this *Case) Case() string {
-	return this.c
-}
-
-func (this *Case) WhenThen() []*him.WhenThen {
-	return this.whens
-}
-
-func (this *Case) ELSE() *him.Else {
-	return this.e
-}
-
-func newCase(field string, c ...any) *Case {
-	whens := make([]*him.WhenThen, 0)
-	cc := ""
-	if len(c) > 0 {
-		cc = him.ToString(c[0])
-	}
-	return &Case{field: field, c: cc, whens: whens}
-}
-
-func (this *Case) When(when, then any) *Case {
-	this.whens = append(this.whens, him.NewWhenThen(when, then))
-	return this
-}
-
-func (this *Case) Else(value any) *Case {
-	this.e = him.NewElse(him.ToString(value))
-	return this
+func (this Fields) Case(field ...any) *him.Case {
+	return him.NewCase(this.string(), field...)
 }
 
 func (this Fields) Eq(value interface{}) string {

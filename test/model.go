@@ -204,6 +204,7 @@ func main() {
 		fmt.Printf("tx12 %p\n", tx12)
 		checkError(tx12)
 		tx13, _ := School.New().TX(tx).Update().
+			Set(School.Ip).
 			CaseWhen(School.Ip.Case().When(School.SchoolId.Eq(23), 23).When(School.SchoolId.Eq(24), 24).Else(`'w11'`)).
 			CaseWhen(School.Port.Case().When(School.SchoolId.Eq(23), 23).When(School.SchoolId.Eq(24), 24).Else(School.Port)).
 			WhereIn(School.SchoolId, []int64{23, 24, 25}).
