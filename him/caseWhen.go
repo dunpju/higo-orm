@@ -1,10 +1,14 @@
 package him
 
+import "github.com/Masterminds/squirrel"
+
 type CaseWhen interface {
 	Field() string
+	SetField(field string)
 	Case() string
 	WhenThen() []*WhenThen
 	ELSE() *Else
+	Builder() squirrel.CaseBuilder
 }
 
 type WhenThen struct {
@@ -23,43 +27,71 @@ func NewElse(value string) *Else {
 	return &Else{value: value}
 }
 
-type Case struct {
+type CaseBuilder struct {
 	field, c string
 	whens    []*WhenThen
 	e        *Else
 }
 
-func (this *Case) Field() string {
+func (this *CaseBuilder) Field() string {
 	return this.field
 }
 
-func (this *Case) Case() string {
+func (this *CaseBuilder) SetField(field string) {
+	this.field = field
+}
+
+func (this *CaseBuilder) Case() string {
 	return this.c
 }
 
-func (this *Case) WhenThen() []*WhenThen {
+func (this *CaseBuilder) WhenThen() []*WhenThen {
 	return this.whens
 }
 
-func (this *Case) ELSE() *Else {
+func (this *CaseBuilder) ELSE() *Else {
 	return this.e
 }
 
-func NewCase(field string, c ...any) *Case {
+func (this *CaseBuilder) Builder() squirrel.CaseBuilder {
+	builder := squirrel.Case(this.Case())
+	for _, w := range this.WhenThen() {
+		builder = builder.When(w.when, w.then)
+	}
+	if this.ELSE() != nil {
+		builder = builder.Else(this.ELSE().value)
+	}
+	return builder
+}
+
+func NewCaseBuilder(field string, c ...any) *CaseBuilder {
+	return newCaseBuilder(c...).setField(field)
+}
+
+func newCaseBuilder(c ...any) *CaseBuilder {
 	whens := make([]*WhenThen, 0)
 	cc := ""
 	if len(c) > 0 {
 		cc = ToString(c[0])
 	}
-	return &Case{field: field, c: cc, whens: whens}
+	return &CaseBuilder{c: cc, whens: whens}
 }
 
-func (this *Case) When(when, then any) *Case {
+func (this *CaseBuilder) When(when, then any) *CaseBuilder {
 	this.whens = append(this.whens, NewWhenThen(when, then))
 	return this
 }
 
-func (this *Case) Else(value any) *Case {
+func (this *CaseBuilder) Else(value any) *CaseBuilder {
 	this.e = NewElse(ToString(value))
 	return this
+}
+
+func (this *CaseBuilder) setField(field string) *CaseBuilder {
+	this.SetField(field)
+	return this
+}
+
+func Case(field ...any) *CaseBuilder {
+	return newCaseBuilder(field...)
 }

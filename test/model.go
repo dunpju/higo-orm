@@ -204,13 +204,26 @@ func main() {
 		fmt.Printf("tx12 %p\n", tx12)
 		checkError(tx12)
 		tx13, _ := School.New().TX(tx).Update().
-			Set(School.Ip).
 			CaseWhen(School.Ip.Case().When(School.SchoolId.Eq(23), 23).When(School.SchoolId.Eq(24), 24).Else(`'w11'`)).
 			CaseWhen(School.Port.Case().When(School.SchoolId.Eq(23), 23).When(School.SchoolId.Eq(24), 24).Else(School.Port)).
 			WhereIn(School.SchoolId, []int64{23, 24, 25}).
 			Exec()
 		fmt.Printf("tx13 %p\n", tx13)
 		checkError(tx13)
+		tx14, _ := School.New().TX(tx).Update().
+			Set(School.Ip, him.Case().When(School.SchoolId.Eq(26), 26).When(School.SchoolId.Eq(27), 27).Else(`'w27'`)).
+			Set(School.Port, him.Case().When(School.SchoolId.Eq(26), 26).When(School.SchoolId.Eq(27), 27).Else(School.Port)).
+			WhereIn(School.SchoolId, []int64{26, 27, 28}).
+			Exec()
+		fmt.Printf("tx14 %p\n", tx14)
+		checkError(tx14)
+		tx15, _ := School.New().TX(tx).Update().
+			Set(School.Ip, him.Case(School.SchoolId).When(29, 29).When(School.SchoolId.Eq(30), 30).Else(`'w30'`)).
+			Set(School.Port, him.Case(School.SchoolId).When(29, 29).When(School.SchoolId.Eq(30), 30).Else(School.Port)).
+			WhereIn(School.SchoolId, []int64{29, 30, 31}).
+			Exec()
+		fmt.Printf("tx15 %p\n", tx15)
+		checkError(tx15)
 		//return fmt.Errorf("测试事务")
 		return nil
 	})

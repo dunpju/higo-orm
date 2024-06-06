@@ -39,8 +39,8 @@ func (this Fields) string() string {
 	return string(this)
 }
 
-func (this Fields) Case(field ...any) *him.Case {
-	return him.NewCase(this.string(), field...)
+func (this Fields) Case(field ...any) *him.CaseBuilder {
+	return him.NewCaseBuilder(this.string(), field...)
 }
 
 func (this Fields) Eq(value interface{}) string {
