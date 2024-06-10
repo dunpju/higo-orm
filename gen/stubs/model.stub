@@ -22,6 +22,10 @@ func TableName() *arm.TableName {
     return arm.NewTableName("%TABLE_NAME%")
 }
 
+func Alias(alias string) *arm.TableName {
+	return TableName().Alias(alias)
+}
+
 func (this *Model) New(properties ...him.IProperty) *Model {
     err := arm.Connect(this)
     if err != nil {
