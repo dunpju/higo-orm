@@ -158,6 +158,10 @@ func (this *InsertBuilder) Set(column any, value interface{}) *InsertBuilder {
 }
 
 // OnDuplicateKeyUpdate age = values(age) 或者 age = 10 注意: values()括号里是字段名称
+// 注意: 高并发情况可能会出现死锁
+// 成功插入新增数据返回1
+// 主键或唯一索引已经重复，插入失败，但更新的字段的数据和原数据不同，则表示更新成功，此时返回的结果是2
+// 更新数据和原始数据相同，则表示更新也没有成功，则返回0
 func (this *InsertBuilder) OnDuplicateKeyUpdate(values ...interface{}) *InsertBuilder {
 	this.setOnDuplicateKeyUpdate = append(this.setOnDuplicateKeyUpdate, toStrings(values...)...)
 	return this
