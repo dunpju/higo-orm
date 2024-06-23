@@ -565,7 +565,7 @@ func (this *Model) getTable(table string) {
 // getTableFields 获取表所有字段信息
 func (this *Model) getTableFields(tableName string) []TableField {
 	var fields []TableField
-	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM %s", tableName)).Get(&fields)
+	gormDB := this.db.Raw(fmt.Sprintf("SHOW FULL COLUMNS FROM `%s`", tableName)).Get(&fields)
 	if gormDB.Error != nil {
 		panic(gormDB.Error)
 	}
