@@ -36,6 +36,8 @@ func (this *TableName) String() string {
 		for i, index := range this.forceIndex {
 			if !backQuoteReg.Match([]byte(index)) {
 				this.forceIndex[i] = fmt.Sprintf("`%s`", index)
+			} else {
+				this.forceIndex[i] = fmt.Sprintf("%s", index)
 			}
 		}
 	}
