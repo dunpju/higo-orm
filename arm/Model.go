@@ -47,6 +47,11 @@ func (this *Model) Alias(alias string) *Model {
 	return this
 }
 
+func (this *Model) ForceIndex(index string, more ...string) *Model {
+	this.table.ForceIndex(index, more...)
+	return this
+}
+
 func (this *Model) Select(columns ...any) *him.SelectBuilder {
 	return this.db.Query().Select(columns...).From(this.table.String())
 }
