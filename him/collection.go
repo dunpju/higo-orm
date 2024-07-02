@@ -2,7 +2,6 @@ package him
 
 import (
 	"github.com/dunpju/higo-orm/event"
-	"github.com/dunpju/higo-orm/pagination"
 	"gorm.io/gorm"
 	"math"
 	"strings"
@@ -10,6 +9,7 @@ import (
 
 const (
 	_count_ = "count_"
+	_sum_   = "sum_"
 )
 
 type counter struct {
@@ -17,7 +17,7 @@ type counter struct {
 }
 
 type sum struct {
-	Sum_ interface{}
+	Sum_ string
 }
 
 func (this *SelectBuilder) First(dest interface{}) *gorm.DB {
@@ -59,9 +59,9 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	var (
 		ok          bool
 		paginate    IPaginate
-		paginateSum pagination.IPaginateSum
+		paginateSum IPaginateSum
 	)
-	if paginateSum, ok = dest.(pagination.IPaginateSum); ok {
+	if paginateSum, ok = dest.(IPaginateSum); ok {
 		if paginate, ok = paginateSum.Dest().(IPaginate); !ok {
 			paginate = NewPaginate(WithItems(paginateSum.Dest()))
 		}
@@ -72,7 +72,7 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	paginate.SetPerPage(perPage).SetCurrentPage(page)
 
 	if paginateSum != nil {
-		sumSql, args, err := this.clone().sum(paginateSum.Field().String()).Limit(1).ToSql()
+		sumSql, args, err := this.clone().sum(toString(paginateSum.Field())).Limit(1).ToSql()
 		this.eventBeforeSum(sumSql, args, err, nil)
 		if err != nil {
 			this.db.GormDB().Error = err

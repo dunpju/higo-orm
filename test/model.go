@@ -132,6 +132,15 @@ func main() {
 		fmt.Println(paginate.GetCurrentPage())
 		fmt.Println(paginate.GetPerPage())
 
+		paginateSum := him.NewPaginateSum(&res1, "schoolName")
+		tx3_1, paginate := School.New().TX(tx).Select().Paginate(1, 2, paginateSum)
+		fmt.Printf("tx3_1 %p\n", tx3_1)
+		fmt.Println(paginate.GetItems())
+		fmt.Println(paginate.GetTotal())
+		fmt.Println(paginate.GetCurrentPage())
+		fmt.Println(paginate.GetPerPage())
+		fmt.Println(paginateSum.Sum())
+
 		tx4 := School.New().TX(tx).Alias("A").Select().Where(School.SchoolId, "=", 1).Get(&res)
 		fmt.Printf("tx4 %p\n", tx4)
 		fmt.Println(res)

@@ -173,7 +173,7 @@ func (this *SelectBuilder) count() *SelectBuilder {
 
 func (this *SelectBuilder) sum(column string) *SelectBuilder {
 	this.isSum = true
-	this.sumColumn = fmt.Sprintf("SUM(%s) %s", column, _count_)
+	this.sumColumn = fmt.Sprintf("SUM(%s) %s", column, _sum_)
 	return this
 }
 

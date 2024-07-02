@@ -100,3 +100,36 @@ func WithItems(items interface{}) IProperty {
 		obj.(*Paginate).Items = items
 	})
 }
+
+type IPaginateSum interface {
+	SetSum(sum string)
+	Sum() string
+	Dest() interface{}
+	Field() interface{}
+}
+
+type PaginateSum struct {
+	dest  interface{}
+	field interface{}
+	sum   string
+}
+
+func NewPaginateSum(dest interface{}, field interface{}) *PaginateSum {
+	return &PaginateSum{dest: dest, field: field}
+}
+
+func (p *PaginateSum) Dest() interface{} {
+	return p.dest
+}
+
+func (p *PaginateSum) Field() interface{} {
+	return p.field
+}
+
+func (p *PaginateSum) Sum() string {
+	return p.sum
+}
+
+func (p *PaginateSum) SetSum(sum string) {
+	p.sum = sum
+}
