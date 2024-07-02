@@ -109,13 +109,27 @@ type IPaginateSum interface {
 }
 
 type PaginateSum struct {
-	dest  interface{}
-	field interface{}
-	sum   string
+	dest        interface{}
+	field       interface{}
+	sum         string
+	Total       uint64      `json:"total"`
+	PerPage     uint64      `json:"per_page"`
+	CurrentPage uint64      `json:"current_page"`
+	LastPage    uint64      `json:"last_page"`
+	Items       interface{} `json:"items"`
 }
 
 func NewPaginateSum(dest interface{}, field interface{}) *PaginateSum {
 	return &PaginateSum{dest: dest, field: field}
+}
+
+func (p *PaginateSum) Paginate(paginate IPaginate) IPaginate {
+	p.Total = paginate.GetTotal()
+	p.PerPage = paginate.GetPerPage()
+	p.CurrentPage = paginate.GetCurrentPage()
+	p.LastPage = paginate.GetLastPage()
+	p.Items = paginate.GetItems()
+	return p
 }
 
 func (p *PaginateSum) Dest() interface{} {
@@ -132,4 +146,49 @@ func (p *PaginateSum) Sum() string {
 
 func (p *PaginateSum) SetSum(sum string) {
 	p.sum = sum
+}
+
+func (p *PaginateSum) SetTotal(total uint64) IPaginate {
+	p.Total = total
+	return p
+}
+
+func (p *PaginateSum) SetPerPage(perPage uint64) IPaginate {
+	p.PerPage = perPage
+	return p
+}
+
+func (p *PaginateSum) SetCurrentPage(currentPage uint64) IPaginate {
+	p.CurrentPage = currentPage
+	return p
+}
+
+func (p *PaginateSum) SetLastPage(lastPage uint64) IPaginate {
+	p.LastPage = lastPage
+	return p
+}
+
+func (p *PaginateSum) SetItems(items interface{}) IPaginate {
+	p.Items = items
+	return p
+}
+
+func (p *PaginateSum) GetTotal() uint64 {
+	return p.Total
+}
+
+func (p *PaginateSum) GetPerPage() uint64 {
+	return p.PerPage
+}
+
+func (p *PaginateSum) GetCurrentPage() uint64 {
+	return p.CurrentPage
+}
+
+func (p *PaginateSum) GetLastPage() uint64 {
+	return p.LastPage
+}
+
+func (p *PaginateSum) GetItems() interface{} {
+	return p.Items
 }
