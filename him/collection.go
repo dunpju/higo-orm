@@ -2,6 +2,7 @@ package him
 
 import (
 	"github.com/dunpju/higo-orm/event"
+	"github.com/dunpju/higo-orm/pagination"
 	"gorm.io/gorm"
 	"math"
 	"strings"
@@ -13,6 +14,10 @@ const (
 
 type counter struct {
 	Count_ int64
+}
+
+type sum struct {
+	Sum_ interface{}
 }
 
 func (this *SelectBuilder) First(dest interface{}) *gorm.DB {
@@ -51,12 +56,34 @@ func (this *SelectBuilder) Get(dest interface{}) *gorm.DB {
 }
 
 func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*gorm.DB, IPaginate) {
-	paginate, ok := dest.(IPaginate)
-	if !ok {
+	var (
+		ok          bool
+		paginate    IPaginate
+		paginateSum pagination.IPaginateSum
+	)
+	if paginateSum, ok = dest.(pagination.IPaginateSum); ok {
+		if paginate, ok = paginateSum.Dest().(IPaginate); !ok {
+			paginate = NewPaginate(WithItems(paginateSum.Dest()))
+		}
+	} else if paginate, ok = dest.(IPaginate); !ok {
 		paginate = NewPaginate(WithItems(dest))
 	}
 
 	paginate.SetPerPage(perPage).SetCurrentPage(page)
+
+	if paginateSum != nil {
+		sumSql, args, err := this.clone().sum(paginateSum.Field().String()).Limit(1).ToSql()
+		this.eventBeforeSum(sumSql, args, err, nil)
+		if err != nil {
+			this.db.GormDB().Error = err
+			return this.db.GormDB(), paginate
+		}
+		sum_ := sum{}
+		this.db.GormDB().Raw(sumSql, args...).Scan(&sum_)
+
+		this.eventAfterSum(sumSql, args, this.db.GormDB().Error, sum_)
+		paginateSum.SetSum(sum_.Sum_)
+	}
 
 	countSql, args, err := this.clone().count().Limit(1).ToSql()
 
@@ -126,19 +153,19 @@ func (this *SelectBuilder) Count() (*gorm.DB, int64) {
 	return this.db.GormDB(), count_
 }
 
-func (this *SelectBuilder) Sum(column string) (*gorm.DB, uint64) {
+func (this *SelectBuilder) Sum(column string) (*gorm.DB, interface{}) {
 	sumStatement := this.sum(column)
 	sumSql, args, err := sumStatement.ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err
 		return this.db.GormDB(), 0
 	}
-	count_ := counter{}
-	this.db.GormDB().Raw(sumSql, args...).Scan(&count_)
+	sum_ := sum{}
+	this.db.GormDB().Raw(sumSql, args...).Scan(&sum_)
 	if this.db.GormDB().Error != nil {
 		return this.db.GormDB(), 0
 	}
-	return this.db.GormDB(), uint64(count_.Count_)
+	return this.db.GormDB(), sum_.Sum_
 }
 
 func (this *SelectBuilder) eventBefore(sql string, args []interface{}, err error, result interface{}) {
@@ -155,4 +182,12 @@ func (this *SelectBuilder) eventBeforeCount(sql string, args []interface{}, err 
 
 func (this *SelectBuilder) eventAfterCount(sql string, args []interface{}, err error, result interface{}) {
 	event.Point(event.AfterCount, event.NewEventRecordResult(this.from, sql, args, err, result))
+}
+
+func (this *SelectBuilder) eventBeforeSum(sql string, args []interface{}, err error, result interface{}) {
+	event.Point(event.BeforeSum, event.NewEventRecordResult(this.from, sql, args, err, result))
+}
+
+func (this *SelectBuilder) eventAfterSum(sql string, args []interface{}, err error, result interface{}) {
+	event.Point(event.AfterSum, event.NewEventRecordResult(this.from, sql, args, err, result))
 }

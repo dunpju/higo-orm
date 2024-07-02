@@ -24,6 +24,8 @@ const (
 	AfterSelect
 	BeforeCount
 	AfterCount
+	BeforeSum
+	AfterSum
 	BeforeRaw
 	AfterRaw
 )
