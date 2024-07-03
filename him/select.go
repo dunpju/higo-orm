@@ -173,7 +173,7 @@ func (this *SelectBuilder) Distinct() *SelectBuilder {
 
 func (this *SelectBuilder) count() *SelectBuilder {
 	this.isCount = true
-	this.countColumn = append(this.countColumn, fmt.Sprintf("COUNT(*) `%s`", _count_))
+	this.countColumn = append(this.countColumn, fmt.Sprintf("COUNT(*) AS `%s`", _count_))
 	return this
 }
 
