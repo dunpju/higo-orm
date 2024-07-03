@@ -174,7 +174,7 @@ func (this *SelectBuilder) count() *SelectBuilder {
 
 func (this *SelectBuilder) sum(columns ...string) *SelectBuilder {
 	for i, col := range columns {
-		if i == 0 {
+		if i == 0 && len(columns) == 1 {
 			this.sumColumn = append(this.sumColumn, fmt.Sprintf("SUM(%s) AS `%s`", col, _sum_))
 		} else {
 			this.sumColumn = append(this.sumColumn, fmt.Sprintf("SUM(%s) AS `%s%d`", col, _sum_, i))
