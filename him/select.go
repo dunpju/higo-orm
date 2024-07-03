@@ -10,9 +10,9 @@ type SelectBuilder struct {
 	db          *DB
 	connect     *connect
 	isCount     bool
-	countColumn string
+	countColumn []string
 	isSum       bool
-	sumColumn   string
+	sumColumn   []string
 	isRaw       bool
 	isWhereRaw  bool
 	columns     []string
@@ -35,33 +35,39 @@ type SelectBuilder struct {
 	Error       error
 }
 
-func newSelectBuilder(connect string) *SelectBuilder {
-	if connect != "" {
-		dbc, err := getConnect(connect)
+func newSelectBuilder(connection string) *SelectBuilder {
+	var (
+		dbc *connect
+		err error
+	)
+
+	if connection != "" {
+		dbc, err = getConnect(connection)
 		if err != nil {
 			return &SelectBuilder{Error: err}
 		}
-		return query(dbc)
 	} else {
-		dbc, err := getConnect(DefaultConnect)
+		dbc, err = getConnect(DefaultConnect)
 		if err != nil {
 			return &SelectBuilder{Error: err}
 		}
-		return query(dbc)
 	}
+	return query(dbc)
 }
 
 func query(dbc *connect) *SelectBuilder {
 	return &SelectBuilder{
-		db:       dbc.db,
-		connect:  dbc,
-		columns:  make([]string, 0),
-		joins:    make([]join, 0),
-		wheres:   NewWheres(),
-		orderBy:  make([]string, 0),
-		groupBys: make([]string, 0),
-		havings:  make([]having, 0),
-		column:   make([]column, 0),
+		db:          dbc.db,
+		connect:     dbc,
+		countColumn: make([]string, 0),
+		sumColumn:   make([]string, 0),
+		columns:     make([]string, 0),
+		joins:       make([]join, 0),
+		wheres:      NewWheres(),
+		orderBy:     make([]string, 0),
+		groupBys:    make([]string, 0),
+		havings:     make([]having, 0),
+		column:      make([]column, 0),
 	}
 }
 
@@ -167,13 +173,16 @@ func (this *SelectBuilder) Distinct() *SelectBuilder {
 
 func (this *SelectBuilder) count() *SelectBuilder {
 	this.isCount = true
-	this.countColumn = fmt.Sprintf("COUNT(*) %s", _count_)
+	this.countColumn = append(this.countColumn, fmt.Sprintf("COUNT(*) %s", _count_))
 	return this
 }
 
-func (this *SelectBuilder) sum(column string) *SelectBuilder {
+func (this *SelectBuilder) sum(column string, more ...string) *SelectBuilder {
 	this.isSum = true
-	this.sumColumn = fmt.Sprintf("SUM(%s) %s", column, _sum_)
+	this.sumColumn = append(this.sumColumn, fmt.Sprintf("SUM(%s) %s", column, _sum_))
+	for i, s := range more {
+		this.sumColumn = append(this.sumColumn, fmt.Sprintf("SUM(%s) %s%d", s, _sum_, i))
+	}
 	return this
 }
 
@@ -183,11 +192,11 @@ func (this *SelectBuilder) ToSql() (string, []interface{}, error) {
 	}
 	if this.isCount {
 		this.columns = make([]string, 0)
-		this.columns = append(this.columns, this.countColumn)
+		this.columns = append(this.columns, this.countColumn...)
 	}
 	if this.isSum {
 		this.columns = make([]string, 0)
-		this.columns = append(this.columns, this.sumColumn)
+		this.columns = append(this.columns, this.sumColumn...)
 	}
 	selectBuilder := squirrel.Select(this.columns...)
 	selectBuilder = selectBuilder.From(this.from)

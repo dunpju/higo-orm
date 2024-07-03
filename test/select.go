@@ -48,7 +48,7 @@ func main() {
 		Select("*").
 		From("users").
 		Where("user_name", "=", "gh1111").
-		Sum("ss")
+		Sum("ss", "is_delete")
 	fmt.Println(select121, sum1)
 
 	return
