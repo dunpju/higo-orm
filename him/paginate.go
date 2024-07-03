@@ -102,16 +102,16 @@ func WithItems(items interface{}) IProperty {
 }
 
 type IPaginateSum interface {
-	SetSum(sum string)
-	Sum() string
+	SetSum(sum interface{})
+	Sum() interface{}
 	Dest() interface{}
-	Field() interface{}
+	Field() []interface{}
 }
 
 type PaginateSum struct {
 	dest        interface{}
-	field       interface{}
-	sum         string
+	field       []interface{}
+	sum         interface{}
 	Total       uint64      `json:"total"`
 	PerPage     uint64      `json:"per_page"`
 	CurrentPage uint64      `json:"current_page"`
@@ -119,8 +119,11 @@ type PaginateSum struct {
 	Items       interface{} `json:"items"`
 }
 
-func NewPaginateSum(dest interface{}, field interface{}) *PaginateSum {
-	return &PaginateSum{dest: dest, field: field}
+func NewPaginateSum(dest interface{}, field interface{}, more ...interface{}) *PaginateSum {
+	fields := make([]interface{}, 0)
+	fields = append(fields, field)
+	fields = append(fields, more...)
+	return &PaginateSum{dest: dest, field: fields}
 }
 
 func (p *PaginateSum) Paginate(paginate IPaginate) IPaginate {
@@ -136,15 +139,15 @@ func (p *PaginateSum) Dest() interface{} {
 	return p.dest
 }
 
-func (p *PaginateSum) Field() interface{} {
+func (p *PaginateSum) Field() []interface{} {
 	return p.field
 }
 
-func (p *PaginateSum) Sum() string {
+func (p *PaginateSum) Sum() interface{} {
 	return p.sum
 }
 
-func (p *PaginateSum) SetSum(sum string) {
+func (p *PaginateSum) SetSum(sum interface{}) {
 	p.sum = sum
 }
 

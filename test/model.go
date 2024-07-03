@@ -132,7 +132,7 @@ func main() {
 		fmt.Println(paginate.GetCurrentPage())
 		fmt.Println(paginate.GetPerPage())
 
-		paginateSum := him.NewPaginateSum(&res1, "schoolName")
+		paginateSum := him.NewPaginateSum(&res1, "schoolName", "isDelete")
 		tx3_1, paginate := School.New().TX(tx).Select().Paginate(1, 2, paginateSum)
 		fmt.Printf("tx3_1 %p\n", tx3_1)
 		fmt.Println(paginate.GetItems())

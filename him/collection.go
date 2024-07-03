@@ -72,17 +72,26 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	paginate.SetPerPage(perPage).SetCurrentPage(page)
 
 	if paginateSum != nil {
-		sumSql, args, err := this.clone().sum(toString(paginateSum.Field())).Limit(1).ToSql()
+		sumSql, args, err := this.clone().sum(toStrings(paginateSum.Field()...)...).Limit(1).ToSql()
 		this.eventBeforeSum(sumSql, args, err, nil)
 		if err != nil {
 			this.db.GormDB().Error = err
 			return this.db.GormDB(), paginate
 		}
-		sum_ := &sum{}
+		var sum_ interface{}
+		if len(paginateSum.Field()) > 1 {
+			sum_ = make(map[string]interface{})
+		} else {
+			sum_ = &sum{}
+		}
 		this.db.GormDB().Raw(sumSql, args...).Scan(sum_)
 
 		this.eventAfterSum(sumSql, args, this.db.GormDB().Error, sum_)
-		paginateSum.SetSum(sum_.Sum_)
+		if s, ok := sum_.(*sum); ok {
+			paginateSum.SetSum(s.Sum_)
+		} else {
+			paginateSum.SetSum(sum_)
+		}
 	}
 
 	countSql, args, err := this.clone().count().Limit(1).ToSql()
@@ -154,7 +163,10 @@ func (this *SelectBuilder) Count() (*gorm.DB, int64) {
 }
 
 func (this *SelectBuilder) Sum(column string, more ...string) (*gorm.DB, interface{}) {
-	sumStatement := this.sum(column, more...)
+	columns := make([]string, 0)
+	columns = append(columns, column)
+	columns = append(columns, more...)
+	sumStatement := this.sum(columns...)
 	sumSql, args, err := sumStatement.Limit(1).ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err
