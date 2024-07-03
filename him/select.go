@@ -9,9 +9,7 @@ import (
 type SelectBuilder struct {
 	db          *DB
 	connect     *connect
-	isCount     bool
 	countColumn []string
-	isSum       bool
 	sumColumn   []string
 	isRaw       bool
 	isWhereRaw  bool
@@ -83,9 +81,7 @@ func (this *SelectBuilder) clone() *SelectBuilder {
 	return &SelectBuilder{
 		db:          this.db,
 		connect:     this.connect,
-		isCount:     this.isCount,
 		countColumn: this.countColumn,
-		isSum:       this.isSum,
 		sumColumn:   this.sumColumn,
 		isRaw:       this.isRaw,
 		isWhereRaw:  this.isWhereRaw,
@@ -172,13 +168,11 @@ func (this *SelectBuilder) Distinct() *SelectBuilder {
 }
 
 func (this *SelectBuilder) count() *SelectBuilder {
-	this.isCount = true
 	this.countColumn = append(this.countColumn, fmt.Sprintf("COUNT(*) AS `%s`", _count_))
 	return this
 }
 
 func (this *SelectBuilder) sum(columns ...string) *SelectBuilder {
-	this.isSum = true
 	for i, col := range columns {
 		if i == 0 {
 			this.sumColumn = append(this.sumColumn, fmt.Sprintf("SUM(%s) AS `%s`", col, _sum_))
@@ -193,11 +187,11 @@ func (this *SelectBuilder) ToSql() (string, []interface{}, error) {
 	if this.isWhereRaw || this.isRaw {
 		return whereRawHandle(*this.wheres)
 	}
-	if this.isCount {
+	if len(this.countColumn) > 0 {
 		this.columns = make([]string, 0)
 		this.columns = append(this.columns, this.countColumn...)
 	}
-	if this.isSum {
+	if len(this.sumColumn) > 0 {
 		this.columns = make([]string, 0)
 		this.columns = append(this.columns, this.sumColumn...)
 	}
