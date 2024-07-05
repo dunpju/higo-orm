@@ -2,10 +2,12 @@ package him
 
 import (
 	"context"
+	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/dunpju/higo-orm/event"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strings"
 	"time"
 )
 
@@ -18,16 +20,41 @@ func newExecer(sqlizer squirrel.Sqlizer, gormDB *gorm.DB) *Execer {
 	return &Execer{sqlizer: sqlizer, gormDB: gormDB}
 }
 
+func handleArgs(args []interface{}) ([]interface{}, error) {
+	ret := make([]interface{}, 0)
+	for _, arg := range args {
+		if expr, ok := arg.(squirrel.Sqlizer); ok {
+			exprSql, exprArgs, err := expr.ToSql()
+			if err != nil {
+				return ret, err
+			}
+			for _, exprArg := range exprArgs {
+				exprSql = strings.Replace(exprSql, "?", fmt.Sprintf("%v", exprArg), 1)
+			}
+			ret = append(ret, exprSql)
+		} else {
+			ret = append(ret, arg)
+		}
+	}
+	return ret, nil
+}
+
 func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) {
 	gormDB = this.gormDB
 	sql, args, err := this.sqlizer.ToSql()
-
-	this.eventBefore(sql, args, err)
-
 	if err != nil {
 		gormDB.Error = err
+		this.eventBefore(sql, args, err)
 		return
 	}
+
+	args, err = handleArgs(args)
+	if err != nil {
+		gormDB.Error = err
+		this.eventBefore(sql, args, err)
+		return
+	}
+	this.eventBefore(sql, args, err)
 
 	var (
 		curTime = time.Now()
