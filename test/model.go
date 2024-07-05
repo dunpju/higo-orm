@@ -114,7 +114,7 @@ func main() {
 	err = School.New().Begin().Transaction(func(tx *gorm.DB) error {
 		fmt.Printf("tx %p\n", tx)
 		res := make(map[string]interface{})
-		tx1 := School.New().TX(tx).Select().Where("schoolId", "=", 1).First(&res)
+		tx1 := School.New().TX(tx).Select().Where("schoolId", ">=", him.Expr("isDelete + 1")).First(&res)
 		fmt.Printf("tx1 %p\n", tx1)
 		fmt.Println(res)
 		tx1_1 := School.New().TX(tx).Select().Raw("SELECT * FROM `school` WHERE (schoolId = ?) LIMIT 1", 2).First(&res)

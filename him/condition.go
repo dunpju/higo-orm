@@ -16,11 +16,7 @@ func or(column, operator string, value interface{}) where {
 func conditionHandle(column, operator string, value interface{}) squirrel.Sqlizer {
 	if expr, ok := value.(squirrel.Sqlizer); ok {
 		exprSql, exprArgs, err := expr.ToSql()
-		sql := fmt.Sprintf("%s %s %s", column, operator, exprSql)
-		for _, _ = range exprArgs {
-			sql += " ?"
-		}
-		return NewExpression(sql, exprArgs, err)
+		return NewExpression(fmt.Sprintf("%s %s %s", column, operator, exprSql), exprArgs, err)
 	} else if operator == ">" {
 		return squirrel.Gt{column: value}
 	} else if operator == ">=" {
