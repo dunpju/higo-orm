@@ -47,13 +47,6 @@ func (this Execer) exec() (gormDB *gorm.DB, insertID int64, rowsAffected int64) 
 		this.eventBefore(sql, args, err)
 		return
 	}
-
-	args, err = handleArgs(args)
-	if err != nil {
-		gormDB.Error = err
-		this.eventBefore(sql, args, err)
-		return
-	}
 	this.eventBefore(sql, args, err)
 
 	var (

@@ -22,6 +22,11 @@ func (w *Wheres) pred() (string, []interface{}, error) {
 	pred := make([]string, 0)
 	args := make([]interface{}, 0)
 	err := w.forEach(func(w where) (bool, error) {
+		if ie, ok := w.sqlizer.(IExpression); ok {
+			if ie.Error() != nil {
+				return false, ie.Error()
+			}
+		}
 		sql, arg, err := w.sqlizer.ToSql()
 		if err != nil {
 			return false, err

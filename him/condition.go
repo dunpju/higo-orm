@@ -20,7 +20,7 @@ func conditionHandle(column, operator string, value interface{}) squirrel.Sqlize
 		for _, _ = range exprArgs {
 			sql += " ?"
 		}
-		return Expr(sql, exprArgs...)
+		return NewExpression(sql, exprArgs, err)
 	} else if operator == ">" {
 		return squirrel.Gt{column: value}
 	} else if operator == ">=" {
