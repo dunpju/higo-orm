@@ -14,7 +14,13 @@ func or(column, operator string, value interface{}) where {
 }
 
 func conditionHandle(column, operator string, value interface{}) squirrel.Sqlizer {
-	if expr, ok := value.(squirrel.Sqlizer); ok {
+	if operator == "BETWEEN" {
+		return value.(between)
+	} else if operator == "RAW" {
+		return value.(raw)
+	} else if operator == "whereRaw" {
+		return value.(whereRaw)
+	} else if expr, ok := value.(squirrel.Sqlizer); ok {
 		exprSql, exprArgs, err := expr.ToSql()
 		return NewExpression(fmt.Sprintf("%s %s %s", column, operator, exprSql), exprArgs, err)
 	} else if operator == ">" {
@@ -31,12 +37,6 @@ func conditionHandle(column, operator string, value interface{}) squirrel.Sqlize
 		return squirrel.Like{column: value}
 	} else if operator == "NotLike" {
 		return squirrel.NotLike{column: value}
-	} else if operator == "BETWEEN" {
-		return value.(between)
-	} else if operator == "RAW" {
-		return value.(raw)
-	} else if operator == "whereRaw" {
-		return value.(whereRaw)
 	} else if operator == "IN" {
 		return squirrel.Eq{column: value}
 	} else if operator == "NotIn" {
