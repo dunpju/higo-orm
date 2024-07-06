@@ -86,10 +86,10 @@ func (this *SchoolDao) Add() (gormDB *gorm.DB, lastInsertId int64) {
 }
 
 // Update 更新
-func (this *SchoolDao) Update() *gorm.DB {
-	gormDB, _ := this.model.Update().Exec()
+func (this *SchoolDao) Update() (*gorm.DB, int64) {
+	gormDB, affected := this.model.Update().Exec()
 	this.CheckError(gormDB)
-	return gormDB
+	return gormDB, affected
 }
 
 // GetBySchoolId id查询
