@@ -71,7 +71,7 @@ func (this *SchoolDao) SetData(entity *SchoolEntity.Entity) arm.IDao {
 	})
 }
 
-func init() {
+func Init() {
 	event.AddEvent(event.BeforeInsert, School.New().TableName().String(), func(data event.EventRecord) {
 		fmt.Println(111)
 		fmt.Println(data.Sql)
