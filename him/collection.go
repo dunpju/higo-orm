@@ -25,6 +25,9 @@ func (this *SelectBuilder) First(dest interface{}) *gorm.DB {
 	sql, args, err := this.ToSql()
 
 	this.eventBefore(sql, args, err, nil)
+	if this.db.GormDB().Error != nil {
+		return this.db.GormDB()
+	}
 
 	if err != nil {
 		this.db.GormDB().Error = err
@@ -42,6 +45,9 @@ func (this *SelectBuilder) Get(dest interface{}) *gorm.DB {
 	sql, args, err := this.ToSql()
 
 	this.eventBefore(sql, args, err, nil)
+	if this.db.GormDB().Error != nil {
+		return this.db.GormDB()
+	}
 
 	if err != nil {
 		this.db.GormDB().Error = err
@@ -73,11 +79,16 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 
 	if paginateSum != nil {
 		sumSql, args, err := this.clone().sum(toStrings(paginateSum.Field()...)...).Limit(1).ToSql()
-		this.eventBeforeSum(sumSql, args, err, nil)
 		if err != nil {
 			this.db.GormDB().Error = err
 			return this.db.GormDB(), paginate
 		}
+
+		this.eventBeforeSum(sumSql, args, err, nil)
+		if this.db.GormDB().Error != nil {
+			return this.db.GormDB(), paginate
+		}
+
 		var sum_ interface{}
 		if len(paginateSum.Field()) > 1 {
 			sum_ = make(map[string]interface{})
@@ -85,6 +96,9 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 			sum_ = &sum{}
 		}
 		this.db.GormDB().Raw(sumSql, args...).Scan(sum_)
+		if this.db.GormDB().Error != nil {
+			return this.db.GormDB(), paginate
+		}
 
 		this.eventAfterSum(sumSql, args, this.db.GormDB().Error, sum_)
 		if s, ok := sum_.(*sum); ok {
@@ -95,21 +109,27 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	}
 
 	countSql, args, err := this.clone().count().Limit(1).ToSql()
-
-	this.eventBeforeCount(countSql, args, err, nil)
-
 	if err != nil {
 		this.db.GormDB().Error = err
 		return this.db.GormDB(), paginate
 	}
-	count_ := counter{}
-	this.db.GormDB().Raw(countSql, args...).Scan(&count_)
 
-	this.eventAfterCount(countSql, args, this.db.GormDB().Error, count_)
-
+	this.eventBeforeCount(countSql, args, err, nil)
 	if this.db.GormDB().Error != nil {
 		return this.db.GormDB(), paginate
 	}
+
+	count_ := counter{}
+	this.db.GormDB().Raw(countSql, args...).Scan(&count_)
+	if this.db.GormDB().Error != nil {
+		return this.db.GormDB(), paginate
+	}
+
+	this.eventAfterCount(countSql, args, this.db.GormDB().Error, count_)
+	if this.db.GormDB().Error != nil {
+		return this.db.GormDB(), paginate
+	}
+
 	if count_.Count_ == 0 {
 		return this.db.GormDB(), paginate
 	}
@@ -121,6 +141,9 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 	sql, args, err := this.Offset(offset).Limit(perPage).ToSql()
 
 	this.eventBefore(countSql, args, err, nil)
+	if this.db.GormDB().Error != nil {
+		return this.db.GormDB(), paginate
+	}
 
 	if err != nil {
 		this.db.GormDB().Error = err
@@ -189,25 +212,25 @@ func (this *SelectBuilder) Sum(column string, more ...string) (*gorm.DB, interfa
 }
 
 func (this *SelectBuilder) eventBefore(sql string, args []interface{}, err error, result interface{}) {
-	event.Point(event.BeforeSelect, event.NewEventRecordResult(this.from, sql, args, err, result))
+	event.Point(event.BeforeSelect, event.NewEventRecordResult(this.db.GormDB(), this.from, sql, args, err, result))
 }
 
 func (this *SelectBuilder) eventAfter(sql string, args []interface{}, err error, result interface{}) {
-	event.Point(event.AfterSelect, event.NewEventRecordResult(this.from, sql, args, err, result))
+	event.Point(event.AfterSelect, event.NewEventRecordResult(this.db.GormDB(), this.from, sql, args, err, result))
 }
 
 func (this *SelectBuilder) eventBeforeCount(sql string, args []interface{}, err error, result interface{}) {
-	event.Point(event.BeforeCount, event.NewEventRecordResult(this.from, sql, args, err, result))
+	event.Point(event.BeforeCount, event.NewEventRecordResult(this.db.GormDB(), this.from, sql, args, err, result))
 }
 
 func (this *SelectBuilder) eventAfterCount(sql string, args []interface{}, err error, result interface{}) {
-	event.Point(event.AfterCount, event.NewEventRecordResult(this.from, sql, args, err, result))
+	event.Point(event.AfterCount, event.NewEventRecordResult(this.db.GormDB(), this.from, sql, args, err, result))
 }
 
 func (this *SelectBuilder) eventBeforeSum(sql string, args []interface{}, err error, result interface{}) {
-	event.Point(event.BeforeSum, event.NewEventRecordResult(this.from, sql, args, err, result))
+	event.Point(event.BeforeSum, event.NewEventRecordResult(this.db.GormDB(), this.from, sql, args, err, result))
 }
 
 func (this *SelectBuilder) eventAfterSum(sql string, args []interface{}, err error, result interface{}) {
-	event.Point(event.AfterSum, event.NewEventRecordResult(this.from, sql, args, err, result))
+	event.Point(event.AfterSum, event.NewEventRecordResult(this.db.GormDB(), this.from, sql, args, err, result))
 }

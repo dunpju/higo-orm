@@ -64,6 +64,7 @@ func main() {
 	event.AddEvent(event.AfterInsert, School.New().TableName().String(), func(data event.EventRecord) {
 		fmt.Println("AfterInsert")
 		fmt.Println(data.Sql)
+		data.Tx().Error = fmt.Errorf("AfterInsert事件测试事务")
 	})
 	event.AddEvent(event.AfterUpdate, School.New().TableName().String(), func(data event.EventRecord) {
 		fmt.Println("AfterUpdate")

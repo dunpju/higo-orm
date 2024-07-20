@@ -2,6 +2,7 @@ package event
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"sync"
 )
 
@@ -77,6 +78,7 @@ func (this *EventRepository) add(event EventType, iEvent IEvent) {
 }
 
 type EventRecord struct {
+	tx           *gorm.DB
 	Table        string
 	Sql          string
 	Args         []interface{}
@@ -86,12 +88,16 @@ type EventRecord struct {
 	Result       interface{}
 }
 
-func NewEventRecord(table string, sql string, args []interface{}, err error, lastInsertId int64, rowsAffected int64) EventRecord {
-	return EventRecord{Table: table, Sql: sql, Args: args, Err: err, LastInsertId: lastInsertId, RowsAffected: rowsAffected}
+func NewEventRecord(tx *gorm.DB, table string, sql string, args []interface{}, err error, lastInsertId int64, rowsAffected int64) EventRecord {
+	return EventRecord{tx: tx, Table: table, Sql: sql, Args: args, Err: err, LastInsertId: lastInsertId, RowsAffected: rowsAffected}
 }
 
-func NewEventRecordResult(table string, sql string, args []interface{}, err error, result interface{}) EventRecord {
-	return EventRecord{Table: table, Sql: sql, Args: args, Err: err, Result: result}
+func NewEventRecordResult(tx *gorm.DB, table string, sql string, args []interface{}, err error, result interface{}) EventRecord {
+	return EventRecord{tx: tx, Table: table, Sql: sql, Args: args, Err: err, Result: result}
+}
+
+func (e EventRecord) Tx() *gorm.DB {
+	return e.tx
 }
 
 type EventHandle func(data EventRecord)
