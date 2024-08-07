@@ -146,7 +146,7 @@ func (this *SelectBuilder) Limit(limit uint64) *SelectBuilder {
 
 func (this *SelectBuilder) OrderBy(orderBys ...any) *SelectBuilder {
 	this.hasOrderBy = true
-	this.orderBy = columnsToString(orderBys...)
+	this.orderBy = append(this.orderBy, columnsToString(orderBys...)...)
 	return this
 }
 
