@@ -187,7 +187,10 @@ func (this *SelectBuilder) ToSql() (string, []interface{}, error) {
 	if this.isWhereRaw || this.isRaw {
 		return whereRawHandle(*this.wheres)
 	}
-	if len(this.countColumn) > 0 {
+
+	isCount := len(this.countColumn) > 0
+
+	if isCount {
 		this.columns = make([]string, 0)
 		this.columns = append(this.columns, this.countColumn...)
 	}
@@ -202,7 +205,7 @@ func (this *SelectBuilder) ToSql() (string, []interface{}, error) {
 	if err != nil {
 		return "", nil, err
 	}
-	if this.hasOrderBy {
+	if this.hasOrderBy && !isCount {
 		selectBuilder = selectBuilder.OrderBy(this.orderBy...)
 	}
 	if this.hasGroupBys {

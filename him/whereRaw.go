@@ -56,6 +56,17 @@ func (this WhereRawBuilder) WhereBetween(column any, first, second interface{}) 
 	return this
 }
 
+func (this WhereRawBuilder) WhereRaw(fn func(builder WhereRawBuilder) WhereRawBuilder) WhereRawBuilder {
+	sql, args, err := fn(WhereRawBuilder{}).ToSql()
+	this.wheres.and().whereRaw(sql, args, err)
+	return this
+}
+
+func (this WhereRawBuilder) Raw(pred string, args ...interface{}) WhereRawBuilder {
+	this.wheres.and().raw(pred, args, nil)
+	return this
+}
+
 func (this WhereRawBuilder) OrWhere(column any, operator string, value interface{}) WhereRawBuilder {
 	this.wheres.or().where(columnToString(column), operator, value)
 	return this
@@ -96,7 +107,13 @@ func (this WhereRawBuilder) OrWhereBetween(column any, first, second interface{}
 	return this
 }
 
-func (this WhereRawBuilder) Raw(pred string, args ...interface{}) WhereRawBuilder {
-	this.wheres.and().raw(pred, args, nil)
+func (this WhereRawBuilder) OrWhereRaw(fn func(builder WhereRawBuilder) WhereRawBuilder) WhereRawBuilder {
+	sql, args, err := fn(WhereRawBuilder{}).ToSql()
+	this.wheres.or().whereRaw(sql, args, err)
+	return this
+}
+
+func (this WhereRawBuilder) OrRaw(pred string, args ...interface{}) WhereRawBuilder {
+	this.wheres.or().raw(pred, args, nil)
 	return this
 }
