@@ -70,6 +70,15 @@ func (this Fields) DISTINCT() string {
 	return fmt.Sprintf("DISTINCT(`%s`)", field)
 }
 
+func (this Fields) ISNULL() string {
+	field := this.string()
+	hasBackQuote := backQuoteReg.FindString(field)
+	if hasBackQuote != "" {
+		return fmt.Sprintf("ISNULL(%s)", field)
+	}
+	return fmt.Sprintf("ISNULL(`%s`)", field)
+}
+
 func (this Fields) FIELD(value string, moreValue ...interface{}) string {
 	values := []string{fmt.Sprintf("'%s'", value)}
 	for _, value := range moreValue {
