@@ -108,10 +108,15 @@ func (this *SelectBuilder) Paginate(page, perPage uint64, dest interface{}) (*go
 		}
 	}
 
-	countSql, args, err := this.clone().count().Limit(1).ToSql()
+	countSql, args, err := this.clone().count().ToSql()
 	if err != nil {
 		this.db.GormDB().Error = err
 		return this.db.GormDB(), paginate
+	}
+	if len(this.groupBys) > 0 {
+		countSql = "SELECT COUNT(*) AS `count_` FROM (" + countSql + ") count_temp LIMIT 1"
+	} else {
+		countSql = countSql + " LIMIT 1"
 	}
 
 	this.eventBeforeCount(countSql, args, err, nil)
