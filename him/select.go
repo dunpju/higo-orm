@@ -167,9 +167,13 @@ func (this *SelectBuilder) Distinct() *SelectBuilder {
 	return this
 }
 
-func (this *SelectBuilder) count() *SelectBuilder {
-	this.countColumn = append(this.countColumn, fmt.Sprintf("COUNT(*) AS `%s`", _count_))
-	return this
+func (this *SelectBuilder) count() (string, []interface{}, error) {
+	sql, args, err := this.clone().ToSql()
+	if err != nil {
+		return sql, args, err
+	}
+	sql = "SELECT COUNT(*) AS `" + _count_ + "` FROM (" + sql + ") count_temp LIMIT 1"
+	return sql, args, err
 }
 
 func (this *SelectBuilder) sum(columns ...string) *SelectBuilder {
