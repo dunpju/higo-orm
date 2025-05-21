@@ -37,3 +37,35 @@ func (this *Entity) Equals(flag arm.Flag) bool {
 func (this *Entity) PrimaryEmpty() bool {
 	return this.%UPPER_PRIMARY_KEY% == 0
 }
+
+func (this *Entity) Equal(e *Entity) bool {
+	return this.Name == e.Name &&
+		this.ApiUrl == e.ApiUrl &&
+		this.Class == e.Class &&
+		this.Route == e.Route &&
+		this.UniMd5 == e.UniMd5 &&
+		this.Title == e.Title &&
+		this.Desc == e.Desc &&
+		this.IsAuth == e.IsAuth &&
+		this.IsDataAuth == e.IsDataAuth
+}
+
+func (this *Entity) NotEqual(e *Entity) bool {
+	return !this.Equal(e)
+}
+
+func (this *Entity) EqModel(m *PrivilegeAction.Model) bool {
+	return this.Name == m.Name &&
+		this.ApiUrl == m.ApiUrl &&
+		this.Class == m.Class &&
+		this.Route == m.Route &&
+		this.UniMd5 == m.UniMd5 &&
+		this.Title == m.Title &&
+		this.Desc == m.Desc &&
+		this.IsAuth == m.IsAuth &&
+		this.IsDataAuth == m.IsDataAuth
+}
+
+func (this *Entity) NotEqModel(m *PrivilegeAction.Model) bool {
+	return !this.EqualModel(m)
+}
