@@ -1,6 +1,10 @@
 package him
 
-import "github.com/Masterminds/squirrel"
+import (
+	"fmt"
+	"github.com/Masterminds/squirrel"
+	"regexp"
+)
 
 type CaseWhen interface {
 	Field() string
@@ -38,7 +42,12 @@ func (this *CaseBuilder) Field() string {
 }
 
 func (this *CaseBuilder) SetField(field string) {
-	this.field = field
+	hasBackQuote := regexp.MustCompile("`").FindString(field)
+	if hasBackQuote != "" {
+		this.field = field
+	} else {
+		this.field = fmt.Sprintf("`%s`", field)
+	}
 }
 
 func (this *CaseBuilder) Case() string {
