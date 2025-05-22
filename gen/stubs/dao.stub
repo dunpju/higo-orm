@@ -97,6 +97,98 @@ func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.
 	return
 }
 
+// BatchInsert 批量插入
+func (this *%MODEL_PACKAGE%Dao) BatchInsert(entityList []*%MODEL_PACKAGE%Entity.Entity, chunk int) (gormDB *gorm.DB, affected int64) {
+	for start := 0; start < len(entityList); start += chunk {
+		end := start + chunk
+		if end > len(entityList) {
+			end = len(entityList)
+		}
+		model := this.model.Insert().Columns(
+			%MODEL_PACKAGE%.Name,
+			%MODEL_PACKAGE%.ApiUrl,
+			%MODEL_PACKAGE%.Class,
+			%MODEL_PACKAGE%.Route,
+			%MODEL_PACKAGE%.UniMd5,
+			%MODEL_PACKAGE%.Title,
+			%MODEL_PACKAGE%.Desc,
+			%MODEL_PACKAGE%.IsAuth,
+			%MODEL_PACKAGE%.IsDataAuth,
+			%MODEL_PACKAGE%.Sort,
+			%MODEL_PACKAGE%.CreateTime,
+			%MODEL_PACKAGE%.UpdateTime,
+		)
+		for _, entity := range entityList[start:end] {
+			model.Values(
+				entity.Name,
+				entity.ApiUrl,
+				entity.Class,
+				entity.Route,
+				entity.UniMd5,
+				entity.Title,
+				entity.Desc,
+				entity.IsAuth,
+				entity.IsDataAuth,
+				entity.Sort,
+				entity.CreateTime,
+				entity.UpdateTime,
+			)
+		}
+		model.OnDuplicateKeyUpdate(%MODEL_PACKAGE%.UpdateTime.VALUES())
+		gormDB, affected = model.Save()
+		this.CheckError(gormDB)
+	}
+	return
+}
+
+// BatchUpdate 批量更新
+func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.Entity, chunk uint64) (gormDB *gorm.DB, affected int64) {
+    for start := 0; start < len(entityList); start += chunk {
+		end := start + chunk
+		if end > len(entityList) {
+			end = len(entityList)
+		}
+
+		model := this.model.Update()
+		idList := make([]int64, 0)
+
+		nameCase := %MODEL_PACKAGE%.Name.Case()
+		apiUrlCase := %MODEL_PACKAGE%.ApiUrl.Case()
+		classCase := %MODEL_PACKAGE%.Class.Case()
+		routeCase := %MODEL_PACKAGE%.Route.Case()
+		titleCase := %MODEL_PACKAGE%.Title.Case()
+		descCase := %MODEL_PACKAGE%.Desc.Case()
+		isAuthCase := %MODEL_PACKAGE%.IsAuth.Case()
+		isDataAuthCase := %MODEL_PACKAGE%.IsDataAuth.Case()
+
+		for _, entity := range entityList[start:end] {
+			idList = append(idList, entity.PrivilegeActionId)
+			nameCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Name)
+			apiUrlCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.ApiUrl)
+			classCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Class)
+			routeCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Route)
+			titleCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Title)
+			descCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Desc)
+			isAuthCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.IsAuth)
+			isDataAuthCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.IsDataAuth)
+		}
+
+		model.CaseWhen(nameCase)
+		model.CaseWhen(apiUrlCase)
+		model.CaseWhen(classCase)
+		model.CaseWhen(routeCase)
+		model.CaseWhen(titleCase)
+		model.CaseWhen(descCase)
+		model.CaseWhen(isAuthCase)
+		model.CaseWhen(isDataAuthCase)
+
+		model.WhereIn(%MODEL_PACKAGE%.PrivilegeActionId, idList)
+		gormDB, affected = model.Exec()
+		this.CheckError(gormDB)
+	}
+	return
+}
+
 // GetBy%UPPER_PRIMARY_KEY% %PRIMARY_KEY%查询
 func (this *%MODEL_PACKAGE%Dao) GetBy%UPPER_PRIMARY_KEY%(%PRIMARY_KEY% int64) *%MODEL_PACKAGE%.Model {
     model := this.Model()
