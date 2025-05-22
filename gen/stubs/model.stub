@@ -55,4 +55,20 @@ func (this *Model) Exist() bool {
     return this.IsEmpty(this)
 }
 
+func (this *Model) Equal(e *Model) bool {
+	return this.Name == e.Name &&
+		this.ApiUrl == e.ApiUrl &&
+		this.Class == e.Class &&
+		this.Route == e.Route &&
+		this.UniMd5 == e.UniMd5 &&
+		this.Title == e.Title &&
+		this.Desc == e.Desc &&
+		this.IsAuth == e.IsAuth &&
+		this.IsDataAuth == e.IsDataAuth
+}
+
+func (this *Model) NotEqual(e *Model) bool {
+	return !this.Equal(e)
+}
+
 %WITH_PROPERTY%
