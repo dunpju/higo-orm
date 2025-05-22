@@ -12,6 +12,7 @@ import (
 const (
 	entityStubFilename         = "entity.stub"
 	entityPropertyStubFilename = "entityProperty.stub"
+	entityEqualStubFilename    = "entityEqual.stub"
 	entityStructName           = "Entity"
 )
 
@@ -34,13 +35,14 @@ type Entity struct {
 	outDir              string
 	entityFilename      string
 	entityPackage       string
-	modelPackage        string
+	modelInfo           ModelInfo
 	outfile             string
 	propertyString      []string
 	imports             []string
 	flags               []string
 	upperProperties     []string
 	properties          []property
+	equals              []string
 	newFileBuf          *bytes.Buffer
 	fieldMaxLen         int
 	propertyTypeMaxLen  int
@@ -63,8 +65,8 @@ func (this *Entity) setPackage(pkg string) *Entity {
 	return this
 }
 
-func (this *Entity) setModelPackage(pkg string) *Entity {
-	this.modelPackage = pkg
+func (this *Entity) setModelInfo(modelInfo ModelInfo) *Entity {
+	this.modelInfo = modelInfo
 	return this
 }
 
@@ -115,6 +117,7 @@ func newEntity() *Entity {
 		flags:           make([]string, 0),
 		upperProperties: make([]string, 0),
 		propertyString:  make([]string, 0),
+		equals:          make([]string, 0),
 		newFileBuf:      bytes.NewBufferString(""),
 	}
 }
@@ -145,6 +148,7 @@ func (this *Entity) gen() {
 			updateTime = p.upperProperty
 		}
 		this.mergeProperty(rowProperty)
+		this.mergeEqual(p.upperProperty)
 	}
 	this.replacePackage(this.entityPackage)
 	this.replaceImport()
@@ -154,6 +158,8 @@ func (this *Entity) gen() {
 	this.replaceTimeNow(rowTimeNow)
 	this.replaceCreateUpdateTime(createTime, updateTime)
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
+	this.replaceModelPackage(this.modelInfo.modelPackage)
+	this.replaceEquals()
 	this.outfile = this.outDir + string(os.PathSeparator) + this.entityPackage + string(os.PathSeparator) + this.entityFilename
 	if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 		this.write(this.outfile, this.stubContext)
@@ -211,6 +217,16 @@ func (this *Entity) mergeProperty(rowProperty string) {
 	}
 }
 
+func (this *Entity) mergeEqual(upperProperty string) {
+	stub := stubs.NewStub(entityEqualStubFilename).Context()
+	if len(this.equals) == 0 {
+		stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	} else {
+		stub = strings.Replace(stub, "%UPPER_PROPERTY%", LeftStrPad(upperProperty, 8, " "), 1)
+	}
+	this.equals = append(this.equals, stub)
+}
+
 func (this *Entity) replacePackage(pkg string) {
 	this.stubContext = strings.Replace(this.stubContext, "%PACKAGE%", pkg, 1)
 }
@@ -218,6 +234,7 @@ func (this *Entity) replacePackage(pkg string) {
 func (this *Entity) replaceImport() {
 	imports := []string{
 		LeftStrPad(armImport, 4, " "),
+		LeftStrPad(fmt.Sprintf(`"%s"`, this.modelInfo.modelImport), 4, " "),
 	}
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
@@ -256,6 +273,10 @@ func (this *Entity) replaceRowProperty(upperProperty, blankFirst, propertyType, 
 	return stub
 }
 
+func (this *Entity) replaceEquals() {
+	this.stubContext = strings.ReplaceAll(this.stubContext, "%EQUALS%", strings.Join(this.equals, " &&\n"))
+}
+
 func (this *Entity) replaceUpperPrimaryKey(upperPrimaryKey string) {
 	this.stubContext = strings.Replace(this.stubContext, "%UPPER_PRIMARY_KEY%", upperPrimaryKey, 1)
 }
@@ -279,4 +300,8 @@ func (this *Entity) replaceCreateUpdateTime(createTime, updateTime string) {
 		row += fmt.Sprintf("%s: tn", updateTime)
 	}
 	this.stubContext = strings.Replace(this.stubContext, "%CREATE_UPDATE_TIME%", row, 1)
+}
+
+func (this *Entity) replaceModelPackage(modelPackage string) {
+	this.stubContext = strings.ReplaceAll(this.stubContext, "%MODEL_PACKAGE%", modelPackage)
 }

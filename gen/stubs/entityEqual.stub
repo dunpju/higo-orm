@@ -1,1 +1,1 @@
-this.Name == e.Name
+this.%UPPER_PROPERTY% == e.%UPPER_PROPERTY%

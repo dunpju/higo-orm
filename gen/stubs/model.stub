@@ -56,15 +56,7 @@ func (this *Model) Exist() bool {
 }
 
 func (this *Model) Equal(e *Model) bool {
-	return this.Name == e.Name &&
-		this.ApiUrl == e.ApiUrl &&
-		this.Class == e.Class &&
-		this.Route == e.Route &&
-		this.UniMd5 == e.UniMd5 &&
-		this.Title == e.Title &&
-		this.Desc == e.Desc &&
-		this.IsAuth == e.IsAuth &&
-		this.IsDataAuth == e.IsDataAuth
+	return %EQUALS%
 }
 
 func (this *Model) NotEqual(e *Model) bool {

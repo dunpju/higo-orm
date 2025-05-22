@@ -187,6 +187,7 @@ type Model struct {
 	fields              []string
 	tableComment        string
 	properties          []string
+	equals              []string
 	withProperty        []string
 	upperProperties     []string
 	newFileBuf          *bytes.Buffer
@@ -215,6 +216,7 @@ func (this *Model) reset() {
 	this.imports = make([]string, 0)
 	this.fields = make([]string, 0)
 	this.properties = make([]string, 0)
+	this.equals = make([]string, 0)
 	this.withProperty = make([]string, 0)
 	this.upperProperties = make([]string, 0)
 	this.newFileBuf = bytes.NewBufferString("")
@@ -293,6 +295,7 @@ func (this *Model) gen(outDir string) {
 			this.mergeProperty(rowProperty)
 			rowWithProperty := this.replaceRowWithProperty(upperProperty, utils.String.Lcfirst(upperProperty), propertyType, field.Comment)
 			this.mergeWithProperty(rowWithProperty)
+			this.mergeEqual(upperProperty)
 			properties = append(properties, newProperty(isPrimaryKey, upperProperty, propertyType, field.Field, field.Comment))
 		}
 		if fieldMaxLen > 0 {
@@ -312,6 +315,7 @@ func (this *Model) gen(outDir string) {
 		this.replaceTableName(t.Name)
 		this.replaceUpperPrimaryKey(upperPrimaryKey)
 		this.replaceWithProperty()
+		this.replaceEquals()
 		if _, err := os.Stat(this.outfile); os.IsNotExist(err) {
 			this.write(this.outfile, this.stubContext)
 			fmt.Println(fmt.Sprintf("Model IDE %s was created.", this.outfile))
@@ -349,7 +353,7 @@ func (this *Model) gen(outDir string) {
 			newEntity().
 				setOutDir(this.outEntityDir).
 				setPackage(entityPackage).
-				setModelPackage(modelPackage).
+				setModelInfo(newModelInfo(modelImport, modelPackage)).
 				setTable(t).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
@@ -357,7 +361,6 @@ func (this *Model) gen(outDir string) {
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				setForce(this.forceEntity).
-				setImport(modelImport).
 				gen()
 
 			entityImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
@@ -384,7 +387,7 @@ func (this *Model) gen(outDir string) {
 			newEntity().
 				setOutDir(this.outEntityDir).
 				setPackage(entityPackage).
-				setModelPackage(modelPackage).
+				setModelInfo(newModelInfo(modelImport, modelPackage)).
 				setTable(t).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
@@ -392,7 +395,6 @@ func (this *Model) gen(outDir string) {
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				setForce(this.forceEntity).
-				setImport(modelImport).
 				gen()
 		}
 	}
@@ -482,6 +484,16 @@ func (this *Model) mergeWithProperty(rowWithProperty string) {
 	}
 }
 
+func (this *Model) mergeEqual(upperProperty string) {
+	stub := stubs.NewStub(entityEqualStubFilename).Context()
+	if len(this.equals) == 0 {
+		stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	} else {
+		stub = strings.Replace(stub, "%UPPER_PROPERTY%", LeftStrPad(upperProperty, 8, " "), 1)
+	}
+	this.equals = append(this.equals, stub)
+}
+
 func (this *Model) replaceRowField(upperProperty, blankFirst, tableFields, blankSecond, tableFieldsComment string) string {
 	stub := stubs.NewStub(modelFieldsStubFilename).Context()
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
@@ -547,6 +559,10 @@ func (this *Model) replaceTableName(tableName string) {
 
 func (this *Model) replaceUpperPrimaryKey(upperPrimaryKey string) {
 	this.stubContext = strings.Replace(this.stubContext, "%UPPER_PRIMARY_KEY%", upperPrimaryKey, 1)
+}
+
+func (this *Model) replaceEquals() {
+	this.stubContext = strings.ReplaceAll(this.stubContext, "%EQUALS%", strings.Join(this.equals, " &&\n"))
 }
 
 func (this *Model) replaceWithProperty() {
