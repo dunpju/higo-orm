@@ -34,6 +34,7 @@ type Entity struct {
 	outDir              string
 	entityFilename      string
 	entityPackage       string
+	modelPackage        string
 	outfile             string
 	propertyString      []string
 	imports             []string
@@ -59,6 +60,11 @@ func (this *Entity) setOutDir(outDir string) *Entity {
 
 func (this *Entity) setPackage(pkg string) *Entity {
 	this.entityPackage = pkg
+	return this
+}
+
+func (this *Entity) setModelPackage(pkg string) *Entity {
+	this.modelPackage = pkg
 	return this
 }
 
@@ -89,6 +95,15 @@ func (this *Entity) setTable(table Table) *Entity {
 
 func (this *Entity) setForce(force bool) *Entity {
 	this.force = force
+	return this
+}
+
+func (this *Entity) setImport(imps ...string) *Entity {
+	if len(imps) > 0 {
+		for _, imp := range imps {
+			this.mergeImport(imp)
+		}
+	}
 	return this
 }
 

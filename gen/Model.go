@@ -326,10 +326,30 @@ func (this *Model) gen(outDir string) {
 		}
 
 		entityPackage := fmt.Sprintf("%sEntity", modelPackage)
+
+		goMod := GetModInfo()
+		pwd, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+		childPath := GetGoModChildPath(pwd)
+		var childPathStr string
+		if len(childPath) > 0 {
+			childPathStr = fmt.Sprintf("/%s/", strings.Join(childPath, "/"))
+		}
+		var goModModulePath = goMod.Module.Path
+		regex := regexp.MustCompile(`/$`)
+		matched := regex.MatchString(goModModulePath)
+		if !matched {
+			goModModulePath += "/"
+		}
+		modelImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
+
 		if this.isGenerateDao.Bool() {
 			newEntity().
 				setOutDir(this.outEntityDir).
 				setPackage(entityPackage).
+				setModelPackage(modelPackage).
 				setTable(t).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
@@ -337,24 +357,9 @@ func (this *Model) gen(outDir string) {
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				setForce(this.forceEntity).
+				setImport(modelImport).
 				gen()
-			goMod := GetModInfo()
-			pwd, err := os.Getwd()
-			if err != nil {
-				panic(err)
-			}
-			childPath := GetGoModChildPath(pwd)
-			var childPathStr string
-			if len(childPath) > 0 {
-				childPathStr = fmt.Sprintf("/%s/", strings.Join(childPath, "/"))
-			}
-			var goModModulePath = goMod.Module.Path
-			regex := regexp.MustCompile(`/$`)
-			matched := regex.MatchString(goModModulePath)
-			if !matched {
-				goModModulePath += "/"
-			}
-			modelImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
+
 			entityImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
 			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
 			modelImport = strings.ReplaceAll(modelImport, "//", "/")
@@ -379,6 +384,7 @@ func (this *Model) gen(outDir string) {
 			newEntity().
 				setOutDir(this.outEntityDir).
 				setPackage(entityPackage).
+				setModelPackage(modelPackage).
 				setTable(t).
 				setUpperPrimaryKey(upperPrimaryKey).
 				setProperties(properties).
@@ -386,6 +392,7 @@ func (this *Model) gen(outDir string) {
 				setPropertyTypeMaxLen(propertyTypeMaxLen).
 				setUpperPropertyMaxLen(upperPropertyMaxLen).
 				setForce(this.forceEntity).
+				setImport(modelImport).
 				gen()
 		}
 	}
