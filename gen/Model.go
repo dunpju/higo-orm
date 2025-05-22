@@ -36,6 +36,7 @@ const (
 	modelFieldsStubFilename       = "modelFields.stub"
 	modelPropertyStubFilename     = "modelProperty.stub"
 	modelWithPropertyStubFilename = "modelWithProperty.stub"
+	modelEqualStubFilename        = "modelEqual.stub"
 	modelStructName               = "Model"
 	starExprArmModel              = "arm.Model"
 	Yes                           = "yes"
@@ -485,11 +486,11 @@ func (this *Model) mergeWithProperty(rowWithProperty string) {
 }
 
 func (this *Model) mergeEqual(upperProperty string) {
-	stub := stubs.NewStub(entityEqualStubFilename).Context()
+	stub := stubs.NewStub(modelEqualStubFilename).Context()
 	if len(this.equals) == 0 {
-		stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+		stub = strings.ReplaceAll(stub, "%UPPER_PROPERTY%", upperProperty)
 	} else {
-		stub = strings.Replace(stub, "%UPPER_PROPERTY%", LeftStrPad(upperProperty, 8, " "), 1)
+		stub = LeftStrPad(strings.ReplaceAll(stub, "%UPPER_PROPERTY%", upperProperty), 8, " ")
 	}
 	this.equals = append(this.equals, stub)
 }

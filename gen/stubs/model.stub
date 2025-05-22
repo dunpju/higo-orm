@@ -55,12 +55,12 @@ func (this *Model) Exist() bool {
     return this.IsEmpty(this)
 }
 
-func (this *Model) Equal(e *Model) bool {
+func (this *Model) Equal(m *Model) bool {
 	return %EQUALS%
 }
 
-func (this *Model) NotEqual(e *Model) bool {
-	return !this.Equal(e)
+func (this *Model) NotEqual(m *Model) bool {
+	return !this.Equal(m)
 }
 
 %WITH_PROPERTY%

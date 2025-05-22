@@ -46,10 +46,10 @@ func (this *Entity) NotEqual(e *Entity) bool {
 	return !this.Equal(e)
 }
 
-func (this *Entity) EqModel(m *%MODEL_PACKAGE%.Model) bool {
+func (this *Entity) EqModel(e *%MODEL_PACKAGE%.Model) bool {
 	return %EQUALS%
 }
 
-func (this *Entity) NotEqModel(m *%MODEL_PACKAGE%.Model) bool {
-	return !this.EqualModel(m)
+func (this *Entity) NotEqModel(e *%MODEL_PACKAGE%.Model) bool {
+	return !this.EqualModel(e)
 }

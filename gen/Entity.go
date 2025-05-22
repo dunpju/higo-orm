@@ -220,9 +220,9 @@ func (this *Entity) mergeProperty(rowProperty string) {
 func (this *Entity) mergeEqual(upperProperty string) {
 	stub := stubs.NewStub(entityEqualStubFilename).Context()
 	if len(this.equals) == 0 {
-		stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+		stub = strings.ReplaceAll(stub, "%UPPER_PROPERTY%", upperProperty)
 	} else {
-		stub = strings.Replace(stub, "%UPPER_PROPERTY%", LeftStrPad(upperProperty, 8, " "), 1)
+		stub = LeftStrPad(strings.ReplaceAll(stub, "%UPPER_PROPERTY%", upperProperty), 8, " ")
 	}
 	this.equals = append(this.equals, stub)
 }
