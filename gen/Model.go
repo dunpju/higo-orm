@@ -349,6 +349,7 @@ func (this *Model) gen(outDir string) {
 			goModModulePath += "/"
 		}
 		modelImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(utils.Dir.Dirname(this.outfile), "\\", "/"))
+		modelImport = strings.ReplaceAll(modelImport, "//", "/")
 
 		if this.isGenerateDao.Bool() {
 			newEntity().
@@ -366,7 +367,6 @@ func (this *Model) gen(outDir string) {
 
 			entityImport := goModModulePath + fmt.Sprintf("%s%s", childPathStr, strings.ReplaceAll(fmt.Sprintf("%s/%s", this.outEntityDir, entityPackage), "\\", "/"))
 			daoFilename := fmt.Sprintf("%sDao.go", modelPackage)
-			modelImport = strings.ReplaceAll(modelImport, "//", "/")
 			entityImport = strings.ReplaceAll(entityImport, "//", "/")
 
 			newDao().

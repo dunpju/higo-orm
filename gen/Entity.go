@@ -6,6 +6,7 @@ import (
 	"github.com/dunpju/higo-orm/gen/stubs"
 	"github.com/dunpju/higo-utils/utils"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -236,6 +237,7 @@ func (this *Entity) replaceImport() {
 		LeftStrPad(armImport, 4, " "),
 		LeftStrPad(fmt.Sprintf(`"%s"`, this.modelInfo.modelImport), 4, " "),
 	}
+	sort.Strings(imports)
 	this.stubContext = strings.Replace(this.stubContext, "%IMPORT%", strings.Join(append(imports, this.imports...), "\n"), 1)
 }
 
