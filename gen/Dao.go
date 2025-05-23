@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	daoStubFilename         = "dao.stub"
-	daoPropertyStubFilename = "daoProperty.stub"
+	daoStubFilename          = "dao.stub"
+	daoPropertyStubFilename  = "daoProperty.stub"
+	daoInsertColumnsFilename = "daoInsertColumns.stub"
 )
 
 type ModelInfo struct {
@@ -45,6 +46,7 @@ type Dao struct {
 	entityInfo          EntityInfo
 	outfile             string
 	propertyString      []string
+	insertColumns       []string
 	imports             []string
 	flags               []string
 	properties          []property
@@ -143,10 +145,13 @@ func (this *Dao) gen() {
 			rowUpdateTime = rowProperty
 		}
 		this.mergeProperty(rowProperty)
+		this.mergeInsertColumns(p.upperProperty)
+
 	}
 	this.replacePackage(this.daoPackage)
 	this.replaceImport()
 	this.replaceModelProperty()
+	this.replaceInsertColumns(p.upperProperty)
 	this.replacePrimaryKey(this.primaryKey)
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
 	this.replaceModelPackage(this.modelInfo.modelPackage)
@@ -200,6 +205,28 @@ func (this *Dao) mergeProperty(rowProperty string) {
 	}
 	if !has {
 		this.propertyString = append(this.propertyString, leftStrPad)
+	}
+}
+
+func (this *Dao) replaceInsertColumns(upperProperty string) string {
+
+	return stub
+}
+
+func (this *Dao) mergeInsertColumns(upperProperty string) {
+	stub := stubs.NewStub(daoInsertColumnsFilename).Context()
+	stub = strings.Replace(stub, "%MODEL_PACKAGE%", this.modelInfo.modelPackage, 1)
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	has := false
+	leftStrPad := LeftStrPad(stub, 12, " ")
+	for _, s := range this.insertColumns {
+		if s == leftStrPad {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.insertColumns = append(this.insertColumns, leftStrPad)
 	}
 }
 

@@ -76,18 +76,7 @@ func (this *%MODEL_PACKAGE%Dao) BatchInsert(entityList []*%MODEL_PACKAGE%Entity.
 			end = len(entityList)
 		}
 		model := this.model.Insert().Columns(
-			%MODEL_PACKAGE%.Name,
-			%MODEL_PACKAGE%.ApiUrl,
-			%MODEL_PACKAGE%.Class,
-			%MODEL_PACKAGE%.Route,
-			%MODEL_PACKAGE%.UniMd5,
-			%MODEL_PACKAGE%.Title,
-			%MODEL_PACKAGE%.Desc,
-			%MODEL_PACKAGE%.IsAuth,
-			%MODEL_PACKAGE%.IsDataAuth,
-			%MODEL_PACKAGE%.Sort,
-			%MODEL_PACKAGE%.CreateTime,
-			%MODEL_PACKAGE%.UpdateTime,
+			%INSERT_COLUMNS%
 		)
 		for _, entity := range entityList[start:end] {
 			model.Values(
@@ -105,7 +94,7 @@ func (this *%MODEL_PACKAGE%Dao) BatchInsert(entityList []*%MODEL_PACKAGE%Entity.
 				entity.UpdateTime,
 			)
 		}
-		model.OnDuplicateKeyUpdate(%MODEL_PACKAGE%.UpdateTime.VALUES())
+
 		gormDB, affected = model.Save()
 		this.CheckError(gormDB)
 	}
@@ -133,15 +122,15 @@ func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.
 		isDataAuthCase := %MODEL_PACKAGE%.IsDataAuth.Case()
 
 		for _, entity := range entityList[start:end] {
-			idList = append(idList, entity.PrivilegeActionId)
-			nameCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Name)
-			apiUrlCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.ApiUrl)
-			classCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Class)
-			routeCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Route)
-			titleCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Title)
-			descCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.Desc)
-			isAuthCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.IsAuth)
-			isDataAuthCase.When(%MODEL_PACKAGE%.PrivilegeActionId.Eq(entity.PrivilegeActionId), entity.IsDataAuth)
+			idList = append(idList, entity.%UPPER_PRIMARY_KEY%)
+			nameCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Name)
+			apiUrlCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.ApiUrl)
+			classCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Class)
+			routeCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Route)
+			titleCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Title)
+			descCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Desc)
+			isAuthCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.IsAuth)
+			isDataAuthCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.IsDataAuth)
 		}
 
 		model.CaseWhen(nameCase)
@@ -153,7 +142,7 @@ func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.
 		model.CaseWhen(isAuthCase)
 		model.CaseWhen(isDataAuthCase)
 
-		model.WhereIn(%MODEL_PACKAGE%.PrivilegeActionId, idList)
+		model.WhereIn(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, idList)
 		gormDB, affected = model.Exec()
 		this.CheckError(gormDB)
 	}
