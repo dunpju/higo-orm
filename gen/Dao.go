@@ -15,6 +15,9 @@ const (
 	daoPropertyStubFilename  = "daoProperty.stub"
 	daoInsertColumnsFilename = "daoInsertColumns.stub"
 	daoValuesFilename        = "daoValues.stub"
+	daoCaseFilename          = "daoCase.stub"
+	daoWhenFilename          = "daoWhen.stub"
+	daoCaseWhenFilename      = "daoCaseWhen.stub"
 )
 
 type ModelInfo struct {
@@ -49,6 +52,9 @@ type Dao struct {
 	propertyString      []string
 	insertColumns       []string
 	values              []string
+	cases               []string
+	whens               []string
+	caseWhen            []string
 	imports             []string
 	flags               []string
 	properties          []property
@@ -132,6 +138,9 @@ func newDao() *Dao {
 		propertyString: make([]string, 0),
 		insertColumns:  make([]string, 0),
 		values:         make([]string, 0),
+		cases:          make([]string, 0),
+		whens:          make([]string, 0),
+		caseWhen:       make([]string, 0),
 		newFileBuf:     bytes.NewBufferString(""),
 	}
 }
@@ -151,12 +160,17 @@ func (this *Dao) gen() {
 		this.mergeProperty(rowProperty)
 		this.mergeInsertColumns(p.upperProperty)
 		this.mergeValues(p.upperProperty)
+		this.mergeCase(p.lowerProperty, this.modelInfo.modelPackage, p.upperProperty)
+		this.mergeWhen(p.lowerProperty, this.modelInfo.modelPackage, this.upperPrimaryKey, p.upperProperty)
+		this.mergeCaseWhen(p.lowerProperty)
 	}
 	this.replacePackage(this.daoPackage)
 	this.replaceImport()
 	this.replaceModelProperty()
 	this.replaceInsertColumns()
 	this.replaceValues()
+	this.replaceCases()
+	this.replaceCaseWhen()
 	this.replacePrimaryKey(this.primaryKey)
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
 	this.replaceModelPackage(this.modelInfo.modelPackage)
@@ -190,15 +204,6 @@ func (this *Dao) write(file, fileContext string) {
 	}
 }
 
-func (this *Dao) replaceRowProperty(upperProperty, blankFirst, tableFieldsComment string) string {
-	stub := stubs.NewStub(daoPropertyStubFilename).Context()
-	stub = strings.Replace(stub, "%MODEL_PACKAGE%", this.modelInfo.modelPackage, 1)
-	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 2)
-	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
-	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
-	return stub
-}
-
 func (this *Dao) mergeProperty(rowProperty string) {
 	has := false
 	leftStrPad := LeftStrPad(rowProperty, 12, " ")
@@ -213,8 +218,13 @@ func (this *Dao) mergeProperty(rowProperty string) {
 	}
 }
 
-func (this *Dao) replaceInsertColumns() {
-	this.stubContext = strings.Replace(this.stubContext, "%INSERT_COLUMNS%", strings.Join(this.insertColumns, "\n"), 1)
+func (this *Dao) replaceRowProperty(upperProperty, blankFirst, tableFieldsComment string) string {
+	stub := stubs.NewStub(daoPropertyStubFilename).Context()
+	stub = strings.Replace(stub, "%MODEL_PACKAGE%", this.modelInfo.modelPackage, 1)
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 2)
+	stub = strings.Replace(stub, "%BLANK_FIRST%", blankFirst, 1)
+	stub = strings.Replace(stub, "%TABLE_FIELDS_COMMENT%", tableFieldsComment, 1)
+	return stub
 }
 
 func (this *Dao) mergeInsertColumns(upperProperty string) {
@@ -234,8 +244,8 @@ func (this *Dao) mergeInsertColumns(upperProperty string) {
 	}
 }
 
-func (this *Dao) replaceValues() {
-	this.stubContext = strings.Replace(this.stubContext, "%VALUES%", strings.Join(this.values, "\n"), 1)
+func (this *Dao) replaceInsertColumns() {
+	this.stubContext = strings.Replace(this.stubContext, "%INSERT_COLUMNS%", strings.Join(this.insertColumns, "\n"), 1)
 }
 
 func (this *Dao) mergeValues(upperProperty string) {
@@ -252,6 +262,75 @@ func (this *Dao) mergeValues(upperProperty string) {
 	if !has {
 		this.values = append(this.values, leftStrPad)
 	}
+}
+
+func (this *Dao) replaceValues() {
+	this.stubContext = strings.Replace(this.stubContext, "%VALUES%", strings.Join(this.values, "\n"), 1)
+}
+
+func (this *Dao) mergeCase(lowerProperty, modelPackage, upperProperty string) {
+	stub := stubs.NewStub(daoCaseFilename).Context()
+	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 1)
+	stub = strings.Replace(stub, "%MODEL_PACKAGE%", modelPackage, 1)
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	has := false
+	leftStrPad := LeftStrPad(stub, 16, " ")
+	for _, s := range this.cases {
+		if s == leftStrPad {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.cases = append(this.cases, leftStrPad)
+	}
+}
+
+func (this *Dao) replaceCases() {
+	this.stubContext = strings.Replace(this.stubContext, "%CASES%", strings.Join(this.cases, "\n"), 1)
+}
+
+func (this *Dao) mergeWhen(lowerProperty, modelPackage, upperPrimaryKey, upperProperty string) {
+	stub := stubs.NewStub(daoWhenFilename).Context()
+	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 1)
+	stub = strings.Replace(stub, "%MODEL_PACKAGE%", modelPackage, 1)
+	stub = strings.Replace(stub, "%UPPER_PRIMARY_KEY%", upperPrimaryKey, 2)
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	has := false
+	leftStrPad := LeftStrPad(stub, 12, " ")
+	for _, s := range this.whens {
+		if s == leftStrPad {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.whens = append(this.whens, leftStrPad)
+	}
+}
+
+func (this *Dao) replaceWhens() {
+	this.stubContext = strings.Replace(this.stubContext, "%WHENS%", strings.Join(this.whens, "\n"), 1)
+}
+
+func (this *Dao) mergeCaseWhen(lowerProperty string) {
+	stub := stubs.NewStub(daoCaseWhenFilename).Context()
+	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 1)
+	has := false
+	leftStrPad := LeftStrPad(stub, 8, " ")
+	for _, s := range this.caseWhen {
+		if s == leftStrPad {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.caseWhen = append(this.caseWhen, leftStrPad)
+	}
+}
+
+func (this *Dao) replaceCaseWhen() {
+	this.stubContext = strings.Replace(this.stubContext, "%CASE_WHEN%", strings.Join(this.caseWhen, "\n"), 1)
 }
 
 func (this *Dao) replacePackage(pkg string) {

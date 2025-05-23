@@ -101,35 +101,14 @@ func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.
 		model := this.model.Update()
 		idList := make([]int64, 0)
 
-		nameCase := %MODEL_PACKAGE%.Name.Case()
-		apiUrlCase := %MODEL_PACKAGE%.ApiUrl.Case()
-		classCase := %MODEL_PACKAGE%.Class.Case()
-		routeCase := %MODEL_PACKAGE%.Route.Case()
-		titleCase := %MODEL_PACKAGE%.Title.Case()
-		descCase := %MODEL_PACKAGE%.Desc.Case()
-		isAuthCase := %MODEL_PACKAGE%.IsAuth.Case()
-		isDataAuthCase := %MODEL_PACKAGE%.IsDataAuth.Case()
+		%CASES%
 
 		for _, entity := range entityList[start:end] {
 			idList = append(idList, entity.%UPPER_PRIMARY_KEY%)
-			nameCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Name)
-			apiUrlCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.ApiUrl)
-			classCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Class)
-			routeCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Route)
-			titleCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Title)
-			descCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.Desc)
-			isAuthCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.IsAuth)
-			isDataAuthCase.When(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%.Eq(entity.%UPPER_PRIMARY_KEY%), entity.IsDataAuth)
+			%WHENS%
 		}
 
-		model.CaseWhen(nameCase)
-		model.CaseWhen(apiUrlCase)
-		model.CaseWhen(classCase)
-		model.CaseWhen(routeCase)
-		model.CaseWhen(titleCase)
-		model.CaseWhen(descCase)
-		model.CaseWhen(isAuthCase)
-		model.CaseWhen(isDataAuthCase)
+		%CASE_WHEN%
 
 		model.WhereIn(%MODEL_PACKAGE%.%UPPER_PRIMARY_KEY%, idList)
 		gormDB, affected = model.Exec()

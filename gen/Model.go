@@ -264,6 +264,7 @@ func (this *Model) gen(outDir string) {
 	begin:
 		for _, field := range tableFields {
 			upperProperty := utils.String.CaseToCamel(field.Field)
+			lowerProperty := utils.String.Lcfirst(upperProperty)
 			if upperPropertyMaxLen < len(upperProperty) {
 				upperPropertyMaxLen = len(upperProperty)
 			}
@@ -297,7 +298,7 @@ func (this *Model) gen(outDir string) {
 			rowWithProperty := this.replaceRowWithProperty(upperProperty, utils.String.Lcfirst(upperProperty), propertyType, field.Comment)
 			this.mergeWithProperty(rowWithProperty)
 			this.mergeEqual(upperProperty)
-			properties = append(properties, newProperty(isPrimaryKey, upperProperty, propertyType, field.Field, field.Comment))
+			properties = append(properties, newProperty(isPrimaryKey, upperProperty, lowerProperty, propertyType, field.Field, field.Comment))
 		}
 		if fieldMaxLen > 0 {
 			if !isBreak {

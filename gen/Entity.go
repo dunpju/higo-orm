@@ -20,13 +20,14 @@ const (
 type property struct {
 	isPrimaryKey      bool
 	upperProperty     string
+	lowerProperty     string
 	propertyType      string
 	tableField        string
 	tableFieldComment string
 }
 
-func newProperty(isPrimaryKey bool, upperProperty, propertyType, tableField, tableFieldComment string) property {
-	return property{isPrimaryKey: isPrimaryKey, upperProperty: upperProperty, propertyType: propertyType, tableField: tableField, tableFieldComment: tableFieldComment}
+func newProperty(isPrimaryKey bool, upperProperty, lowerProperty, propertyType, tableField, tableFieldComment string) property {
+	return property{isPrimaryKey: isPrimaryKey, upperProperty: upperProperty, lowerProperty: lowerProperty, propertyType: propertyType, tableField: tableField, tableFieldComment: tableFieldComment}
 }
 
 type Entity struct {
