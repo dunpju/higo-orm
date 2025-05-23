@@ -14,6 +14,7 @@ const (
 	daoStubFilename          = "dao.stub"
 	daoPropertyStubFilename  = "daoProperty.stub"
 	daoInsertColumnsFilename = "daoInsertColumns.stub"
+	daoValuesFilename        = "daoValues.stub"
 )
 
 type ModelInfo struct {
@@ -47,6 +48,7 @@ type Dao struct {
 	outfile             string
 	propertyString      []string
 	insertColumns       []string
+	values              []string
 	imports             []string
 	flags               []string
 	properties          []property
@@ -128,6 +130,8 @@ func newDao() *Dao {
 		imports:        make([]string, 0),
 		flags:          make([]string, 0),
 		propertyString: make([]string, 0),
+		insertColumns:  make([]string, 0),
+		values:         make([]string, 0),
 		newFileBuf:     bytes.NewBufferString(""),
 	}
 }
@@ -146,12 +150,13 @@ func (this *Dao) gen() {
 		}
 		this.mergeProperty(rowProperty)
 		this.mergeInsertColumns(p.upperProperty)
-
+		this.mergeValues(p.upperProperty)
 	}
 	this.replacePackage(this.daoPackage)
 	this.replaceImport()
 	this.replaceModelProperty()
-	this.replaceInsertColumns(p.upperProperty)
+	this.replaceInsertColumns()
+	this.replaceValues()
 	this.replacePrimaryKey(this.primaryKey)
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
 	this.replaceModelPackage(this.modelInfo.modelPackage)
@@ -208,9 +213,8 @@ func (this *Dao) mergeProperty(rowProperty string) {
 	}
 }
 
-func (this *Dao) replaceInsertColumns(upperProperty string) string {
-
-	return stub
+func (this *Dao) replaceInsertColumns() {
+	this.stubContext = strings.Replace(this.stubContext, "%INSERT_COLUMNS%", strings.Join(this.insertColumns, "\n"), 1)
 }
 
 func (this *Dao) mergeInsertColumns(upperProperty string) {
@@ -227,6 +231,26 @@ func (this *Dao) mergeInsertColumns(upperProperty string) {
 	}
 	if !has {
 		this.insertColumns = append(this.insertColumns, leftStrPad)
+	}
+}
+
+func (this *Dao) replaceValues() {
+	this.stubContext = strings.Replace(this.stubContext, "%VALUES%", strings.Join(this.values, "\n"), 1)
+}
+
+func (this *Dao) mergeValues(upperProperty string) {
+	stub := stubs.NewStub(daoValuesFilename).Context()
+	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
+	has := false
+	leftStrPad := LeftStrPad(stub, 16, " ")
+	for _, s := range this.values {
+		if s == leftStrPad {
+			has = true
+			break
+		}
+	}
+	if !has {
+		this.values = append(this.values, leftStrPad)
 	}
 }
 

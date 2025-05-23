@@ -80,18 +80,7 @@ func (this *%MODEL_PACKAGE%Dao) BatchInsert(entityList []*%MODEL_PACKAGE%Entity.
 		)
 		for _, entity := range entityList[start:end] {
 			model.Values(
-				entity.Name,
-				entity.ApiUrl,
-				entity.Class,
-				entity.Route,
-				entity.UniMd5,
-				entity.Title,
-				entity.Desc,
-				entity.IsAuth,
-				entity.IsDataAuth,
-				entity.Sort,
-				entity.CreateTime,
-				entity.UpdateTime,
+				%VALUES%
 			)
 		}
 
