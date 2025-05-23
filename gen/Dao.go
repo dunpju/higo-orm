@@ -170,6 +170,7 @@ func (this *Dao) gen() {
 	this.replaceInsertColumns()
 	this.replaceValues()
 	this.replaceCases()
+	this.replaceWhens()
 	this.replaceCaseWhen()
 	this.replacePrimaryKey(this.primaryKey)
 	this.replaceUpperPrimaryKey(this.upperPrimaryKey)
@@ -233,6 +234,9 @@ func (this *Dao) mergeInsertColumns(upperProperty string) {
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
 	has := false
 	leftStrPad := LeftStrPad(stub, 12, " ")
+	if len(this.insertColumns) == 0 {
+		leftStrPad = LeftStrPad(stub, 0, " ")
+	}
 	for _, s := range this.insertColumns {
 		if s == leftStrPad {
 			has = true
@@ -253,6 +257,9 @@ func (this *Dao) mergeValues(upperProperty string) {
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
 	has := false
 	leftStrPad := LeftStrPad(stub, 16, " ")
+	if len(this.values) == 0 {
+		leftStrPad = LeftStrPad(stub, 0, " ")
+	}
 	for _, s := range this.values {
 		if s == leftStrPad {
 			has = true
@@ -274,7 +281,10 @@ func (this *Dao) mergeCase(lowerProperty, modelPackage, upperProperty string) {
 	stub = strings.Replace(stub, "%MODEL_PACKAGE%", modelPackage, 1)
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
 	has := false
-	leftStrPad := LeftStrPad(stub, 16, " ")
+	leftStrPad := LeftStrPad(stub, 8, " ")
+	if len(this.cases) == 0 {
+		leftStrPad = LeftStrPad(stub, 0, " ")
+	}
 	for _, s := range this.cases {
 		if s == leftStrPad {
 			has = true
@@ -298,6 +308,9 @@ func (this *Dao) mergeWhen(lowerProperty, modelPackage, upperPrimaryKey, upperPr
 	stub = strings.Replace(stub, "%UPPER_PROPERTY%", upperProperty, 1)
 	has := false
 	leftStrPad := LeftStrPad(stub, 12, " ")
+	if len(this.whens) == 0 {
+		leftStrPad = LeftStrPad(stub, 0, " ")
+	}
 	for _, s := range this.whens {
 		if s == leftStrPad {
 			has = true
@@ -318,6 +331,9 @@ func (this *Dao) mergeCaseWhen(lowerProperty string) {
 	stub = strings.Replace(stub, "%LOWER_PROPERTY%", lowerProperty, 1)
 	has := false
 	leftStrPad := LeftStrPad(stub, 8, " ")
+	if len(this.caseWhen) == 0 {
+		leftStrPad = LeftStrPad(stub, 0, " ")
+	}
 	for _, s := range this.caseWhen {
 		if s == leftStrPad {
 			has = true

@@ -91,7 +91,7 @@ func (this *%MODEL_PACKAGE%Dao) BatchInsert(entityList []*%MODEL_PACKAGE%Entity.
 }
 
 // BatchUpdate 批量更新
-func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.Entity, chunk uint64) (gormDB *gorm.DB, affected int64) {
+func (this *%MODEL_PACKAGE%Dao) BatchUpdate(entityList []*%MODEL_PACKAGE%Entity.Entity, chunk int) (gormDB *gorm.DB, affected int64) {
     for start := 0; start < len(entityList); start += chunk {
 		end := start + chunk
 		if end > len(entityList) {
